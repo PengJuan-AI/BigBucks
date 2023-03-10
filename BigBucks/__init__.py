@@ -27,8 +27,8 @@ def create_app(test_config=None):
     def index():
         return render_template('index.html')
 
-    from . import db
+    from . import db, auth
     db.init_app(app)
-
+    auth.init_app(app)
 
     return app
