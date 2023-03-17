@@ -14,7 +14,7 @@ def test_register(client, app):
         ).fetchone() is not None
         # test if the balance is initialized
         id = get_db().execute(
-            "SELECT userid FROM user WHERE username = 'jp584'",
+            "SELECT userid FROM user WHERE username = 'user2'",
         ).fetchone()[0]
 
         assert get_db().execute(

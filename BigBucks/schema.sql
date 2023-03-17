@@ -25,7 +25,8 @@ CREATE TABLE Portfolio (
 CREATE TABLE Assets_info (
   assetid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
   symbol TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  shares BIGINT NOT NULL
 );
 
 CREATE TABLE Assets_data (
@@ -36,7 +37,7 @@ CREATE TABLE Assets_data (
   low REAL NOT NULL,
   close REAL NOT NULL,
   adj_close REAL NOT NULL,
-  volume INTEGER NOT NULL,
+  volume BIGINT NOT NULL,
   FOREIGN KEY(assetid) REFERENCES Assets_info(assetid),
   PRIMARY KEY(assetid, date)
 );

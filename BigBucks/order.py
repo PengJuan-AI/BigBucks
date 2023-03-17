@@ -54,7 +54,7 @@ def get_balance(id):
 
 def get_assetid(symbol):
     id = get_db().execute(
-        'SELECT assetid FROM Asset_info WHERE symbol = ?', (symbol,)
+        'SELECT assetid FROM Assets_info WHERE symbol = ?', (symbol,)
     ).fetchone()[0]
 
     return id
