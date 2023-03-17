@@ -1,0 +1,38 @@
+@startuml
+skinparam actorStyle awesome
+left to right direction
+actor visitor
+actor user
+actor admin
+
+package BigBucks{
+package auth{
+  usecase "Register" as UC1
+  usecase "Login" as UC2
+}
+  
+  package Transaction{
+     usecase "Buy" as UC5
+     usecase "Sell" as UC6
+  }
+  package Analysis_usr{
+     usecase "Track transaction"
+     usecase "Holdings report"
+     usecase "Analyze risk-return profile"
+     usecase "Efficient Frontier"
+     usecase "Look Up Stock History"
+  }
+package Analysis_admin{
+     usecase "Analyze risk-return profile of all users"
+     usecase "Holdings of all users"
+}
+
+}
+
+
+visitor-->UC1
+user-->UC2
+user-->Transaction
+user-->Analysis_usr:analysis functions for users
+Analysis_admin<--admin
+@enduml
