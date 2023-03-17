@@ -1,7 +1,10 @@
--- INSERT INTO user (username, password)
--- VALUES
--- ('jp584', '123456789'),
--- ('user1', '987654321');
+INSERT INTO user (username, password)
+VALUES
+('jp584', '123456789'),
+('user1', '987654321');
+
+INSERT INTO balance (balance)
+VALUES (1000000),(1000000);
 
 INSERT into Assets_info (symbol, name, shares)
 VALUES ('AAPL','apple',4800000),('TSLA','tesla',3500000);

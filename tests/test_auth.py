@@ -16,7 +16,7 @@ def test_register(client, app):
         id = get_db().execute(
             "SELECT userid FROM user WHERE username = 'user2'",
         ).fetchone()[0]
-
+        assert id == 3
         assert get_db().execute(
             "SELECT balance FROM Balance WHERE userid = ?", (id,)
         ).fetchone()[0] == 1000000
