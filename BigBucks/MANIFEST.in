@@ -1,0 +1,4 @@
+include BigBucks/schema.sql
+graft BigBucks/static
+graft BigBucks/templates
+global-exclude *.pyc
