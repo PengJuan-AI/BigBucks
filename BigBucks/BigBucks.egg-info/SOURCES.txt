@@ -1,7 +1,0 @@
-MANIFEST.in
-setup.py
-BigBucks.egg-info/PKG-INFO
-BigBucks.egg-info/SOURCES.txt
-BigBucks.egg-info/dependency_links.txt
-BigBucks.egg-info/requires.txt
-BigBucks.egg-info/top_level.txt
