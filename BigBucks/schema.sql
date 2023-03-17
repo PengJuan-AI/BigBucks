@@ -54,7 +54,7 @@ CREATE TABLE Transaction (
 );
 
 CREATE TABLE Balance (
-  userid INTEGER PRIMARY KEY,
+  userid INTEGER PRIMARY KEY AUTOINCREMENT,
   balance REAL NOT NULL,
   FOREIGN KEY(userid) REFERENCES user(userid)
 );
