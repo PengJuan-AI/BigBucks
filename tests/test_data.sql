@@ -1,4 +1,4 @@
-INSERT INTO user (username, firstname, lastname, password)
+INSERT INTO user (username, password)
 VALUES
-('jp584', 'Juan', 'Peng', '123456789'),
-('user1', 'User', '1', '987654321');
+('jp584', '123456789'),
+('user1', '987654321');

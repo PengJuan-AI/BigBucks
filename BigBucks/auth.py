@@ -65,7 +65,7 @@ def register():
             try:
                 initial_balance = 1000000
                 db.execute(
-                    "INSERT INTO user (username, firstname, lastname, password) VALUES (?, ?)",
+                    "INSERT INTO user (username, password) VALUES (?, ?)",
                     (username, generate_password_hash(password))
                 )
                 db.execute(

@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS Balance;
 CREATE TABLE user (
   userid INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
-  firstname TEXT NOT NULL,
-  lastname TEXT NOT NULL,
+--  firstname TEXT NOT NULL,
+--   lastname TEXT NOT NULL,
   password TEXT NOT NULL
 );
 
@@ -55,6 +55,6 @@ CREATE TABLE Orders (
 
 CREATE TABLE Balance (
   userid INTEGER PRIMARY KEY AUTOINCREMENT,
-  balance REAL NOT NULL,
+  balance DECIMAL(16,2) NOT NULL,
   FOREIGN KEY(userid) REFERENCES user(userid)
 );
