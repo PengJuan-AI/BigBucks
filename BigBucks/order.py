@@ -13,36 +13,60 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 def buy():
     id = g.user['userid']
     if request.method == 'POST':
-        print("POST request")
         symbol = request.form['symbol']
         date = request.form['date']
-        price = request.form['price']
-        shares = int(request.form['share'])
+        price = float(request.form['price'])
+        shares_traded = int(request.form['share'])
         action = request.form['action']
-        db = get_db()
         error = None
         balance = get_balance(id)
-        amount = float(price)*float(shares)
+        amount = price*shares_traded
+        assetid = get_assetid(symbol)
+        shares_owned = get_shares(id, assetid)
 
         # check balance
         if balance< amount:
             error = "Balance is not enough"
         else:
-            print("Buy Asset")
-            assetid = get_assetid(symbol)
-            buy_asset(id,assetid, balance, amount, shares)
-            update_asset_info(assetid, shares)
-            update_orders(date,id, assetid, shares, price, action )
-        # check if asset exist
+            buy_asset(id,assetid, balance, amount, shares_traded, shares_owned)
+            update_asset_info(assetid, shares_traded)
+            update_orders(date,id, assetid, shares_traded, price, action )
+
+        flash(error)
+
         return redirect(url_for('index'))
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
         info['balance'] = get_balance(info['userid'])
-        
-        return render_template('order/buy.html', info=info)
+            
+    return render_template('order/buy.html', info=info)
 
 # sell
+@bp.route('/sell',methods=('GET','POST'))
+def sell():
+    id = g.user['userid']
+    if request.method=='POST':
+        symbol = request.form['symbol']
+        date = request.form['date']
+        price = float(request.form['price'])
+        shares_traded = int(request.form['share'])
+        action = request.form['action']
+        error = None
+        amount = price*shares_traded
+        balance = get_balance(id)
+        assetid = get_assetid(symbol)
+        shares_owned = get_shares(id, assetid)
+
+        if shares_traded>shares_owned:
+            error = 'Shares owned are not enough'
+        else:
+            sell_asset(id,assetid,balance, amount, shares_traded, shares_owned)
+            update_asset_info(assetid, -shares_traded)
+            update_orders(date, id, assetid, shares_traded, price, action)
+
+        flash(error)
+        return redirect(url_for('index'))
 
 
 # Get balance
@@ -60,22 +84,28 @@ def get_assetid(symbol):
 
     return id
 
-def buy_asset(userid,assetid,balance, amount, shares):
+def get_shares(userid, assetid):
+    shares = get_db().execute(
+        'SELECT shares FROM portfolio WHERE userid = ? and assetid=?', (userid, assetid)
+    ).fetchone()
+    if shares is None:
+        return 0
+    else:
+        return shares[0]
+
+def buy_asset(userid,assetid,balance, amount, shares_traded, shares_owned):
     '''
     buy asset: Portfoio change (shares increase), Balance change (balance decrease)
     '''
     db = get_db()
-    sql = "SELECT * FROM portfolio WHERE assetid=? and userid=?"
-    asset = db.execute(sql,(assetid,userid)).fetchone()
-    
     # if the asset is not in portfolio, insert into portfolio, else update shares of the asset in portfolio
-    if asset is None:
+    if shares_owned == 0:
         db.execute("INSERT INTO portfolio (userid, assetid, shares) VALUES (?,?,?)",
-                   (userid, assetid, shares)
+                   (userid, assetid, shares_traded)
                    )
     else:
         db.execute("UPDATE portfolio SET shares=? WHERE assetid=? and userid=?",
-                   (asset['shares']+shares, assetid, userid)
+                   (shares_owned+shares_traded, assetid, userid)
                    )
     
     # Deduct amount from user's balance
@@ -83,6 +113,18 @@ def buy_asset(userid,assetid,balance, amount, shares):
     
     db.commit()
         
+def sell_asset(userid,assetid,balance, amount, shares_traded, shares_owned):
+    print('In sell asset')
+    db = get_db()
+    
+    db.execute("UPDATE portfolio SET shares=? WHERE assetid=? and userid=?",
+               (shares_owned-shares_traded, assetid, userid) )
+
+    # Deduct amount from user's balance
+    db.execute("UPDATE balance SET balance=? WHERE userid=?", (balance + amount, userid))
+
+    db.commit()
+
 def update_asset_info(assetid, shares_traded):
     '''
     after one asset is traded, the outstanding shares of it decrease

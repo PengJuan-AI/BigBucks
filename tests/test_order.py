@@ -21,7 +21,25 @@ def test_buy(client, auth,app):
         order = db.execute("SELECT * FROM orders WHERE date='2023-3-15' and assetid=1 and userid=1").fetchone()
         assert order['action'] == 'buy'
         assert order['quantity'] == 120
+def test_sell(client, auth, app):
+    auth.login()
+    with app.app_context():
+        print("start testing sell")
+        print("Buy 120 shares of AAPL")
+        client.post('/order/buy',
+                    data={'symbol': 'AAPL', 'date': '2023-3-15', 'price': 63, 'share': 120, 'action': 'buy'})
+        # shares_owned = db.execute('SELECT shares FROM portfolio WHERE userid=1 and assetid=1').fetchone()[0]
+        shares_owned = 120
+        balance = get_balance(1)
+        # post sell info
+        print("Sell 100 shares of AAPL")
+        client.post('/order/sell',
+                    data={'symbol': 'AAPL', 'date': '2023-3-15', 'price': 63, 'share': 100, 'action': 'sell'})
+        db = get_db()
+        # assert db.execute('SELECT shares FROM portfolio WHERE userid=1 and assetid=1').fetchone()[0] == (shares_owned-100)
+        assert db.execute('SELECT balance from balance WHERE userid=1').fetchone()[0] == balance+(63*100)
         
+    
 def test_get_balance(client, app):
     # ONLY after register can get intial balance
     response = client.post(
@@ -39,6 +57,6 @@ def test_get_assetid(app):
 def test_buy_asset(app, auth):
     # auth.login('jp584', '123456789')
     with app.app_context():
-        buy_asset(1,1,1000000, 7560, 120)
+        buy_asset(1,1,1000000, 7560, 120, 0)
         db = get_db()
         assert db.execute('SELECT * FROM portfolio').fetchone() is not None
