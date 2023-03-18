@@ -17,7 +17,7 @@ def buy():
         symbol = request.form['symbol']
         date = request.form['date']
         price = request.form['price']
-        shares = request.form['share']
+        shares = int(request.form['share'])
         action = request.form['action']
         db = get_db()
         error = None
@@ -44,9 +44,6 @@ def buy():
 
 # sell
 
-# Insert new order
-def insert_new_order( time,price,shares, action):
-    pass
 
 # Get balance
 def get_balance(id):
@@ -86,8 +83,19 @@ def buy_asset(userid,assetid,balance, amount, shares):
     
     db.commit()
         
-def update_asset_info(assetid, shares):
-    pass
+def update_asset_info(assetid, shares_traded):
+    '''
+    after one asset is traded, the outstanding shares of it decrease
+    '''
+    db = get_db()
+    outstanding = db.execute('SELECT shares FROM assets_info WHERE assetid=?', (assetid,)).fetchone()[0]
+    db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
+               (outstanding-shares_traded, assetid)
+    )
+
 
 def update_orders(date,id, assetid, shares, price, action ):
-    pass
+    db = get_db()
+    db.execute('INSERT INTO orders (date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
+               (date, id, assetid,shares, price, action))
+    

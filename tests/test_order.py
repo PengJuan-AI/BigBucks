@@ -16,7 +16,11 @@ def test_buy(client, auth,app):
         db = get_db()
         assert db.execute('SELECT * FROM portfolio').fetchone() is not None
         assert db.execute('SELECT balance from balance WHERE userid=1').fetchone()[0] == (1000000-63*120)
-        # assert db.execute('SELECT shares FROM assets_info WHERE assetid = 1').fetchone()[0] == (4800000-120)
+        assert db.execute('SELECT shares FROM assets_info WHERE assetid = 1').fetchone()[0] == (4800000-120)
+        # test if order is update
+        order = db.execute("SELECT * FROM orders WHERE date='2023-3-15' and assetid=1 and userid=1").fetchone()
+        assert order['action'] == 'buy'
+        assert order['quantity'] == 120
         
 def test_get_balance(client, app):
     # ONLY after register can get intial balance
@@ -38,4 +42,3 @@ def test_buy_asset(app, auth):
         buy_asset(1,1,1000000, 7560, 120)
         db = get_db()
         assert db.execute('SELECT * FROM portfolio').fetchone() is not None
-        
