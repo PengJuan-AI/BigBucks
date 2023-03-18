@@ -30,8 +30,10 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from BigBucks import auth
-    
+    from BigBucks import auth   
     app.register_blueprint(auth.bp)
+    
+    from . import order
+    app.register_blueprint(order.bp)
 
     return app

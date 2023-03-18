@@ -1,8 +1,22 @@
 import pytest
 from flask import g, session
 from BigBucks.db import get_db
-from BigBucks.order import get_balance,get_assetid
+from BigBucks.order import get_balance,get_assetid, buy_asset
 
+def test_buy(client, auth):
+    # auth.login('jp584','123456789')
+    auth.login()
+    assert client.get('/order/buy').status_code != 404
+    with client:
+        client.get('/order/buy')
+        assert g.user['username'] == 'test'
+    # client.post('/order/buy',data={'symbol':'AAPL', 'date':'2023-3-15', 'price':63, 'shares':120,'action':'buy'})
+
+    # with app.app_context():
+    #     db = get_db()
+    #     assert db.execute('SELECT * FROM portfolio').fetchone() is not None
+    #     # assert db.execute('SELECT shares FROM assets_info WHERE assetid = 1').fetchone()[0] == (4800000-120)
+        
 def test_get_balance(client, app):
     # ONLY after register can get intial balance
     response = client.post(
@@ -16,3 +30,11 @@ def test_get_balance(client, app):
 def test_get_assetid(app):
     with app.app_context():
         assert get_assetid('AAPL') == 1
+        
+def test_buy_asset(app, auth):
+    auth.login('jp584', '123456789')
+    with app.app_context():
+        buy_asset(1,1,120)
+        db = get_db()
+        assert db.execute('SELECT * FROM portfolio').fetchone() is not None
+        

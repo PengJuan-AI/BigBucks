@@ -4,7 +4,7 @@ from flask import (
 from .auth import login_required
 from .db import get_db
 
-bp = Blueprint('example', __name__, url_prefix='/order')
+bp = Blueprint('order', __name__, url_prefix='/order')
 
 
 # buy
@@ -14,7 +14,7 @@ def buy():
     id = g.user['userid']
     if request.method == 'POST':
         symbol = request.form['symbol']
-        time = request.form['time']
+        date = request.form['date']
         price = request.form['price']
         shares = request.form['share']
         action = request.form['action']
@@ -24,18 +24,19 @@ def buy():
         amount = price*shares
         # check balance
         if balance< amount:
+            print('Balance:%f, Amount:%f'.format(balance, amount))
             error = "Balance is not enough"
         else:
+            print("Buy Asset")
             assetid = get_assetid(symbol)
-            buy_asset(id,amount)
+            buy_asset(id,assetid,shares)
         # check if asset exist
         
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
         info['balance'] = get_balance(info['userid'])
-        db = get_db()
-        db.execute()
+        
         return render_template('order/buy.html', info=info)
 
 # sell
@@ -58,3 +59,20 @@ def get_assetid(symbol):
     ).fetchone()[0]
 
     return id
+
+def buy_asset(userid,assetid,shares):
+    db = get_db()
+    sql = "SELECT * FROM portfolio WHERE assetid=? and userid=?"
+    asset = db.execute(sql,(assetid,userid)).fetchone()
+    
+    # if the asset is not in portfolio, insert into portfolio, else update shares of the asset in portfolio
+    if asset is None:
+        db.execute("INSERT INTO portfolio (userid, assetid, shares) VALUES (?,?,?)",
+                   (userid, assetid, shares)
+                   )
+        db.commit()
+    else:
+        db.execute("UPDATE portfolio SET shares=? WHERE assetid=? and userid=?",
+                   (asset['shares']+shares, assetid, userid)
+                   )
+        db.commit()

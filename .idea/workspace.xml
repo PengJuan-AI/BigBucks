@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="" />
+    <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/schema.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_order.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,6 +21,7 @@
       <list>
         <option value="Flask Main" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -25,6 +35,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />

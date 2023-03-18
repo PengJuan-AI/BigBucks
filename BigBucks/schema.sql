@@ -16,7 +16,7 @@ CREATE TABLE user (
 CREATE TABLE Portfolio (
   userid INTEGER NOT NULL,
   assetid INTEGER NOT NULL,
-  shares REAL NOT NULL,
+  shares BIGINT NOT NULL,
   FOREIGN KEY(userid) REFERENCES user(userid),
   FOREIGN KEY(assetid) REFERENCES Assets_info(assetid),
   PRIMARY KEY(userid, assetid)
