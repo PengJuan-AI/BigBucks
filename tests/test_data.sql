@@ -1,13 +1,11 @@
 INSERT INTO user (username, password)
 VALUES
-('test','test'),
-('jp584', '123456789'),
-('user1', '987654321');
+('test','pbkdf2:sha256:50000$TCI4GzcX$0de171a4f4dac32e3364c7ddc7c14f3e2fa61f2d17574483f7ffbb431b4acb2f');
+-- ('jp584', '123456789'),
+-- ('user1', '987654321');
 
 INSERT INTO balance (balance)
-VALUES
-       (1000000),
-       (1000000),(1000000);
+VALUES (1000000);
 
 INSERT into Assets_info (symbol, name, shares)
 VALUES ('AAPL','apple',4800000),('TSLA','tesla',3500000);

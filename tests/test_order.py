@@ -32,7 +32,7 @@ def test_get_assetid(app):
         assert get_assetid('AAPL') == 1
         
 def test_buy_asset(app, auth):
-    auth.login('jp584', '123456789')
+    # auth.login('jp584', '123456789')
     with app.app_context():
         buy_asset(1,1,120)
         db = get_db()
