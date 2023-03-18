@@ -36,10 +36,12 @@ def test_sell(client, auth, app):
         client.post('/order/sell',
                     data={'symbol': 'AAPL', 'date': '2023-3-15', 'price': 63, 'share': 100, 'action': 'sell'})
         db = get_db()
-        # assert db.execute('SELECT shares FROM portfolio WHERE userid=1 and assetid=1').fetchone()[0] == (shares_owned-100)
+        assert db.execute('SELECT shares FROM portfolio WHERE userid=1 and assetid=1').fetchone()[0] == (shares_owned-100)
         assert db.execute('SELECT balance from balance WHERE userid=1').fetchone()[0] == balance+(63*100)
+        assert db.execute('SELECT shares FROM assets_info WHERE assetid = 1').fetchone()[0] == (4800000-20)
+        order = db.execute("SELECT * FROM orders WHERE date='2023-3-15' and assetid=1 and userid=1 and action='sell'").fetchone()
+        assert order['quantity'] == 100
         
-    
 def test_get_balance(client, app):
     # ONLY after register can get intial balance
     response = client.post(
