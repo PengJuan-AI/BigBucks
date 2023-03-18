@@ -13,6 +13,7 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 def buy():
     id = g.user['userid']
     if request.method == 'POST':
+        print("POST request")
         symbol = request.form['symbol']
         date = request.form['date']
         price = request.form['price']
@@ -21,17 +22,19 @@ def buy():
         db = get_db()
         error = None
         balance = get_balance(id)
-        amount = price*shares
+        amount = float(price)*float(shares)
+
         # check balance
         if balance< amount:
-            print('Balance:%f, Amount:%f'.format(balance, amount))
             error = "Balance is not enough"
         else:
             print("Buy Asset")
             assetid = get_assetid(symbol)
-            buy_asset(id,assetid,shares)
+            buy_asset(id,assetid, balance, amount, shares)
+            update_asset_info(assetid, shares)
+            update_orders(date,id, assetid, shares, price, action )
         # check if asset exist
-        
+        return redirect(url_for('index'))
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
@@ -60,7 +63,10 @@ def get_assetid(symbol):
 
     return id
 
-def buy_asset(userid,assetid,shares):
+def buy_asset(userid,assetid,balance, amount, shares):
+    '''
+    buy asset: Portfoio change (shares increase), Balance change (balance decrease)
+    '''
     db = get_db()
     sql = "SELECT * FROM portfolio WHERE assetid=? and userid=?"
     asset = db.execute(sql,(assetid,userid)).fetchone()
@@ -70,9 +76,18 @@ def buy_asset(userid,assetid,shares):
         db.execute("INSERT INTO portfolio (userid, assetid, shares) VALUES (?,?,?)",
                    (userid, assetid, shares)
                    )
-        db.commit()
     else:
         db.execute("UPDATE portfolio SET shares=? WHERE assetid=? and userid=?",
                    (asset['shares']+shares, assetid, userid)
                    )
-        db.commit()
+    
+    # Deduct amount from user's balance
+    db.execute("UPDATE balance SET balance=? WHERE userid=?",(balance-amount, userid))
+    
+    db.commit()
+        
+def update_asset_info(assetid, shares):
+    pass
+
+def update_orders(date,id, assetid, shares, price, action ):
+    pass
