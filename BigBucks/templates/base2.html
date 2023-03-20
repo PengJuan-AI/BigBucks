@@ -49,14 +49,13 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-image" alt="User Image">
-              <span style="color:black">{{ username }}</span>
+              <span style="color:black">{{ session.user_name }}</span>
               <span class="caret" style="color:black"></span>
             </a>
             <ul class="dropdown-menu">
               <li class="user-header">
                 <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
                 <p style="color:black">
-                    <small>Joined on {{ date }}</small>
                     <span style="color:orange"><strong><i class="fa fa-dollar"></i> Current Balance: {{ balance }}</strong></span>
                 </p>
               </li>
@@ -65,7 +64,7 @@
                   <a href="#" class="btn btn-default btn-flat">Account Settings</a>
                 </div>
                 <div class="pull-right">
-                  <a href="{{ url_for('auth.login') }}" class="btn btn-default btn-flat">Log Out</a>
+                  <a href="{{ url_for('auth.logout') }}" class="btn btn-default btn-flat">Log Out</a>
                 </div>
               </li>
             </ul>
