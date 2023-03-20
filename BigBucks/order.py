@@ -72,7 +72,7 @@ def sell():
         info = {}
         info['userid'] = id
         info['balance'] = get_balance(info['userid'])
-        portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,)).fetchall()
+        portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,))
 
     return render_template('order/sell', info=info, portfolio=portfolio )
 
