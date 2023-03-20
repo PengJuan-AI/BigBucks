@@ -74,7 +74,7 @@ def sell():
         info['balance'] = get_balance(info['userid'])
         portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,)).fetchall()
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio )
+    return render_template('order/sell.html', info=info, portfolio=portfolio)
 
 
 # Get balance
