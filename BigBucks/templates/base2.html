@@ -15,6 +15,11 @@
   <script src="{{ url_for('static', filename='js/html5shiv.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
   <![endif]-->
+  <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
+
 </head>
 <body>
 <!-- Main Header -->
@@ -32,11 +37,11 @@
           <a class="navbar-brand" href="#"><strong><span style="color:antiquewhite;font-size:30px;font-family:Georgia">BigBucks</span></strong></a>
         </div>
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div id="topnavbar" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-              <li style="font-size:18px"><a href="#"><span style="color:black">Home</span></a></li>
-              <li style="font-size:18px"><a href="#"><span style="color:black">Buy</span></a></li>
-              <li style="font-size:18px"><a href="#"><span style="color:black">Sell</span></a></li>
+              <li id="home" style="font-size:18px"><a href="{{ url_for('index') }}"><span style="color:black">Home</span></a></li>
+              <li id="buy" style="font-size:18px"><a href="{{ url_for('order.buy') }}"><span style="color:black">Buy</span></a></li>
+              <li id="sell" style="font-size:18px"><a href="{{ url_for('order.sell') }}"><span style="color:black">Sell</span></a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <!--<li style="font-size:20px"><a href="#"><strong><span style="color:white"><i class="fa fa-dollar"></i> Balance: {{ balance }}</span></strong></a></li>-->
@@ -71,15 +76,11 @@
     </nav>
 </header>
 
-  <div>
+  <!--specific pages-->
+  <div class="container-fluid">
      {% block main_body %}
      {% endblock %}
   </div>
-
-<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
 
 </body>
 </html>

@@ -1,1 +1,114 @@
-{%  extends 'base.html' %}
+{%  extends 'base2.html' %}
+
+{% block title %}Buy{% endblock %}
+
+{% block main_body %}
+<style>
+.spinner{
+    width:100px;
+}
+.spinner input{
+    text-align:right;
+}
+.input-group-btn-vertical{
+    position:relative;
+    white-space:nowrap;
+    width:1%;
+    vertical-align:middle;
+    display:table-cell;
+}
+.input-group-btn-vertical > .btn {
+    display:block;
+    float:none;
+    width:100%;
+    max-width:100%;
+    padding:8px;
+    margin-left:-1px;
+    position:relative;
+    border-radius:0;
+}
+.input-group-btn-vertical > .btn:first-child {
+    border-top-right-radius: 4px;
+}
+.input-group-btn-vertical > .btn:last-child {
+    margin-top: -2px;
+    border-bottom-right-radius: 4px;
+}
+.input-group-btn-vertical i{
+    position: absolute;
+    top: 0;
+    left: 4px;
+}
+</style>
+<div class="row">
+    <div class="col-md-4">
+        <div class="box box-warning">
+            <div class="box-header with-border">
+            <h3 class="box-title">Search Stock</h3>
+            </div>
+            <div class="row">
+            <form class="navbar-form navbar-left" role="search" action="#" method="POST">
+            <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search Stock">
+            </div>
+            <button type="submit" class="btn btn-default">Search</button>
+            <table class="table table-hover">
+            <tr>
+                <th>Stock Name</th>
+                <th>Stock Symbol</th>
+            </tr>
+            <tr>
+                <td>{{  stockname }}</td>
+                <td>{{ stocksymbol }}</td>
+            </tr>
+            </table>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="box box-info">
+            <div class="box-header with-border">
+            <h3 class="box-title">Transaction</h3>
+            </div>
+            <div class="row">
+            <div class="container">
+            <form action="#" method="POST">
+            <h4 style="margin-left:20px">Shares</h4>
+            <div class="input-group spinner">
+            <input type="text" class="form-control" value="1">
+            <div class="input-group-btn-vertical">
+            <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+            <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            </div>
+            </div>
+            <div class="container" style="font-size:20px;color:forestgreen"><p><strong>Shares Available: {{ shares }}</strong></p></div>
+            <div class="container"><button type="submit" class="btn btn-success">Confirm Transation</button></div>
+            </form>
+  </div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function ($) {
+        $('.spinner .btn:first-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+        });
+        $('.spinner .btn:last-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
+        });
+    })(jQuery);
+</script>
+<!--<script>
+window.onload = function() {
+    var top_li = document.getElementById("topnavbar").getElementsByTagName("li");
+    for(var i= 0;i<tab_li.length;i++){
+        tab_li[i].classList.remove("active");
+    }
+    var thisli = document.getElementById("buy");
+    thisli.setAttribute("class","active");
+}
+</script>-->
+{% endblock %}

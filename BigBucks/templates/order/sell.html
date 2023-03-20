@@ -1,0 +1,64 @@
+{%  extends 'base2.html' %}
+
+{% block title %}Sell{% endblock %}
+
+{% block main_body %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+            <h3 class="box-title">Currently Owned Assets</h3>
+            </div>
+            <div class="row">
+            <form class="navbar-form navbar-left" role="search" action="#" method="POST">
+            <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search Stock">
+            </div>
+            <button type="submit" class="btn btn-default">Search</button>
+            <div class="container">
+                <table class="table table-hover">
+                    <div style="margin-left:10px;margin-bottom:10px">
+                        <a href="#" class="btn btn-danger input-sm">Select All</a>
+                    </div>
+                    <tr>
+                        <th></th>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Shares</th>
+                    </tr>
+                    {% for stock in stocklist %}
+                    <tr>
+                        <td><input type="checkbox" onclick="checkOne()" value="{{ stockid }}" name="checkone"></td>
+                        <td>{{ stocksymbol }}</td>
+                        <td>{{ stockname }}</td>
+                        <td>{{ stockshares }}</td>
+                        <td>
+                            <a type="button" href="#" class="btn btn-primary btn-xs">Sell</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="box box-info">
+            <div class="box-header with-border">
+            <h3 class="box-title">Transaction</h3>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function ($) {
+        $('.spinner .btn:first-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+        });
+        $('.spinner .btn:last-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
+        });
+    })(jQuery);
+</script>
+{% endblock %}

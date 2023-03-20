@@ -15,6 +15,11 @@
   <script src="{{ url_for('static', filename='js/html5shiv.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
   <![endif]-->
+  <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
+
 </head>
 <body class="hold-transition skin-yellow sidebar-mini">
 <div class="wrapper">
@@ -86,8 +91,8 @@
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree" id="mainsidebar">
         <p class="header" style="background-color:#FFA500;padding:3px"></p>
-        <li id="home"><a href="#"><i class="fa fa-home"></i> <span>Home</span></a></li>
-        <li id="order"><a href="#"><i class="fa fa-sticky-note"></i> <span>Order</span></a></li>
+        <li id="home"><a href="{{ url_for('index') }}"><i class="fa fa-home"></i> <span>Home</span></a></li>
+        <li id="order"><a href="{{ url_for('order.buy') }}"><i class="fa fa-sticky-note"></i> <span>Order</span></a></li>
         <li id="analysis" class="treeview">
           <a href="#" class="">
             <i class="fa fa-line-chart"></i> <span>Analysis</span>
@@ -146,11 +151,6 @@
   <!-- background -->
   <div class="control-sidebar-bg"></div>
 </div>
-
-<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
 
 </body>
 </html>
