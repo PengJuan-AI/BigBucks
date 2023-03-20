@@ -1,8 +1,7 @@
 import csv
 import sqlite3
 import os
-import yfinance as yf
-import requests
+import urllib.request
 import json
 
 def read_stock_data(filename):
@@ -33,6 +32,13 @@ def add_stock_data(conn, assetid, stock_data):
         c.execute("INSERT OR REPLACE INTO Assets_data (assetid, date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (assetid, row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
     conn.commit()
 
+# Get company's name by its symbol from Yahoo Finance
+def get_company_name(symbol):
+    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v1/finance/search?q={symbol}')
+    content = response.read()
+    company_name = json.loads(content.decode('utf8'))['quotes'][0]['shortname']
+    return company_name
+
 # Open database connection
 db_path = os.path.join(os.path.dirname(__file__), 'BigBucks.db')
 conn = sqlite3.connect(db_path)
@@ -43,14 +49,10 @@ for filename in os.listdir('static/stockdata'):
         continue
     symbol = filename[:-4]  # Remove '.csv' extension
     stock_data = read_stock_data(filename)
-     
-    '''    
-    ticker = yf.Ticker(symbol) # Get company name by its stock symbol
-    company_name = ticker.info["longName"]
+    
+    company_name = get_company_name(symbol)
+    #print(company_name)
     assetid = add_asset(conn, symbol, company_name)
-    '''
-
-    assetid = add_asset(conn, symbol, 'company_name')
     add_stock_data(conn, assetid, stock_data)
 
 # Close database connection
