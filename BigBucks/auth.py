@@ -106,6 +106,7 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["userid"]
+            session["user_name"] = user["username"]
             return redirect(url_for("index"))
 
         flash(error)
@@ -117,4 +118,4 @@ def login():
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
-    return redirect(url_for("index"))
+    return redirect(url_for("auth.login"))
