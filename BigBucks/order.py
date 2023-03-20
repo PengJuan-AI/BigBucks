@@ -41,7 +41,7 @@ def buy():
         info['balance'] = get_balance(info['userid'])
             
     return render_template('order/buy.html', info=info)
-
+# 'order/buy/apple'
 # sell
 @bp.route('/sell',methods=('GET','POST'))
 def sell():
@@ -67,6 +67,14 @@ def sell():
 
         flash(error)
         return redirect(url_for('index'))
+
+    elif request.method == 'GET': #GET
+        info = {}
+        info['userid'] = id
+        info['balance'] = get_balance(info['userid'])
+        portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,))
+
+    return render_template('order/sell', info=info, portfolio=portfolio )
 
 
 # Get balance
