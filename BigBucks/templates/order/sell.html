@@ -4,8 +4,8 @@
 
 {% block main_body %}
 <div class="row">
-    <div class="col-md-8">
-        <div class="box box-danger">
+    <div class="col-md-6">
+        <div class="box box-success">
             <div class="box-header with-border">
             <h3 class="box-title">Currently Owned Assets</h3>
             </div>
@@ -15,10 +15,13 @@
             <input type="text" class="form-control" placeholder="Search Stock">
             </div>
             <button type="submit" class="btn btn-default">Search</button>
-            <div class="container">
-                <table class="table table-hover">
-                    <div style="margin-left:10px;margin-bottom:10px">
-                        <a href="#" class="btn btn-danger input-sm">Select All</a>
+            </form>
+            </div>
+            <div class="box-body table-responsive no-padding">
+            <form action="#" method="POST">
+                <table class="table table-dark">
+                    <div style="margin-bottom:10px">
+                        <a href="#" class="btn btn-success input-sm">Select All</a>
                     </div>
                     <tr>
                         <th></th>
@@ -36,17 +39,16 @@
                             <a type="button" href="#" class="btn btn-primary btn-xs">Sell</a>
                         </td>
                     </tr>
+                    {% endfor %}
                 </table>
-            </div>
             </form>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="box box-info">
             <div class="box-header with-border">
             <h3 class="box-title">Transaction</h3>
-            </div>
             </div>
         </div>
     </div>
