@@ -1,0 +1,37 @@
+{% extends 'base1.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block main_body %}
+<style>
+.bgimg{
+    opacity:60%;
+    height:100%;
+    background-position:center;
+    background-size:cover;
+    position:relative;
+    color:white;
+}
+.topleft{
+    position:absolute;
+    top:0;
+}
+.middle{
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family:"Courier New", Courier, monospace;
+}
+</style>
+<div class="bgimg">
+    <div class="topleft">
+    <img src="{{ url_for('static', filename='img/bgimg.jpg') }}">
+    </div>
+</div>
+<div class="middle">
+    <h1 style="color:#FEAE80"><strong>Welcome to BigBucks</strong></h1>
+    <h4 style="color:#32355B">A reliable, analytical trading assistant</h4>
+</div>
+{% endblock %}

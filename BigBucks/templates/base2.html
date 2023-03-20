@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>BigBucks - Trading</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/font-awesome/css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/Ionicons/css/ionicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skins/skin-yellow.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/google_fonts.css') }}">
+  <!--[if lt IE 9]>
+  <script src="{{ url_for('static', filename='js/html5shiv.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
+  <![endif]-->
+</head>
+<body>
+<!-- Main Header -->
+<header>
+    <nav class="navbar navbar-light navbar-static-top" style="background-color: #f59e00;">
+      <div class="container-fluid">
+
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><strong><span style="color:antiquewhite;font-size:30px;font-family:Georgia">BigBucks</span></strong></a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+              <li style="font-size:18px"><a href="#"><span style="color:black">Home</span></a></li>
+              <li style="font-size:18px"><a href="#"><span style="color:black">Buy</span></a></li>
+              <li style="font-size:18px"><a href="#"><span style="color:black">Sell</span></a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <!--<li style="font-size:20px"><a href="#"><strong><span style="color:white"><i class="fa fa-dollar"></i> Balance: {{ balance }}</span></strong></a></li>-->
+          <li class="dropdown user user-menu" style="font-size:15px">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-image" alt="User Image">
+              <span style="color:black">{{ username }}</span>
+              <span class="caret" style="color:black"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="user-header">
+                <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
+                <p style="color:black">
+                    <small>Joined on {{ date }}</small>
+                    <span style="color:orange"><strong><i class="fa fa-dollar"></i> Current Balance: {{ balance }}</strong></span>
+                </p>
+              </li>
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Account Settings</a>
+                </div>
+                <div class="pull-right">
+                  <a href="#" class="btn btn-default btn-flat">Log Out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+</header>
+
+  <div>
+     {% block main_body %}
+     {% endblock %}
+  </div>
+
+<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
+
+</body>
+</html>
