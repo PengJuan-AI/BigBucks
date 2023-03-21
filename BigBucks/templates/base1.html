@@ -37,6 +37,7 @@
       <!-- Sidebar toggle button -->
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"></a>
       <div class="navbar-custom-menu">
+        {% if session %}
         <ul class="nav navbar-nav">
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
@@ -63,9 +64,16 @@
               </li>
             </ul>
           </li>
-
         </ul>
+        {% else %}
+        <ul class="nav navbar-nav">
+          <li><a href="{{ url_for('auth.login') }}"><span>Log In</span></a></li>
+          <li><a href="{{ url_for('auth.register') }}"><span>Sign Up</span></a></li>
+        </ul>
+        {% endif %}
       </div>
+
+
     </nav>
   </header>
 
@@ -77,14 +85,20 @@
 
       <!-- Sidebar user panel -->
       <div class="user-panel">
+        {% if session %}
         <div class="pull-left image">
           <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>Welcome, {{ session.user_name }}</p>
-          <!-- Status -->
           <a href="#"><i class="fa fa-circle text-success"></i> Active</a>
         </div>
+        {% else %}
+        <p class="text-center" style="color:white;font-size:18px">
+          <strong>Welcome, visitor!</strong>
+        </p>
+        <p class="text-center" style="color:Gainsboro;font-size:12px">Log In to Use BigBucks</p>
+        {% endif %}
       </div>
 
       <!-- Sidebar Menu -->
