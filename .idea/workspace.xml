@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/order.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +93,7 @@
       <updated>1677343394883</updated>
       <workItem from="1677343398942" duration="42000" />
       <workItem from="1679252592326" duration="1328000" />
-      <workItem from="1679332959724" duration="1780000" />
+      <workItem from="1679332959724" duration="2693000" />
     </task>
     <servers />
   </component>
