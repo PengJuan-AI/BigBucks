@@ -1,0 +1,25 @@
+<!-- HTML 表格 -->
+<table id="my-table">
+    <tr>
+      <td>1</td>
+      <td>John</td>
+      <td>Doe</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Jane</td>
+      <td>Smith</td>
+    </tr>
+  </table>
+  
+  <!-- JavaScript -->
+  <script>
+    // 获取表格元素
+    const myTable = document.getElementById("my-table");
+  
+    // 获取第一个单元格元素（第一行第一列）
+    const cell = myTable.rows[0].cells[0];
+  
+    // 修改单元格内容
+    cell.innerHTML = "Updated Value";
+  </script>

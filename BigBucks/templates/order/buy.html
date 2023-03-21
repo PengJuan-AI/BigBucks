@@ -44,22 +44,22 @@
     <div class="col-md-4">
         <div class="box box-warning">
             <div class="box-header with-border">
-            <h3 class="box-title">Search Stock</h3>
+            <h3 class="box-title" id = "search-area">Search Stock</h3>
             </div>
             <div class="row">
             <form class="navbar-form navbar-left" role="search" action="#" method="POST">
             <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search Stock">
+            <input type="text" class="form-control" placeholder="Search Stock" id="search-input">
             </div>
-            <button type="submit" class="btn btn-default">Search</button>
+            <button type="submit" class="btn btn-default" id="search-btn">Search</button>
             <table class="table table-hover">
             <tr>
                 <th>Stock Name</th>
                 <th>Stock Symbol</th>
             </tr>
-            <tr>
-                <td>{{  stockname }}</td>
-                <td>{{ stocksymbol }}</td>
+            <tr id = "result-area">
+                <td id = "stockname">{{  stockname }}</td>
+                <td id = "stocksymble">{{ stocksymbol }}</td>
             </tr>
             </table>
             </form>
@@ -101,6 +101,7 @@
         });
     })(jQuery);
 </script>
+<script src="BuyHandler.js"></script>
 <!--<script>
 window.onload = function() {
     var top_li = document.getElementById("topnavbar").getElementsByTagName("li");
