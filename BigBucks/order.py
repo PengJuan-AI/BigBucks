@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, jsonify, redirect, render_template, request, url_for
 )
 from .auth import login_required
 from .db import get_db
@@ -149,3 +149,10 @@ def update_orders(date,id, assetid, shares, price, action ):
     db.execute('INSERT INTO orders (date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, assetid,shares, price, action))
     
+# test
+@bp.route('/get_stock_info', methods=['POST'])
+def get_stock_info():
+    # 获取股票信息的逻辑代码
+    stock_name = request.form.get('stockname')
+    stock_info = {'stockname': stock_name, 'price': 100.0, 'stocksymbol': 'ABC'}
+    return jsonify(stock_info)
