@@ -1,19 +1,34 @@
-// 引入utils.js文件
-// import { searchStockByName } from '../utils.js';
+$(document).ready(function() {
+    $('form').on('submit', function(event) {
+        event.preventDefault();
+        var stockname = $('input[name="stockname"]').val();
+        $.ajax({
+            url: '/get_stock_info',
+            method: 'POST',
+            data: { stockname: stockname },
+            success: function(response) {
+                $('#result-area td').eq(0).text(response.stockname);
+                $('#result-area td').eq(1).text(response.stocksymbol);
+                $('#result-area td').eq(2).text(response.price);
+            },
+            error: function() {
+                alert('Error occurred while getting stock info');
+            }
+        });
+    });
 
-const searchBox = document.getElementById('search-input')
-const resultArea = document.getElementById('result-area');
-const stocknameCell = resultArea.querySelector("td:first-child");
-const stocksymbelCell = resultArea.querySelector("td:nth-child(2)");
+    $('#submit-btn').on('click', function() {
+        var shares = $('.spinner input').val();
+        $('#shares-input').val(shares);
+        $('form').submit();
+    });
 
-const searchBtn = document.getElementById('search-btn');
-searchBtn.addEventListener('click', function(event) {
-    event.preventDefault();  // 阻止表单提交
-    // 获取用户输入的信息
-    const searchText = searchBox.value;
-    // 调用searchByName方法进行搜索
-    // const searchResult = searchStockByName(searchText);
-
-    // 将搜索结果显示在界面上
-    stocknameCell.innerHTML = searchText;
+    (function ($) {
+        $('.spinner .btn:first-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+        });
+        $('.spinner .btn:last-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
+        });
+    })(jQuery);
 });
