@@ -11,24 +11,24 @@
             </div>
             <div class="row">
             <!-- <form class="navbar-form navbar-left" role="search" action="#" method="POST"> -->
-            <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search Stock" name="search_name">
-            </div>
-            <button type="submit" class="btn btn-default">Search</button>
-            <table class="table table-hover">
-            <tr>
-                <th>Stock Name</th>
-                <th>Stock Symbol</th>
-                <th>Current Price</th>
-            </tr>
-            <tr id="result-area">
-                <td>{{ stockname }}</td>
-                <td>{{ stocksymbol }}</td>
-                <td>{{ price }}</td>
-            </tr>
-            </table>
-            </form>
+                <form class="navbar-form navbar-left" id="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search Stock" name="search_name">
+                    </div>
+                    <button type="submit" class="btn btn-default">Search</button>
+                    <table class="table table-hover">
+                        <tr>
+                            <th>Stock Name</th>
+                            <th>Stock Symbol</th>
+                            <th>Current Price</th>
+                        </tr>
+                        <tr>
+                            <td>{{ stockname }}</td>
+                            <td>{{ stocksymbol }}</td>
+                            <td>{{ price }}</td>
+                        </tr>
+                    </table>
+                </form>
             </div>
         </div>
     </div>
@@ -39,7 +39,8 @@
             </div>
             <div class="row">
             <div class="container">
-            <form action="#" method="POST">
+            <!-- <form action="#" method="POST"> -->
+            <form id="submit">
                 <h4 style="margin-left:20px">Shares</h4>
                     <div class="input-group spinner">
                     <input type="text" class="form-control" value="1" id="shares-input">
@@ -48,7 +49,7 @@
                         <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
                         </div>
                     </div>
-                <div class="container" style="font-size:20px;color:forestgreen"><p><strong>Shares Available: {{ shares }}</strong></p></div>
+                <div class="container" style="font-size:20px;color:forestgreen"><p id="share-available"><strong>Shares Available: {{ shares }}</strong></p></div>
                 <div class="container"><button type="submit" class="btn btn-success" id="submit-btn">Confirm Transation</button></div>
             </form>
   </div>
@@ -59,38 +60,73 @@
 </div>
 <script>
     $(document).ready(function() {
-    $('form').on('submit', function(event) {
-        event.preventDefault();
-        var stockname = $('input[name="search_name"]').val();
-        $.ajax({
-            url: '/order/get_stock_info',
-            method: 'POST',
-            data: { stockname: stockname },
-            success: function(response) {
-                $('#result-area').find('td').eq(0).text(response.stockname);
-                $('#result-area').find('td').eq(1).text(response.stocksymbol);
-                $('#result-area').find('td').eq(2).text(response.price);
-            },
-            error: function() {
-                alert('Error occurred while getting stock info');
-            }
+        var stock_price = 1;
+        var account_balance = 1000;
+        var share_available = 0;
+        var stock_symbol;
+        // $.get('/order/get_account_balance',function(data,status){
+        //     account_balance = data.account_balance;
+        // });
+        $('#search').on('submit', function(event) {
+            event.preventDefault();
+            stockname = $('input[name="search_name"]').val();
+            $.ajax({
+                url: '/order/get_stock_info',
+                method: 'POST',
+                data: { "stockname": stockname },
+                success: function(response) {
+                    stock_price = response.price;
+                    share_available = parseInt(account_balance / stock_price);
+                    stock_symbol = response.stocksymbol;
+                    $('#search').find("tr").eq(1).find('td').eq(0).text(response.stockname);
+                    $('#search').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
+                    $('#search').find("tr").eq(1).find('td').eq(2).text(response.price);
+                    $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
+                },
+                error: function() {
+                    alert('Error occurred while getting stock info');
+                }
+            });
         });
-    });
 
-    $('#submit-btn').on('click', function() {
-        var shares = $('.spinner input').val();
-        $('#shares-input').val(shares);
-        $('form').submit();
-    });
+        $('#submit-btn').on('click', function() {
+            var shares = $('.spinner input').val();
+            $('#shares-input').val(shares);
+            $('form').submit();
+        });
 
-    (function ($) {
-        $('.spinner .btn:first-of-type').on('click', function () {
-            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+        (function ($) {
+            $('.spinner .btn:first-of-type').on('click', function () {
+                var $input = $('.spinner input');
+                var currentValue = parseInt($input.val(), 10);
+                if (currentValue >= 0 && currentValue < share_available) {
+                $input.val(currentValue + 1);
+                }
+            });
+            
+            $('.spinner .btn:last-of-type').on('click', function () {
+                var $input = $('.spinner input');
+                var currentValue = parseInt($input.val(), 10);
+                if (currentValue > 0 && currentValue <= share_available) {
+                $input.val(currentValue - 1);
+                }
+            });
+        })(jQuery);
+    
+        $('#search').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/order/buy',
+                method: 'POST',
+                data: { "symbol": stock_symbol, "time": new Date().getTime, "share": $('.spinner input')},
+                success: function(response) {
+                    alert("Your order has been successfully placed!");
+                },
+                error: function() {
+                    alert('Error occurred while placing order.');
+                }
+            });
         });
-        $('.spinner .btn:last-of-type').on('click', function () {
-            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
-        });
-    })(jQuery);
 });
 </script>
 <!--<script>
