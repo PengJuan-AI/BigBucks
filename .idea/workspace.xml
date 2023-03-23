@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/BigBucks.db" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/BigBucks.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/live_data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/live_data_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/order.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +123,7 @@
       <workItem from="1679332959724" duration="2693000" />
       <workItem from="1679509462736" duration="852000" />
       <workItem from="1679532441459" duration="2944000" />
-      <workItem from="1679595147727" duration="1169000" />
+      <workItem from="1679595147727" duration="2548000" />
     </task>
     <servers />
   </component>
