@@ -5,6 +5,9 @@ import json
 import yfinance as yf
 from datetime import datetime, timedelta
 from yahoo_fin import stock_info as si
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # Add asset to Assets_info table and get its assetid
 def add_asset(conn, symbol):
@@ -51,7 +54,7 @@ def get_company_shares(symbol):
 
 # Get live price of a stock by its symbol from Yahoo Finance
 def get_live_price(symbol):
-    live_price = si.get_live_price(symbol)
+    live_price = round(si.get_live_price(symbol),2)
     return live_price
 
 # Store historical data into database
@@ -85,11 +88,11 @@ def store_stock_data(symbol):
     # Close database connection
     conn.close()
 
-
-symbols = ['AAPL', 'MSFT']
-for symbol in symbols:
-    store_stock_data(symbol)
-    live_price = get_live_price(symbol)
-    print(live_price)
+# test
+# symbols = ['AAPL', 'MSFT']
+# for symbol in symbols:
+#     store_stock_data(symbol)
+#     live_price = get_live_price(symbol)
+#     print(live_price)
 
     

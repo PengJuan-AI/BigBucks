@@ -3,7 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from .static_data_processor import get_company_name,get_company_shares
+from .live_data_processor import get_company_name,get_company_shares, get_live_price
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
@@ -162,6 +162,6 @@ def update_orders(date,id, assetid, shares, price, action ):
 @bp.route('/get_stock_info', methods=['POST'])
 def get_stock_info():
     # 获取股票信息的逻辑代码
-    stock_name = request.form.get('stockname')
-    stock_info = {'stockname': stock_name, 'price': 100.0, 'stocksymbol': 'ABC'}
+    symbol = request.form.get('stockname')
+    stock_info = {'stockname': get_company_name(symbol), 'price': get_live_price(symbol), 'stocksymbol': symbol}
     return jsonify(stock_info)
