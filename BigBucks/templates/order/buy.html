@@ -78,23 +78,23 @@
         });
     });
 
-    (function ($) {
-            $('.spinner .btn:first-of-type').on('click', function () {
-                var $input = $('.spinner input');
-                var currentValue = parseInt($input.val(), 10);
-                if (currentValue >= 0 && currentValue < share_available) {
-                $input.val(currentValue + 1);
-                }
-            });
-            
-            $('.spinner .btn:last-of-type').on('click', function () {
-                var $input = $('.spinner input');
-                var currentValue = parseInt($input.val(), 10);
-                if (currentValue > 0 && currentValue <= share_available) {
-                $input.val(currentValue - 1);
-                }
-            });
-        })(jQuery);
+    // (function ($) {
+        //     $('.spinner .btn:first-of-type').on('click', function () {
+        //         var $input = $('.spinner input');
+        //         var currentValue = parseInt($input.val(), 10);
+        //         if (currentValue >= 0 && currentValue < share_available) {
+        //         $input.val(currentValue + 1);
+        //         }
+        //     });
+        //
+        //     $('.spinner .btn:last-of-type').on('click', function () {
+        //         var $input = $('.spinner input');
+        //         var currentValue = parseInt($input.val(), 10);
+        //         if (currentValue > 0 && currentValue <= share_available) {
+        //         $input.val(currentValue - 1);
+        //         }
+        //     });
+        // })(jQuery);
     
         $('#submit-btn').on('click', function(event) {
             event.preventDefault();

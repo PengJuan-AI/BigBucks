@@ -14,28 +14,29 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 def buy():
     id = g.user['userid']
     if request.method == 'POST':
-        symbol = request.form['symbol']
-        date = request.form['date']
-        price = float(request.form['price'])
-        shares_traded = int(request.form['share'])
-        action = request.form['action']
-        error = None
-        balance = get_balance(id)
-        amount = price*shares_traded
-        assetid = get_assetid(symbol)
-        shares_owned = get_shares(id, assetid)
+        print(request.form)
+        # symbol = request.form['symbol']
+        # date = request.form['date']
+        # price = float(request.form['price'])
+        # shares_traded = int(request.form['share'])
+        # action = request.form['action']
+        # error = None
+        # balance = get_balance(id)
+        # amount = price*shares_traded
+        # assetid = get_assetid(symbol)
+        # shares_owned = get_shares(id, assetid)
 
-        # check balance
-        if balance< amount:
-            error = "Balance is not enough"
-        else:
-            buy_asset(id,assetid, balance, amount, shares_traded, shares_owned)
-            # update_asset_info(assetid, shares_traded)
-            update_orders(date,id, assetid, shares_traded, price, action )
+        # # check balance
+        # if balance< amount:
+        #     error = "Balance is not enough"
+        # else:
+        #     buy_asset(id,assetid, balance, amount, shares_traded, shares_owned)
+        #     # update_asset_info(assetid, shares_traded)
+        #     update_orders(date,id, assetid, shares_traded, price, action )
+        #
+        # flash(error)
 
-        flash(error)
-
-        return redirect(url_for('index'))
+        return render_template('order/buy.html')
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
