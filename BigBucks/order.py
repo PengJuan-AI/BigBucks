@@ -163,5 +163,5 @@ def update_orders(date,id, assetid, shares, price, action ):
 def get_stock_info():
     # 获取股票信息的逻辑代码
     symbol = request.form.get('stockname')
-    stock_info = {'stockname': get_company_name(symbol), 'price': get_live_price(symbol), 'stocksymbol': symbol}
+    stock_info = {'stockname': get_company_name(symbol), 'price': get_live_price(symbol), 'stocksymbol': symbol, 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)
