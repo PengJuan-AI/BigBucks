@@ -3,6 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
+from static_data_processor import get_company_name,get_company_shares
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
@@ -29,7 +30,7 @@ def buy():
             error = "Balance is not enough"
         else:
             buy_asset(id,assetid, balance, amount, shares_traded, shares_owned)
-            update_asset_info(assetid, shares_traded)
+            # update_asset_info(assetid, shares_traded)
             update_orders(date,id, assetid, shares_traded, price, action )
 
         flash(error)
@@ -62,7 +63,7 @@ def sell():
             error = 'Shares owned are not enough'
         else:
             sell_asset(id,assetid,balance, amount, shares_traded, shares_owned)
-            update_asset_info(assetid, -shares_traded)
+            # update_asset_info(assetid, -shares_traded)
             update_orders(date, id, assetid, shares_traded, price, action)
 
         flash(error)
@@ -92,6 +93,7 @@ def get_assetid(symbol):
 
     return id
 
+# use functions from data_processor
 def get_shares(userid, assetid):
     shares = get_db().execute(
         'SELECT shares FROM portfolio WHERE userid = ? and assetid=?', (userid, assetid)
@@ -100,6 +102,12 @@ def get_shares(userid, assetid):
         return 0
     else:
         return shares[0]
+
+def get_outstanding(symbol):
+    return get_company_shares(symbol)
+
+def get_asset_name(symbol):
+    return get_company_name(symbol)
 
 def buy_asset(userid,assetid,balance, amount, shares_traded, shares_owned):
     '''
@@ -133,6 +141,7 @@ def sell_asset(userid,assetid,balance, amount, shares_traded, shares_owned):
 
     db.commit()
 
+# unnecessary in next step
 def update_asset_info(assetid, shares_traded):
     '''
     after one asset is traded, the outstanding shares of it decrease
