@@ -77,20 +77,38 @@
         });
     });
 
-    $('#submit-btn').on('click', function() {
-        var shares = $('.spinner input').val();
-        $('#shares-input').val(shares);
-        $('form').submit();
-    });
-
     (function ($) {
-        $('.spinner .btn:first-of-type').on('click', function () {
-            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+            $('.spinner .btn:first-of-type').on('click', function () {
+                var $input = $('.spinner input');
+                var currentValue = parseInt($input.val(), 10);
+                if (currentValue >= 0 && currentValue < share_available) {
+                $input.val(currentValue + 1);
+                }
+            });
+            
+            $('.spinner .btn:last-of-type').on('click', function () {
+                var $input = $('.spinner input');
+                var currentValue = parseInt($input.val(), 10);
+                if (currentValue > 0 && currentValue <= share_available) {
+                $input.val(currentValue - 1);
+                }
+            });
+        })(jQuery);
+    
+        $('#submit-btn').on('click', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/order/buy',
+                method: 'POST',
+                data: { "symbol": stock_symbol, "time": new Date().getTime, "share": $('.spinner input')},
+                success: function(response) {
+                    alert("Your order has been successfully placed!");
+                },
+                error: function() {
+                    alert('Error occurred while placing order.');
+                }
+            });
         });
-        $('.spinner .btn:last-of-type').on('click', function () {
-            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
-        });
-    })(jQuery);
 });
 </script>
 <!--<script>
