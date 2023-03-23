@@ -18,7 +18,7 @@ def test_buy(client, auth,app):
         assert db.execute('SELECT balance from balance WHERE userid=1').fetchone()[0] == (1000000-63*120)
         # assert db.execute('SELECT shares FROM assets_info WHERE assetid = 1').fetchone()[0] == (4800000-120)
         # test if order is update
-        order = db.execute("SELECT * FROM orders WHERE date='2023-3-15' and assetid=1 and userid=1").fetchone()
+        order = db.execute("SELECT * FROM orders WHERE order_date='2023-3-15' and assetid=1 and userid=1").fetchone()
         assert order['action'] == 'buy'
         assert order['quantity'] == 120
 def test_sell(client, auth, app):
@@ -39,7 +39,7 @@ def test_sell(client, auth, app):
         assert db.execute('SELECT shares FROM portfolio WHERE userid=1 and assetid=1').fetchone()[0] == (shares_owned-100)
         assert db.execute('SELECT balance from balance WHERE userid=1').fetchone()[0] == balance+(63*100)
         # assert db.execute('SELECT shares FROM assets_info WHERE assetid = 1').fetchone()[0] == (4800000-20)
-        order = db.execute("SELECT * FROM orders WHERE date='2023-3-15' and assetid=1 and userid=1 and action='sell'").fetchone()
+        order = db.execute("SELECT * FROM orders WHERE order_date='2023-3-15' and assetid=1 and userid=1 and action='sell'").fetchone()
         assert order['quantity'] == 100
         
 def test_get_balance(client, app):

@@ -155,7 +155,7 @@ def update_asset_info(assetid, shares_traded):
 
 def update_orders(date,id, assetid, shares, price, action ):
     db = get_db()
-    db.execute('INSERT INTO orders (date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
+    db.execute('INSERT INTO orders (order_date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, assetid,shares, price, action))
     
 # test
