@@ -31,7 +31,7 @@ CREATE TABLE Assets_info (
 
 CREATE TABLE Assets_data (
   assetid INTEGER NOT NULL,
-  date DATE NOT NULL,
+  history_date DATE NOT NULL,
   open REAL NOT NULL,
   high REAL NOT NULL,
   low REAL NOT NULL,
@@ -39,12 +39,12 @@ CREATE TABLE Assets_data (
   adj_close REAL NOT NULL,
   volume BIGINT NOT NULL,
   FOREIGN KEY(assetid) REFERENCES Assets_info(assetid),
-  PRIMARY KEY(assetid, date)
+  PRIMARY KEY(assetid, history_date)
 );
 
 CREATE TABLE Orders (
   orderid INTEGER PRIMARY KEY AUTOINCREMENT,
-  date DATE NOT NULL,
+  order_date DATE NOT NULL,
   userid INTEGER NOT NULL,
   assetid INTEGER NOT NULL,
   quantity REAL NOT NULL,
