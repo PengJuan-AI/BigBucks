@@ -31,7 +31,7 @@ def add_asset(conn, symbol):
 def add_stock_data(conn, assetid, stock_data):
     c = conn.cursor()
     for row in stock_data:
-        c.execute("INSERT OR REPLACE INTO Assets_data (assetid, date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (assetid, row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
+        c.execute("INSERT OR REPLACE INTO Assets_data (assetid, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (assetid, row[0], row[1], row[2], row[3], row[4], row[5], int(row[6])))
     conn.commit()
 
 # Get company's name by its symbol from Yahoo Finance
@@ -54,34 +54,42 @@ def get_live_price(symbol):
     live_price = si.get_live_price(symbol)
     return live_price
 
-# Open database connection
-db_path = os.path.join(os.path.dirname(__file__), '2.db')
-conn = sqlite3.connect(db_path)
+# Store historical data into database
+def store_stock_data(symbol):
+    # Open database connection
+    db_path = os.path.join(os.path.dirname(__file__), 'BigBucks.db')
+    conn = sqlite3.connect(db_path)
 
-# Process each stock symbol
-symbols = ['AAPL','MSFT']
-for symbol in symbols:
+    # Add asset to Assets_info table and get its assetid
     assetid, company_name, shares_outstanding = add_asset(conn, symbol)
+
     # Set the end date as the current date
     end_date = datetime.today().strftime('%Y-%m-%d')
-    # Set the start date as one year before the end date
-    start_date = (datetime.today() - timedelta(days=365)).strftime('%Y-%m-%d')
-    # Get live data from Yahoo Finance
+    # Set the start date as five years before the end date
+    start_date = (datetime.today() - timedelta(days=365*5)).strftime('%Y-%m-%d')
+
+    # Get historical data from Yahoo Finance
     data = yf.download(symbol, start=start_date, end=end_date)
     # Select and reorder columns
     data = data[['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']]
     data.reset_index(inplace=True)
     data = data[['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']]
-    data.rename(columns={'Date': 'date', 'Open': 'open', 'High': 'high', 'Low': 'low', 'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}, inplace=True)
+    data.rename(columns={'Date': 'history_date', 'Open': 'open', 'High': 'high', 'Low': 'low', 'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}, inplace=True)
     # Convert date format to match SQLite
-    data['date'] = data['date'].dt.strftime('%Y-%m-%d')
+    data['history_date'] = data['history_date'].dt.strftime('%Y-%m-%d')
     stock_data = [tuple(x) for x in data.to_records(index=False)]
     
-    live_price = get_live_price(symbol)
-    print(live_price)
     # Add stock data to Assets_data table
-    #print(stock_data)
     add_stock_data(conn, assetid, stock_data)
 
-# Close database connection
-conn.close()
+    # Close database connection
+    conn.close()
+
+
+symbols = ['AAPL', 'MSFT']
+for symbol in symbols:
+    store_stock_data(symbol)
+    live_price = get_live_price(symbol)
+    print(live_price)
+
+    
