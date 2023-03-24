@@ -64,7 +64,7 @@
         var account_balance;
         var share_available;
 
-        $.get("/order/get_accountbalance", function(data){
+        $.get("/order/get_account_balance", function(data){
             account_balance = data.account_balance;
         })
 
@@ -105,13 +105,14 @@
             }
         });
     
-        $('#submit-btn').on('click', function(event) {
+        $('#submit-btn').on('submit', function(event) {
             event.preventDefault();
             $.ajax({
                 url: '/order/buy',
                 method: 'POST',
-                data: { "symbol": stock_symbol, "date": new Date().getTime, "share": $('.spinner input'), "action": "buy"},
-                success: function(response) {
+                // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
+                data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input').val(), "action": "buy"},
+                success: function(event) {
                     alert("Your order has been successfully placed!");
                 },
                 error: function() {
@@ -121,14 +122,4 @@
         });
 });
 </script>
-<!--<script>
-window.onload = function() {
-    var top_li = document.getElementById("topnavbar").getElementsByTagName("li");
-    for(var i= 0;i<tab_li.length;i++){
-        tab_li[i].classList.remove("active");
-    }
-    var thisli = document.getElementById("buy");
-    thisli.setAttribute("class","active");
-}
-</script>-->
 {% endblock %}

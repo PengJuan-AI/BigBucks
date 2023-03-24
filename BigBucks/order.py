@@ -9,7 +9,7 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 
 
 # buy
-@bp.route('/buy', methods=('POST'))
+@bp.route('/buy', methods=('GET','POST'))
 @login_required
 def buy():
     id = g.user['userid']
@@ -21,26 +21,26 @@ def buy():
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
-        balance = get_balance(id)
+        balance = get_balance().json['account_balance']
         amount = price*shares_traded
         assetid = get_assetid(symbol)
         shares_owned = get_shares(id, assetid)
 
         # check balance
         if balance< amount:
-            error = "Balance is not enough"
+            return jsonify({'message': "You don't have enough money"})
         else:
             buy_asset(id,assetid, balance, amount, shares_traded, shares_owned)
             # update_asset_info(assetid, shares_traded)
-            update_orders(date,id, assetid, shares_traded, price, action )
+            update_orders(date,id, assetid, shares_traded, price, action)
         
         flash(error)
 
-        return render_template('order/buy.html')
+        # return render_template('order/buy.html')
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
-        info['balance'] = get_balance(info['userid'])
+        info['balance'] = get_balance().json['account_balance']
             
     return render_template('order/buy.html', info=info)
 # 'order/buy/apple'
@@ -56,7 +56,7 @@ def sell():
         action = request.form['action']
         error = None
         amount = price*shares_traded
-        balance = get_balance(id)
+        balance = get_balance().json['account_balance']
         assetid = get_assetid(symbol)
         shares_owned = get_shares(id, assetid)
 
@@ -73,19 +73,20 @@ def sell():
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
-        info['balance'] = get_balance(info['userid'])
+        info['balance'] = get_balance().json['account_balance']
         portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,)).fetchall()
 
     return render_template('order/sell.html', info=info, portfolio=portfolio)
 
 
 # Get balance
-def get_balance(id):
-    balance = get_db().execute(
-        'SELECT balance FROM Balance WHERE userid = ?',(id,)
-    ).fetchone()[0]
+
+# def get_balance(id):
+#     balance = get_db().execute(
+#         'SELECT balance FROM Balance WHERE userid = ?',(id,)
+#     ).fetchone()[0]
     
-    return balance
+#     return balance
 
 def get_assetid(symbol):
     id = get_db().execute(
@@ -167,27 +168,19 @@ def get_stock_info():
     return jsonify(stock_info)
 
 @bp.route('/get_portfolio', methods=['GET'])
-def get_user_stocks():
-    user_id = g.user['userid']
-    assets = get_portfolio_by_id(user_id)
-    # TODO
-    if not assets:
-        return jsonify({'message': 'No stocks found for user with ID ' + str(user_id)})
-    return jsonify(assets)
-
-@bp.route('/get_portfolio', methods=['GET'])
-def get_user_stocks(user_id):
+def get_portfolio():
     user_id = g.user['userid']
     db = get_db()
-    rows = db.execute("SELECT assetid, shares FROM stock WHERE user_id=:user_id", user_id=user_id).fetchall()
+    rows = db.execute("SELECT p.assetid, p.shares, a.symbol, a.name FROM Portfolio p JOIN Assets_info a ON p.assetid = a.assetid WHERE p.user_id=:user_id", user_id=user_id).fetchall()
     if not rows:
         return jsonify({'message': 'No stocks found for user with ID ' + str(user_id)})
-    stocks = [{'assetid': row[0], 'name': row[1], 'symbol': row[2], 'price': row[3], 'quantity': row[4]} for row in rows]
+    stocks = [{'assetid': row[0], 'shares': row[1], 'symbol': row[2], 'name': row[3], 'price': get_live_price(row[2])} for row in rows]
     return jsonify({'stocks': stocks})
 
 # Get balance
 @bp.route('/get_account_balance', methods=['GET'])
-def get_balance(id):
+def get_balance():
+    id = g.user['userid']
     balance = get_db().execute(
         'SELECT balance FROM Balance WHERE userid = ?',(id,)
     ).fetchone()[0]
