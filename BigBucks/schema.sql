@@ -50,7 +50,7 @@ CREATE TABLE Orders (
   quantity REAL NOT NULL,
   price REAL NOT NULL,
   action TEXT NOT NULL,
-  FOREIGN KEY(userid) REFERENCES user(userid),
+  FOREIGN KEY(userid) REFERENCES user(userid)
 );
 
 CREATE TABLE Balance (
