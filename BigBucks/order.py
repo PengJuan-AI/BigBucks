@@ -162,7 +162,34 @@ def update_orders(date,id, symbol, shares, price, action ):
     db = get_db()
     db.execute('INSERT INTO orders (order_date, userid, symbol, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, symbol,shares, price, action))
-    
+
+# def update_asset_info(assetid, shares_traded):
+#     '''
+#     after one asset is traded, the outstanding shares of it decrease
+#     '''
+#     db = get_db()
+#     outstanding = db.execute('SELECT shares FROM assets_info WHERE assetid=?', (assetid,)).fetchone()[0]
+#     db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
+#                (outstanding-shares_traded, assetid)
+#     )
+#
+#
+# def update_orders(date,id, assetid, shares, price, action ):
+#     db = get_db()
+#     db.execute('INSERT INTO orders (order_date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
+#                (date, id, assetid,shares, price, action))
+
+# query user's transaction records
+@bp.route('/transaction',methods=('GET','POST'))
+def transaction():
+    id = g.user['userid']
+    info = {}
+    info['userid'] = id
+    info['balance'] = get_balance(info['userid'])
+    db = get_db()
+    txn_record = db.execute("SELECT * FROM Orders WHERE userid=?",(id,)).fetchall()
+    return render_template('order/transaction.html', info=info, txn_record=txn_record)
+
 # test
 @bp.route('/get_stock_info', methods=['POST'])
 def get_stock_info():
