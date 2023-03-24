@@ -1,0 +1,48 @@
+{%  extends 'base2.html' %}
+
+{% block title %}Transaction{% endblock %}
+
+{% block main_body %}
+<style>
+.middle-table{
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+</style>    
+<div class="row">
+    <div class="col-md-8 middle-table">
+        <div class="box box-warning">
+            <div class="box-header with-border">
+            <h3 class="box-title">Transaction History</h3>
+            </div>
+            <div class="box-body table-responsive no-padding">
+            <form>
+                <table class="table table-dark">
+                    <tr>
+                        <th>Transaction Date</th>
+                        <th>Asset Symbol</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for record in txn_record %}
+                    <tr>
+                        <td>{{ record[1] }}</td>
+                        <td>{{ record[3] }}</td>
+                        <td>{{ record[4] }}</td>
+                        <td>{{ record[5] }}</td>
+                        <td>{{ record[6] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+</script>
+{% endblock %}

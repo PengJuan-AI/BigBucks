@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/order.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/templates/order/buy.html" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/templates/order/buy.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/templates/base2.html" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/templates/base2.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +44,13 @@
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.HTML" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings>
+        <option name="useSoftWraps" value="true" />
+      </console-settings>
+    </option>
   </component>
   <component name="RunManager" selected="Python.get_asset_data_from_Yahoo">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
