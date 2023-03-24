@@ -61,12 +61,8 @@
 <script>
     $(document).ready(function() {
         var selectedStock = null;
-        var account_balance;
+        var account_balance = {{ info['balance'] }};
         var share_available;
-
-        $.get("/order/get_account_balance", function(data){
-            account_balance = data.account_balance;
-        })
 
         $('#search').on('submit', function(event) {
             event.preventDefault();
@@ -76,12 +72,12 @@
                 method: 'POST',
                 data: { "stockname": stockname },
                 success: function(response) {
-                    share_available = parseInt(account_balance / response.price, 10);
+                    share_available = parseInt( account_balance / response.price, 10);
                     $('#search').find("tr").eq(1).find('td').eq(0).text(response.stockname);
                     $('#search').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
                     $('#search').find("tr").eq(1).find('td').eq(2).text(response.price);
                     $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
-                    selectedStock = JSON.stringify(response);
+                    selectedStock = response.stocksymbol;
                 },
                 error: function() {
                     alert('Error occurred while getting stock info');
@@ -105,13 +101,13 @@
             }
         });
     
-        $('#submit-btn').on('submit', function(event) {
+        $('#submit').on('submit', function(event) {
             event.preventDefault();
             $.ajax({
                 url: '/order/buy',
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input').val(), "action": "buy"},
+                data: { "symbol": selectedStock, "date": new Date().getTime(), "share": $('.spinner input').val(), "action": "buy"},
                 success: function(event) {
                     alert("Your order has been successfully placed!");
                 },
