@@ -1,0 +1,37 @@
+{%  extends 'base2.html' %}
+
+{% block title %}Transaction{% endblock %}
+
+{% block main_body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+            <h3 class="box-title">Transaction History</h3>
+            </div>
+            <div class="box-body table-responsive no-padding">
+            <form action="#" method="POST">
+                <table class="table table-dark">
+                    <tr>
+                        <th></th>
+                        <th>Userid</th>
+                        <th>Assetid</th>
+                        <th>Shares</th>
+                    </tr>
+                    {% for asset in portfolio %}
+                    <tr>
+                        <td><input type="checkbox" onclick="checkOne()" value="{{ asset[1] }}" name="checkone"></td>
+                        <td>{{ asset[0] }}</td>
+                        <td>{{ asset[1] }}</td>
+                        <td>{{ asset[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+</script>
+{% endblock %}
