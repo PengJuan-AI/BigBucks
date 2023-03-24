@@ -18,8 +18,8 @@
             </form>
             </div>
             <div class="box-body table-responsive no-padding">
-            <form action="#" method="POST">
-                <table class="table table-dark">
+            <!-- <form action="#" method="POST"> -->
+                <!-- <table class="table table-dark">
                     <div style="margin-bottom:10px">
                         <a href="#" class="btn btn-warning input-sm">Select All</a>
                     </div>
@@ -37,11 +37,12 @@
                         <td>{{ asset[2] }}</td>
                         <td>
                             <a type="button" href="#" onclick="pass_shares({{ asset[2] }})" class="btn btn-success btn-xs">Sell</a>
+                            <a type="button" href="#" onclick="" class="btn btn-success btn-xs">Sell</a>
                         </td>
                     </tr>
                     {% endfor %}
-                </table>
-            </form>
+                </table> -->
+            <!-- </form> -->
             </div>
         </div>
     </div>
@@ -65,7 +66,7 @@
                     <div class="container" style="font-size:20px;color:deepskyblue">
                         <p id="shares"><strong>Shares Available: 0 </strong></p>
                     </div>
-                    <div class="container"><button type="submit" class="btn btn-primary">Confirm Transaction</button></div>
+                    <div class="container"><button type="submit" class="btn btn-primary" id="submit">Confirm Transaction</button></div>
                 </form>
                 </div>
             </div>
@@ -73,21 +74,73 @@
     </div>
 </div>
 <script>
-    (function ($) {
-        $('.spinner .btn:first-of-type').on('click', function () {
-            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+    $(document).ready(function() {
+    var selectedAsset = null;
+    var account_balance;
+
+    $.get("order/get_portfolio", function(portfolio) {
+        var table = $("<table/>").addClass("table table-dark"); // 创建一个table元素
+        var header = $("<tr/>"); // 创建表头
+        $("<th/>").appendTo(header);
+        $("<th/>").text("Userid").appendTo(header);
+        $("<th/>").text("Assetid").appendTo(header);
+        $("<th/>").text("Shares").appendTo(header);
+        $("<th/>").appendTo(header); // 创建空的操作列
+        header.appendTo(table);
+        $.each(portfolio, function(i, asset) { // 遍历portfolio中的每个股票
+            var row = $("<tr/>"); // 创建一行
+            $("<td/>").html('<input type="checkbox" onclick="checkOne()" value="' + asset.assetid + '" name="checkone">').appendTo(row); // 创建一个checkbox列
+            $("<td/>").text(asset.userid).appendTo(row);
+            $("<td/>").text(asset.assetid).appendTo(row);
+            $("<td/>").text(asset.shares).appendTo(row);
+            $("<td/>").html('<a type="button" href="#" onclick="selectOne(' + JSON.stringify(asset) + ')" class="btn btn-success btn-xs">Sell</a>').appendTo(row); // 创建一个操作列
+            row.appendTo(table);
         });
-        $('.spinner .btn:last-of-type').on('click', function () {
-            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
+        table.appendTo($(".box-body table-responsive no-padding")); // 将table添加到页面中
+    });
+
+    $.get("order/get_account_balance", function(data){
+        account_balance = data.account_balance;
+    })
+
+    function selectOne(asset) {
+        selectedAsset = asset;
+        $("#price").html('<strong>Current Price: <i class="fa fa-dollar"></i>' + selectedAsset.price + '</strong>');
+        $("#shares").html('<strong>Shares Available: ' + parseInt(account_balance / selectedAsset.price, 10) + '</strong>');
+    }
+
+    $('.spinner .btn:first-of-type').on('click', function () {
+        var $input = $('.spinner input');
+        var currentValue = parseInt($input.val(), 10);
+        var share_available = parseInt(account_balance / selectedAsset.price, 10);
+        if (currentValue >= 0 && currentValue < share_available) {
+        $input.val(currentValue + 1);
+        }
+    });
+        
+    $('.spinner .btn:last-of-type').on('click', function () {
+        var $input = $('.spinner input');
+        var currentValue = parseInt($input.val(), 10);
+        var share_available = parseInt(account_balance / selectedAsset.price, 10);
+        if (currentValue > 0 && currentValue <= share_available) {
+        $input.val(currentValue - 1);
+        }
+    });
+
+    $('#submit').on('click', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/order/sell',
+                method: 'POST',
+                data: { "symbol": stock_symbol, "time": new Date().getTime, "share": $('.spinner input')},
+                success: function(response) {
+                    alert("Your order has been successfully placed!");
+                },
+                error: function() {
+                    alert('Error occurred while placing order.');
+                }
+            });
         });
-    })(jQuery);
-    function checkOne(){
-        var one = document.getElementsByName("checkone");
-        one.checked=true;
-    }
-    function pass_shares(shares){
-        var p = document.getElementById('shares');
-        p.textContent = "Shares Available: " + shares;
-    }
+});
 </script>
 {% endblock %}

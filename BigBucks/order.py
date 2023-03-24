@@ -3,19 +3,21 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
+from .live_data_processor import get_company_name,get_company_shares, get_live_price
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
 
 # buy
-@bp.route('/buy', methods=('GET','POST'))
+@bp.route('/buy', methods=('POST'))
 @login_required
 def buy():
     id = g.user['userid']
     if request.method == 'POST':
+        print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
-        price = float(request.form['price'])
+        price = get_live_price(symbol)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -29,12 +31,12 @@ def buy():
             error = "Balance is not enough"
         else:
             buy_asset(id,assetid, balance, amount, shares_traded, shares_owned)
-            update_asset_info(assetid, shares_traded)
+            # update_asset_info(assetid, shares_traded)
             update_orders(date,id, assetid, shares_traded, price, action )
-
+        
         flash(error)
 
-        return redirect(url_for('index'))
+        return render_template('order/buy.html')
     elif request.method == 'GET': #GET
         info = {}
         info['userid'] = id
@@ -62,7 +64,7 @@ def sell():
             error = 'Shares owned are not enough'
         else:
             sell_asset(id,assetid,balance, amount, shares_traded, shares_owned)
-            update_asset_info(assetid, -shares_traded)
+            # update_asset_info(assetid, -shares_traded)
             update_orders(date, id, assetid, shares_traded, price, action)
 
         flash(error)
@@ -92,6 +94,7 @@ def get_assetid(symbol):
 
     return id
 
+# use functions from data_processor
 def get_shares(userid, assetid):
     shares = get_db().execute(
         'SELECT shares FROM portfolio WHERE userid = ? and assetid=?', (userid, assetid)
@@ -100,6 +103,12 @@ def get_shares(userid, assetid):
         return 0
     else:
         return shares[0]
+
+def get_outstanding(symbol):
+    return get_company_shares(symbol)
+
+def get_asset_name(symbol):
+    return get_company_name(symbol)
 
 def buy_asset(userid,assetid,balance, amount, shares_traded, shares_owned):
     '''
@@ -133,6 +142,7 @@ def sell_asset(userid,assetid,balance, amount, shares_traded, shares_owned):
 
     db.commit()
 
+# unnecessary in next step
 def update_asset_info(assetid, shares_traded):
     '''
     after one asset is traded, the outstanding shares of it decrease
@@ -146,13 +156,40 @@ def update_asset_info(assetid, shares_traded):
 
 def update_orders(date,id, assetid, shares, price, action ):
     db = get_db()
-    db.execute('INSERT INTO orders (date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
+    db.execute('INSERT INTO orders (order_date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, assetid,shares, price, action))
     
-# test
 @bp.route('/get_stock_info', methods=['POST'])
 def get_stock_info():
     # 获取股票信息的逻辑代码
-    stock_name = request.form.get('stockname')
-    stock_info = {'stockname': stock_name, 'price': 100.0, 'stocksymbol': 'ABC'}
+    symbol = request.form.get('stockname')
+    stock_info = {'stockname': get_company_name(symbol), 'price': get_live_price(symbol), 'stocksymbol': symbol, 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)
+
+@bp.route('/get_portfolio', methods=['GET'])
+def get_user_stocks():
+    user_id = g.user['userid']
+    assets = get_portfolio_by_id(user_id)
+    # TODO
+    if not assets:
+        return jsonify({'message': 'No stocks found for user with ID ' + str(user_id)})
+    return jsonify(assets)
+
+@bp.route('/get_portfolio', methods=['GET'])
+def get_user_stocks(user_id):
+    user_id = g.user['userid']
+    db = get_db()
+    rows = db.execute("SELECT assetid, shares FROM stock WHERE user_id=:user_id", user_id=user_id).fetchall()
+    if not rows:
+        return jsonify({'message': 'No stocks found for user with ID ' + str(user_id)})
+    stocks = [{'assetid': row[0], 'name': row[1], 'symbol': row[2], 'price': row[3], 'quantity': row[4]} for row in rows]
+    return jsonify({'stocks': stocks})
+
+# Get balance
+@bp.route('/get_account_balance', methods=['GET'])
+def get_balance(id):
+    balance = get_db().execute(
+        'SELECT balance FROM Balance WHERE userid = ?',(id,)
+    ).fetchone()[0]
+    
+    return jsonify({'account_balance': balance})

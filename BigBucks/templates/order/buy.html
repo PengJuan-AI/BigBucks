@@ -43,7 +43,7 @@
             <form id="submit">
                 <h4 style="margin-left:20px">Shares</h4>
                     <div class="input-group spinner">
-                    <input type="text" class="form-control" value="1" id="shares-input">
+                    <input type="text" class="form-control" value="100" id="shares-input">
                         <div class="input-group-btn-vertical">
                         <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
                         <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
@@ -60,13 +60,14 @@
 </div>
 <script>
     $(document).ready(function() {
-        var stock_price = 1;
-        var account_balance = 1000;
-        var share_available = 0;
-        var stock_symbol;
-        // $.get('/order/get_account_balance',function(data,status){
-        //     account_balance = data.account_balance;
-        // });
+        var selectedStock = null;
+        var account_balance;
+        var share_available;
+
+        $.get("/order/get_accountbalance", function(data){
+            account_balance = data.account_balance;
+        })
+
         $('#search').on('submit', function(event) {
             event.preventDefault();
             stockname = $('input[name="search_name"]').val();
@@ -75,13 +76,12 @@
                 method: 'POST',
                 data: { "stockname": stockname },
                 success: function(response) {
-                    stock_price = response.price;
-                    share_available = parseInt(account_balance / stock_price);
-                    stock_symbol = response.stocksymbol;
+                    share_available = parseInt(account_balance / response.price, 10);
                     $('#search').find("tr").eq(1).find('td').eq(0).text(response.stockname);
                     $('#search').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
                     $('#search').find("tr").eq(1).find('td').eq(2).text(response.price);
                     $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
+                    selectedStock = JSON.stringify(response);
                 },
                 error: function() {
                     alert('Error occurred while getting stock info');
@@ -89,36 +89,28 @@
             });
         });
 
-        $('#submit-btn').on('click', function() {
-            var shares = $('.spinner input').val();
-            $('#shares-input').val(shares);
-            $('form').submit();
+        $('.spinner .btn:first-of-type').on('click', function () {
+            var $input = $('.spinner input');
+            var currentValue = parseInt($input.val(), 10);
+            if (currentValue >= 100 && currentValue < share_available) {
+            $input.val(currentValue + 1);
+            }
         });
-
-        (function ($) {
-            $('.spinner .btn:first-of-type').on('click', function () {
-                var $input = $('.spinner input');
-                var currentValue = parseInt($input.val(), 10);
-                if (currentValue >= 0 && currentValue < share_available) {
-                $input.val(currentValue + 1);
-                }
-            });
-            
-            $('.spinner .btn:last-of-type').on('click', function () {
-                var $input = $('.spinner input');
-                var currentValue = parseInt($input.val(), 10);
-                if (currentValue > 0 && currentValue <= share_available) {
-                $input.val(currentValue - 1);
-                }
-            });
-        })(jQuery);
+        
+        $('.spinner .btn:last-of-type').on('click', function () {
+            var $input = $('.spinner input');
+            var currentValue = parseInt($input.val(), 10);
+            if (currentValue > 100 && currentValue <= share_available) {
+            $input.val(currentValue - 1);
+            }
+        });
     
-        $('#search').on('submit', function(event) {
+        $('#submit-btn').on('click', function(event) {
             event.preventDefault();
             $.ajax({
                 url: '/order/buy',
                 method: 'POST',
-                data: { "symbol": stock_symbol, "time": new Date().getTime, "share": $('.spinner input')},
+                data: { "symbol": stock_symbol, "date": new Date().getTime, "share": $('.spinner input'), "action": "buy"},
                 success: function(response) {
                     alert("Your order has been successfully placed!");
                 },
