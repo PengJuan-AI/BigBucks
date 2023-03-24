@@ -88,11 +88,50 @@ def store_stock_data(symbol):
     # Close database connection
     conn.close()
 
-# test
-# symbols = ['AAPL', 'MSFT']
-# for symbol in symbols:
-#     store_stock_data(symbol)
-#     live_price = get_live_price(symbol)
-#     print(live_price)
 
-    
+def get_symbol_by_name(company_name):
+    # construct the URL to retrieve the stock symbol for the given company name
+    encoded_company_name = quote(company_name)
+    url = f'https://query2.finance.yahoo.com/v1/finance/search?q={encoded_company_name}&quotesCount=1&newsCount=0'
+
+    # send an HTTP GET request to the URL and retrieve the response content
+    response = urllib.request.urlopen(url)
+    content = response.read()
+
+    # parse the response content from JSON format into a Python dictionary
+    data = json.loads(content.decode('utf8'))
+
+    # extract the stock symbol from the data dictionary and return it
+    return data['quotes'][0]['symbol']
+
+def get_live_price_by_name(company_name):
+    symbol = get_symbol_by_name(company_name)
+    live_price = round(si.get_live_price(symbol), 2)
+    return live_price
+
+
+def get_company_shares_by_name(company_name):
+    symbol = get_symbol_by_name(company_name)
+    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
+    content = response.read()
+    data = json.loads(content.decode('utf8'))
+    shares_outstanding = data['quoteSummary']['result'][0]['defaultKeyStatistics']['sharesOutstanding']['raw']
+    return shares_outstanding
+
+
+'''
+#test
+symbols = ['AAPL', 'MSFT']
+for symbol in symbols:
+    store_stock_data(symbol)
+    live_price = get_live_price(symbol)
+    print(live_price)
+
+company_name = 'microsof'
+s = get_company_shares_by_name(company_name)
+p = get_live_price_by_name(company_name)
+b = get_symbol_by_name(company_name)
+print(s)
+print(p)
+print(b)   
+'''
