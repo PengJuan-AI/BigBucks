@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{% block title %}{% endblock %} - BigBucks - Trading</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/font-awesome/css/font-awesome.min.css') }}">
+  <link rel="stylesheet"
+    href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet"
+    href="{{ url_for('static', filename='bower_components/font-awesome/css/font-awesome.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/Ionicons/css/ionicons.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skins/skin-yellow.min.css') }}">
@@ -21,103 +24,134 @@
   <script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
 
 </head>
+
 <body>
-<style>
-.spinner{
-    width:100px;
-}
-.spinner input{
-    text-align:right;
-}
-.input-group-btn-vertical{
-    position:relative;
-    white-space:nowrap;
-    width:1%;
-    vertical-align:middle;
-    display:table-cell;
-}
-.input-group-btn-vertical > .btn {
-    display:block;
-    float:none;
-    width:100%;
-    max-width:100%;
-    padding:8px;
-    margin-left:-1px;
-    position:relative;
-    border-radius:0;
-}
-.input-group-btn-vertical > .btn:first-child {
-    border-top-right-radius: 4px;
-}
-.input-group-btn-vertical > .btn:last-child {
-    margin-top: -2px;
-    border-bottom-right-radius: 4px;
-}
-.input-group-btn-vertical i{
-    position: absolute;
-    top: 0;
-    left: 4px;
-}
-</style>
-<!-- Main Header -->
-<header>
+  <style>
+    .spinner {
+      width: 100px;
+    }
+
+    .spinner input {
+      text-align: right;
+    }
+
+    .input-group-btn-vertical {
+      position: relative;
+      white-space: nowrap;
+      width: 1%;
+      vertical-align: middle;
+      display: table-cell;
+    }
+
+    .input-group-btn-vertical>.btn {
+      display: block;
+      float: none;
+      width: 100%;
+      max-width: 100%;
+      padding: 8px;
+      margin-left: -1px;
+      position: relative;
+      border-radius: 0;
+    }
+
+    .input-group-btn-vertical>.btn:first-child {
+      border-top-right-radius: 4px;
+    }
+
+    .input-group-btn-vertical>.btn:last-child {
+      margin-top: -2px;
+      border-bottom-right-radius: 4px;
+    }
+
+    .input-group-btn-vertical i {
+      position: absolute;
+      top: 0;
+      left: 4px;
+    }
+
+    .self-active {
+      background-color:gainsboro;
+    }
+  </style>
+  <!-- Main Header -->
+  <header>
     <nav class="navbar navbar-light navbar-static-top" style="background-color: #f59e00;">
       <div class="container-fluid">
 
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><strong><span style="color:antiquewhite;font-size:30px;font-family:Georgia">BigBucks</span></strong></a>
+          <a class="navbar-brand" href="#"><strong><span
+                style="color:antiquewhite;font-size:30px;font-family:Georgia">BigBucks</span></strong></a>
         </div>
 
         <div id="topnavbar" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-              <li id="home" style="font-size:18px"><a href="{{ url_for('index') }}"><span style="color:black">Home</span></a></li>
-              <li id="buy" style="font-size:18px"><a href="{{ url_for('order.buy') }}"><span style="color:black">Buy</span></a></li>
-              <li id="sell" style="font-size:18px"><a href="{{ url_for('order.sell') }}"><span style="color:black">Sell</span></a></li>
+            <li id="home" style="font-size:18px"><a href="{{ url_for('index') }}"><span
+                  style="color:black">Home</span></a></li>
+            <li id="buy" style="font-size:18px"><a href="{{ url_for('order.buy') }}"><span
+                  style="color:black">Buy</span></a></li>
+            <li id="sell" style="font-size:18px"><a href="{{ url_for('order.sell') }}"><span
+                  style="color:black">Sell</span></a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <!--<li style="font-size:20px"><a href="#"><strong><span style="color:white"><i class="fa fa-dollar"></i> Balance: {{ balance }}</span></strong></a></li>-->
-          <li class="dropdown user user-menu" style="font-size:15px">
-            <!-- Menu Toggle Button -->
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-image" alt="User Image">
-              <span style="color:black">{{ session.user_name }}</span>
-              <span class="caret" style="color:black"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="user-header">
-                <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
-                <p>
+            <li class="dropdown user user-menu" style="font-size:15px">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-image" alt="User Image">
+                <span style="color:black">{{ session.user_name }}</span>
+                <span class="caret" style="color:black"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="user-header">
+                  <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
+                  <p>
                     <small style="color:black;font-size:15px">Welcome, {{ session.user_name }}</small>
-                    <span style="color:orange;font-size:20px"><strong>Current Balance: <i class="fa fa-dollar"></i> {{ info.balance }}</strong></span>
-                </p>
-              </li>
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Account Settings</a>
-                </div>
-                <div class="pull-right">
-                  <a href="{{ url_for('auth.logout') }}" class="btn btn-default btn-flat">Log Out</a>
-                </div>
-              </li>
-            </ul>
-          </li>
+                    <span style="color:orange;font-size:20px"><strong>Current Balance: <i class="fa fa-dollar"></i> {{
+                        info.balance }}</strong></span>
+                  </p>
+                </li>
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="#" class="btn btn-default btn-flat">Account Settings</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-default btn-flat">Log Out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
     </nav>
-</header>
+    <script>
+      $(function(){
+        $('.navbar-nav li:not(.user-footer) > a').on('click',function(){
+          var $parent=$(this).parent().addClass('self-active');
+          $parent.siblings().removeClass('self-active').find('li').removeClass('self-active');
+        });
+        $('.navbar-nav a').each(function(){
+          if(this.href === window.location.href){
+            $(this).parent().addClass('self-active');
+          }
+        });
+      });
+    </script>
+  </header>
 
   <!--specific pages-->
   <div class="container-fluid">
-     {% block main_body %}
-     {% endblock %}
+    {% block main_body %}
+    {% endblock %}
   </div>
 
 </body>
+
 </html>

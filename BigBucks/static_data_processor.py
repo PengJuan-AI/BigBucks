@@ -57,17 +57,17 @@ def get_company_shares(symbol):
     return shares_outstanding
 
 # Open database connection
-db_path = os.path.join(os.path.dirname(__file__), 'BigBucks.db')
-conn = sqlite3.connect(db_path)
-
-# Process each CSV file in the stockdata directory
-for filename in os.listdir('static/stockdata'):
-    if not filename.endswith('.csv'):
-        continue
-    symbol = filename[:-4]  # Remove '.csv' extension
-    assetid, company_name, shares_outstanding = add_asset(conn, symbol)
-    stock_data = read_stock_data(filename)
-    add_stock_data(conn, assetid, stock_data)
-
-# Close database connection
-conn.close()
+# db_path = os.path.join(os.path.dirname(__file__), 'BigBucks.db')
+# conn = sqlite3.connect(db_path)
+#
+# # Process each CSV file in the stockdata directory
+# for filename in os.listdir('static/stockdata'):
+#     if not filename.endswith('.csv'):
+#         continue
+#     symbol = filename[:-4]  # Remove '.csv' extension
+#     assetid, company_name, shares_outstanding = add_asset(conn, symbol)
+#     stock_data = read_stock_data(filename)
+#     add_stock_data(conn, assetid, stock_data)
+#
+# # Close database connection
+# conn.close()
