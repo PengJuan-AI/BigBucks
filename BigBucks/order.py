@@ -13,6 +13,10 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 @login_required
 def buy():
     id = g.user['userid']
+    info = {}
+    info['userid'] = id
+    info['balance'] = get_balance(info['userid'])
+
     if request.method == 'POST':
         print("In post")
         print(request.form)
@@ -38,14 +42,11 @@ def buy():
 
         flash(error)
 
-        return True
+        return info
     
     elif request.method == 'GET': #GET
-        info = {}
-        info['userid'] = id
-        info['balance'] = get_balance(info['userid'])
-            
-    return render_template('order/buy.html', info=info)
+        return render_template('order/buy.html', info=info)
+
 # 'order/buy/apple'
 # sell
 @bp.route('/sell',methods=('GET','POST'))
