@@ -15,22 +15,22 @@ CREATE TABLE user (
 
 CREATE TABLE Portfolio (
   userid INTEGER NOT NULL,
-  assetid INTEGER NOT NULL,
+  symbol INTEGER NOT NULL,
   shares BIGINT NOT NULL,
   FOREIGN KEY(userid) REFERENCES user(userid),
-  FOREIGN KEY(assetid) REFERENCES Assets_info(assetid),
-  PRIMARY KEY(userid, assetid)
+--   FOREIGN KEY(symbol) REFERENCES Assets_info(symbol),
+  PRIMARY KEY(userid, symbol)
 );
 
-CREATE TABLE Assets_info (
-  assetid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-  symbol TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  shares BIGINT NOT NULL
-);
+-- CREATE TABLE Assets_info (
+--   assetid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+--   symbol TEXT UNIQUE NOT NULL,
+--   name TEXT NOT NULL,
+--   shares BIGINT NOT NULL
+-- );
 
 CREATE TABLE Assets_data (
-  assetid INTEGER NOT NULL,
+  symbol INTEGER NOT NULL,
   history_date DATE NOT NULL,
   open REAL NOT NULL,
   high REAL NOT NULL,
@@ -38,20 +38,19 @@ CREATE TABLE Assets_data (
   close REAL NOT NULL,
   adj_close REAL NOT NULL,
   volume BIGINT NOT NULL,
-  FOREIGN KEY(assetid) REFERENCES Assets_info(assetid),
-  PRIMARY KEY(assetid, history_date)
+--   FOREIGN KEY(assetid) REFERENCES Assets_info(assetid),
+  PRIMARY KEY(symbol, history_date)
 );
 
 CREATE TABLE Orders (
   orderid INTEGER PRIMARY KEY AUTOINCREMENT,
   order_date DATE NOT NULL,
   userid INTEGER NOT NULL,
-  assetid INTEGER NOT NULL,
+  symbol INTEGER NOT NULL,
   quantity REAL NOT NULL,
   price REAL NOT NULL,
   action TEXT NOT NULL,
   FOREIGN KEY(userid) REFERENCES user(userid),
-  FOREIGN KEY(assetid) REFERENCES Assets_info(assetid)
 );
 
 CREATE TABLE Balance (
