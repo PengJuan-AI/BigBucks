@@ -158,6 +158,14 @@ def update_orders(date,id, assetid, shares, price, action ):
     db = get_db()
     db.execute('INSERT INTO orders (order_date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, assetid,shares, price, action))
+
+# query user's transaction records
+@bp.route('/transaction',methods=('GET','POST'))
+def show_transaction():
+    userid = g.user['userid']
+    db = get_db()
+    txn_record = db.execute("SELECT * FROM Orders WHERE userid=?",(userid,)).fetchall()
+    return render_template('order/transaction.html',txn_record)
     
 # test
 @bp.route('/get_stock_info', methods=['POST'])
