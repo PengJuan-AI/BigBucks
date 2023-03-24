@@ -164,11 +164,14 @@ def update_orders(date,id, assetid, shares, price, action ):
 
 # query user's transaction records
 @bp.route('/transaction',methods=('GET','POST'))
-def show_transaction():
-    userid = g.user['userid']
+def transaction():
+    id = g.user['userid']
+    info = {}
+    info['userid'] = id
+    info['balance'] = get_balance(info['userid'])
     db = get_db()
-    txn_record = db.execute("SELECT * FROM Orders WHERE userid=?",(userid,)).fetchall()
-    return render_template('order/transaction.html',txn_record)
+    txn_record = db.execute("SELECT * FROM Orders WHERE userid=?",(id,)).fetchall()
+    return render_template('order/transaction.html', info=info, txn_record=txn_record)
     
 # test
 @bp.route('/get_stock_info', methods=['POST'])
