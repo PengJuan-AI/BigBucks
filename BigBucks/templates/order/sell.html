@@ -63,7 +63,7 @@
                             </div>
                         </div>
                     <div class="container" style="font-size:20px;color:deepskyblue">
-                        <p id="shares"><strong>Shares Available: 0 </strong></p>
+                        <p id="shares">Shares Available: 0 </p>
                     </div>
                     <div class="container"><button type="submit" class="btn btn-primary">Confirm Transaction</button></div>
                 </form>
@@ -87,7 +87,7 @@
     }
     function pass_shares(shares){
         var p = document.getElementById('shares');
-        p.textContent = "<strong>Shares Available: " + shares + " </strong>";
+        p.textContent = "Shares Available: " + shares;
     }
 </script>
 {% endblock %}
