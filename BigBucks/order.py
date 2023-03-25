@@ -55,7 +55,7 @@ def sell():
     if request.method=='POST':
         symbol = request.form['symbol']
         date = request.form['date']
-        price = float(request.form['price'])
+        price = get_live_price(symbol)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
