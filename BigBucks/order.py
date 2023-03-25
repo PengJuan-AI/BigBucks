@@ -55,7 +55,7 @@ def sell():
     if request.method=='POST':
         symbol = request.form['symbol']
         date = request.form['date']
-        price = float(request.form['price'])
+        price = get_live_price(symbol)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -80,7 +80,12 @@ def sell():
         info['balance'] = get_balance(info['userid'])
         portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,)).fetchall()
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio)
+        price = []
+        for asset in portfolio:
+            current_price = get_live_price(asset['symbol'])
+            price.append(current_price)
+
+    return render_template('order/sell.html', info=info, portfolio=portfolio, price = price)
 
 
 # Get balance
@@ -162,6 +167,7 @@ def update_orders(date,id, symbol, shares, price, action ):
     db = get_db()
     db.execute('INSERT INTO orders (order_date, userid, symbol, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, symbol,shares, price, action))
+    db.commit()
 
 # def update_asset_info(assetid, shares_traded):
 #     '''
@@ -186,8 +192,9 @@ def transaction():
     info = {}
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
-    db = get_db()
-    txn_record = db.execute("SELECT * FROM Orders WHERE userid=?",(id,)).fetchall()
+    txn_record =  get_db().execute('SELECT * FROM orders WHERE userid=?',(id,)).fetchall()
+    print(txn_record)
+    print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
 
 # test

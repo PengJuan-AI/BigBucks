@@ -61,7 +61,7 @@
 <script>
     $(document).ready(function() {
         var selectedStock = null;
-        var account_balance = {{ info['balance'] }};
+        var account_balance = {{ info['balance']}};
         var share_available;
 
         $('#search').on('submit', function(event) {
@@ -107,7 +107,7 @@
                 url: '/order/buy',
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                data: { "symbol": selectedStock, "date": new Date().getTime(), "share": $('.spinner input').val(), "action": "buy"},
+                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy"},
                 success: function(event) {
                     alert("Your order has been successfully placed!");
                 },
