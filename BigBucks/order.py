@@ -96,13 +96,6 @@ def get_balance(id):
     
     return balance
 
-# def get_assetid(symbol):
-#     id = get_db().execute(
-#         'SELECT assetid FROM Assets_info WHERE symbol = ?', (symbol,)
-#     ).fetchone()[0]
-# 
-#     return id
-
 # use functions from data_processor
 def get_shares(userid, symbol):
     shares = get_db().execute(
@@ -142,8 +135,11 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
     db = get_db()
-    
-    db.execute("UPDATE portfolio SET shares=? WHERE symbol=? and userid=?",
+
+    if shares_traded==shares_owned:
+        db.execute("DELETE FROM portfolio WHERE symbol=? and userid=?", (symbol, userid))
+    else:
+        db.execute("UPDATE portfolio SET shares=? WHERE symbol=? and userid=?",
                (shares_owned-shares_traded, symbol, userid) )
 
     # Deduct amount from user's balance
@@ -161,7 +157,6 @@ def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
 #     db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
 #                (outstanding-shares_traded, assetid)
 #     )
-
 
 def update_orders(date,id, symbol, shares, price, action ):
     db = get_db()
