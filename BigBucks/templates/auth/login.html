@@ -28,7 +28,9 @@
               <div class="text-center mb-5">
               <h3>Login to <strong>BigBucks</strong></h3>
 
-              <!-- <p class="login-box-msg" style="color:red">{{ info }}</p> -->
+              {% if error %}
+              <p class="login-box-msg" style="color:red">{{ error }}</p>
+              {% endif %}
 
               </div>
               <form action="{{ url_for('auth.login') }}" method="post">

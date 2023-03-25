@@ -162,6 +162,7 @@ def update_orders(date,id, symbol, shares, price, action ):
     db = get_db()
     db.execute('INSERT INTO orders (order_date, userid, symbol, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, symbol,shares, price, action))
+    db.commit()
 
 # def update_asset_info(assetid, shares_traded):
 #     '''
@@ -186,8 +187,9 @@ def transaction():
     info = {}
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
-    db = get_db()
-    txn_record = db.execute("SELECT * FROM Orders WHERE userid=?",(id,)).fetchall()
+    txn_record =  get_db().execute('SELECT * FROM orders WHERE userid=?',(id,)).fetchall()
+    print(txn_record)
+    print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
 
 # test
