@@ -58,6 +58,8 @@
         </div>
     </div>
 </div>
+<!--<script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>-->
+<!--<script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>-->
 <script>
     $(document).ready(function() {
         var selectedStock = null;
@@ -89,7 +91,7 @@
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
             if (currentValue >= 100 && currentValue < share_available) {
-            $input.val(currentValue + 1);
+            $input.val(currentValue + 100);
             }
         });
         
@@ -97,7 +99,7 @@
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
             if (currentValue > 100 && currentValue <= share_available) {
-            $input.val(currentValue - 1);
+            $input.val(currentValue - 100);
             }
         });
     
