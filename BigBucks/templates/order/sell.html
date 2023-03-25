@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     <div class="container" style="font-size:20px;color:deepskyblue">
-                        <p id="shares"><strong>Shares Available: 0 </strong></p>
+                        <p id="shares">Shares Available: 0 </p>
                     </div>
                     <div class="container"><button type="submit" class="btn btn-primary">Confirm Transaction</button></div>
                 </form>
@@ -98,6 +98,7 @@
         var one = document.getElementsByName("checkone");
         one.checked=true;
     }
+<<<<<<< HEAD
     function pass_shares(symbol, shares, price){
         var s = document.getElementById('shares');
         s.innerHTML = "<strong> Shares Available: " + shares + "</strong>";
@@ -105,6 +106,11 @@
         p.innerHTML = '<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>';
         selectedStock = symbol;
         share_available = shares;
+=======
+    function pass_shares(shares){
+        var p = document.getElementById('shares');
+        p.textContent = "Shares Available: " + shares;
+>>>>>>> templates
     }
     $('#submit').on('submit', function(event) {
             event.preventDefault();
