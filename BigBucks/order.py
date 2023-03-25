@@ -80,7 +80,12 @@ def sell():
         info['balance'] = get_balance(info['userid'])
         portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,)).fetchall()
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio)
+        price = []
+        for asset in portfolio:
+            current_price = get_live_price(asset['symbol'])
+            price.append(current_price)
+
+    return render_template('order/sell.html', info=info, portfolio=portfolio, price = price)
 
 
 # Get balance
