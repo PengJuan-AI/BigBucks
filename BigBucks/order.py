@@ -111,6 +111,10 @@ def get_outstanding(symbol):
 
 def get_asset_name(symbol):
     return get_company_name(symbol)
+def get_asset_value(symbol,userid):
+    return get_db().execute(
+        "SELECT value FROM portfolio WHERE userid = ? and symbol=?", (userid, symbol)
+    ).fetchone()[0]
 
 def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     '''
@@ -119,12 +123,13 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     db = get_db()
     # if the asset is not in portfolio, insert into portfolio, else update shares of the asset in portfolio
     if shares_owned == 0:
-        db.execute("INSERT INTO portfolio (userid, symbol, shares) VALUES (?,?,?)",
-                   (userid, symbol, shares_traded)
+        db.execute("INSERT INTO portfolio (userid, symbol, shares, value) VALUES (?,?,?,?)",
+                   (userid, symbol, shares_traded, amount)
                    )
     else:
-        db.execute("UPDATE portfolio SET shares=? WHERE symbol=? and userid=?",
-                   (shares_owned+shares_traded, symbol, userid)
+        value = get_asset_value(symbol, userid)
+        db.execute("UPDATE portfolio SET shares=? and value=? WHERE symbol=? and userid=?",
+                   (shares_owned+shares_traded, value+amount, symbol, userid, )
                    )
     
     # Deduct amount from user's balance
@@ -139,8 +144,9 @@ def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     if shares_traded==shares_owned:
         db.execute("DELETE FROM portfolio WHERE symbol=? and userid=?", (symbol, userid))
     else:
-        db.execute("UPDATE portfolio SET shares=? WHERE symbol=? and userid=?",
-               (shares_owned-shares_traded, symbol, userid) )
+        value = get_asset_value(symbol, userid)
+        db.execute("UPDATE portfolio SET shares=? and value=? WHERE symbol=? and userid=?",
+               (shares_owned-shares_traded, value-amount, symbol, userid) )
 
     # Deduct amount from user's balance
     db.execute("UPDATE balance SET balance=? WHERE userid=?", (balance + amount, userid))

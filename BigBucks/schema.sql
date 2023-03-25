@@ -17,6 +17,7 @@ CREATE TABLE Portfolio (
   userid INTEGER NOT NULL,
   symbol INTEGER NOT NULL,
   shares BIGINT NOT NULL,
+  value DECIMAL(16,2) NOT NULL,
   FOREIGN KEY(userid) REFERENCES user(userid),
 --   FOREIGN KEY(symbol) REFERENCES Assets_info(symbol),
   PRIMARY KEY(userid, symbol)
