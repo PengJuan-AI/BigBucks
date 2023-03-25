@@ -83,10 +83,7 @@ def sell():
             update_orders(date, id, symbol, shares_traded, price, action)
 
         flash(error)
-        return redirect(url_for('index'))
-
-    # elif request.method == 'GET': #GET
-
+        # return redirect(url_for('index'))
 
     return render_template('order/sell.html', info=info, portfolio=portfolio, value=value)
 
