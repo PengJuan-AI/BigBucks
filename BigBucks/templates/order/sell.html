@@ -26,9 +26,9 @@
                     <tr>
                         <th></th>
                         <th>Userid</th>
-                        <th>Assetid</th>
+                        <th>Symbol</th>
                         <th>Shares</th>
-                        <th>Price</th>
+                        <th>Proportion</th>
                     </tr>
                     {% for asset in portfolio %}
                     <tr>
@@ -36,9 +36,9 @@
                         <td>{{ asset[0] }}</td>
                         <td>{{ asset[1] }}</td>
                         <td>{{ asset[2] }}</td>
-                        <td>{{ price[loop.index0] }}</td>
+                        <td>{{ value[loop.index0] }}</td>
                         <td>
-                            <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ price[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a>
+                            <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ value[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a>
                         </td>
                     </tr>
                     {% endfor %}

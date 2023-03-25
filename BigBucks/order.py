@@ -52,6 +52,17 @@ def buy():
 @bp.route('/sell',methods=('GET','POST'))
 def sell():
     id = g.user['userid']
+    # get user basic infomation
+    info = {}
+    info['userid'] = id
+    info['balance'] = get_balance(info['userid'])
+    portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
+
+    value = []
+    for asset in portfolio:
+        current_value = get_asset_value(asset['symbol'], id)
+        value.append(current_value)
+
     if request.method=='POST':
         symbol = request.form['symbol']
         date = request.form['date']
@@ -74,18 +85,10 @@ def sell():
         flash(error)
         return redirect(url_for('index'))
 
-    elif request.method == 'GET': #GET
-        info = {}
-        info['userid'] = id
-        info['balance'] = get_balance(info['userid'])
-        portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?',(id,)).fetchall()
+    # elif request.method == 'GET': #GET
 
-        price = []
-        for asset in portfolio:
-            current_price = get_live_price(asset['symbol'])
-            price.append(current_price)
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio, price = price)
+    return render_template('order/sell.html', info=info, portfolio=portfolio, value=value)
 
 
 # Get balance
@@ -111,6 +114,7 @@ def get_outstanding(symbol):
 
 def get_asset_name(symbol):
     return get_company_name(symbol)
+
 def get_asset_value(symbol,userid):
     return get_db().execute(
         "SELECT value FROM portfolio WHERE userid = ? and symbol=?", (userid, symbol)
