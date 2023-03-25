@@ -81,6 +81,7 @@ def register():
                 return redirect(url_for("auth.login")) #zt62; Follow the SRP principle; The login function is separated with this method
 
         flash(error)
+        session.clear()
         return render_template("auth/register.html",error=error)
 
     return render_template("auth/register.html")
@@ -111,6 +112,7 @@ def login():
             return redirect(url_for("index"))
 
         flash(error)
+        session.clear()
         return render_template("auth/login.html",error=error)
 
     return render_template("auth/login.html")

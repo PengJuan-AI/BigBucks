@@ -5,6 +5,7 @@ import json
 import yfinance as yf
 from datetime import datetime, timedelta
 from yahoo_fin import stock_info as si
+from urllib.parse import quote
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -106,16 +107,13 @@ def get_symbol_by_name(company_name):
 
 def get_live_price_by_name(company_name):
     symbol = get_symbol_by_name(company_name)
-    live_price = round(si.get_live_price(symbol), 2)
+    live_price = get_live_price(symbol)
     return live_price
 
 
 def get_company_shares_by_name(company_name):
     symbol = get_symbol_by_name(company_name)
-    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
-    content = response.read()
-    data = json.loads(content.decode('utf8'))
-    shares_outstanding = data['quoteSummary']['result'][0]['defaultKeyStatistics']['sharesOutstanding']['raw']
+    shares_outstanding = get_company_shares(symbol)
     return shares_outstanding
 
 

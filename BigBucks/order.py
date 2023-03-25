@@ -194,7 +194,7 @@ def transaction():
     info = {}
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
-    txn_record =  get_db().execute('SELECT * FROM orders WHERE userid=?',(id,)).fetchall()
+    txn_record = get_db().execute('SELECT * FROM orders WHERE userid=?',(id,)).fetchall()
     print(txn_record)
     print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
