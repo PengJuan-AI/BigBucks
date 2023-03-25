@@ -56,9 +56,9 @@ def register():
         error = None
 
         if not username:
-            error = "Username is required." #zt62; Violate the OCP principle; If we want to change the error message, we must change the inside method
+            error = "Username is required" #zt62; Violate the OCP principle; If we want to change the error message, we must change the inside method
         elif not password:
-            error = "Password is required."
+            error = "Password is required"
 
         if error is None:
             try:
@@ -75,12 +75,13 @@ def register():
             except db.IntegrityError:
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
-                error = f"User {username} is already registered." #zt62; Violate the OCP principle; If we want to change the error message, we must change the inside method. This is a common situation in this example.
+                error = f"User {username} is already registered!" #zt62; Violate the OCP principle; If we want to change the error message, we must change the inside method. This is a common situation in this example.
             else:
                 # Success, go to the login page.
                 return redirect(url_for("auth.login")) #zt62; Follow the SRP principle; The login function is separated with this method
 
         flash(error)
+        return render_template("auth/register.html",error=error)
 
     return render_template("auth/register.html")
 
@@ -98,9 +99,9 @@ def login():
         ).fetchone()
 
         if user is None:
-            error = "Incorrect username."
+            error = "Incorrect username!"
         elif not check_password_hash(user["password"], password):
-            error = "Incorrect password."
+            error = "Incorrect password!"
 
         if error is None:
             # store the user id in a new session and return to the index
@@ -110,6 +111,7 @@ def login():
             return redirect(url_for("index"))
 
         flash(error)
+        return render_template("auth/login.html",error=error)
 
     return render_template("auth/login.html")
 
