@@ -29,7 +29,6 @@ def buy():
         error = None
         balance = get_balance(id)
         amount = price*shares_traded
-        # assetid = get_assetid(symbol)
         shares_owned = get_shares(id, symbol)
 
         # check balance
@@ -37,13 +36,13 @@ def buy():
             error = "Balance is not enough"
         else:
             buy_asset(id,symbol, balance, amount, shares_traded, shares_owned)
-            # update_asset_info(assetid, shares_traded)
             update_orders(date,id, symbol, shares_traded, price, action )
 
         flash(error)
 
-        return info
-    
+        # return info
+        return render_template('order/buy.html', info=info)
+
     elif request.method == 'GET': #GET
         return render_template('order/buy.html', info=info)
 
@@ -72,14 +71,12 @@ def sell():
         error = None
         amount = price*shares_traded
         balance = get_balance(id)
-        # assetid = get_assetid(symbol)
         shares_owned = get_shares(id, symbol)
 
         if shares_traded>shares_owned:
             error = 'Shares owned are not enough'
         else:
             sell_asset(id,symbol,balance, amount, shares_traded, shares_owned)
-            # update_asset_info(assetid, -shares_traded)
             update_orders(date, id, symbol, shares_traded, price, action)
 
         flash(error)
