@@ -43,12 +43,13 @@
             <form id="submit">
                 <h4 style="margin-left:20px">Shares</h4>
                     <div class="input-group spinner">
-                    <input type="text" class="form-control" value="100" id="shares-input">
+                        <input type="text" class="form-control" value="100" id="shares-input">
                         <div class="input-group-btn-vertical">
-                        <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                        <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                            <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                            <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
                         </div>
                     </div>
+                <small class="text-success" style="color: red;" id="input_error">Please select a stock</small>
                 <div class="container" style="font-size:20px;color:forestgreen"><p id="share-available"><strong>Shares Available: {{ shares }}</strong></p></div>
                 <div class="container"><button type="submit" class="btn btn-success" id="submit-btn">Confirm Transation</button></div>
 <!--                {% for message in get_flashed_messages() %}-->
@@ -83,6 +84,7 @@
                     $('#search').find("tr").eq(1).find('td').eq(2).text(response.price);
                     $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
                     selectedStock = response.stocksymbol;
+                    $('#input_error').hide();
                 },
                 error: function() {
                     alert('Error occurred while getting stock info');
@@ -93,8 +95,11 @@
         $('.spinner .btn:first-of-type').on('click', function () {
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
-            if (currentValue >= 100 && currentValue < share_available) {
-            $input.val(currentValue + 100);
+            if (currentValue >= 100 && currentValue < share_available - 100) {
+                $input.val(currentValue + 100);
+                $('#input_error').hide();
+            }else {
+                $('#input_error').show().text('Max limit reached');
             }
         });
         
@@ -103,23 +108,31 @@
             var currentValue = parseInt($input.val(), 10);
             if (currentValue > 100 && currentValue <= share_available) {
             $input.val(currentValue - 100);
+            $('#input_error').hide();
+            } else {
+                console.log(currentValue);
+                $('#input_error').show().text('Min limit reached');
             }
         });
     
         $('#submit').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: '/order/buy',
-                method: 'POST',
-                // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy"},
-                success: function(event) {
-                    alert("Your order has been successfully placed!");
-                },
-                error: function() {
-                    alert('Error occurred while placing order.');
-                }
-            });
+            if($('.spinner input').val() >= 100 || $('.spinner input').val() <= share_available){
+                event.preventDefault();
+                $.ajax({
+                    url: '/order/buy',
+                    method: 'POST',
+                    // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
+                    data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy"},
+                    success: function(event) {
+                        alert("Your order has been successfully placed!");
+                    },
+                    error: function() {
+                        alert('Error occurred while placing order.');
+                    }
+                });
+            } else {
+                alert("Please enter a valid input!")
+            }
         });
 });
 </script>
