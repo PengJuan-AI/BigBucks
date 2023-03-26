@@ -15,16 +15,23 @@ ssl._create_default_https_context = ssl._create_unverified_context
 def get_company_name(symbol):
     response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v1/finance/search?q={symbol}')
     content = response.read()
-    company_name = json.loads(content.decode('utf8'))['quotes'][0]['shortname']
-    return company_name
+    data = json.loads(content.decode('utf8')) 
+    if 'shortname' in data['quotes'][0]:
+        company_name = data['quotes'][0]['shortname']
+        return company_name
+    else:
+        return None
 
 # Get company's outstanding shares by its symbol from Yahoo Finance
 def get_company_shares(symbol):
     response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
     content = response.read()
     data = json.loads(content.decode('utf8'))
-    shares_outstanding = data['quoteSummary']['result'][0]['defaultKeyStatistics']['sharesOutstanding']['raw']
-    return shares_outstanding
+    if 'sharesOutstanding' in data['quoteSummary']['result'][0]['defaultKeyStatistics']:
+        shares_outstanding = data['quoteSummary']['result'][0]['defaultKeyStatistics']['sharesOutstanding']['raw']
+        return shares_outstanding
+    else:
+        return None
 
 # Get live price of a stock by its symbol from Yahoo Finance
 def get_live_price(symbol):
