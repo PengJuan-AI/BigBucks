@@ -13,6 +13,7 @@
         <option value="Flask Main" />
         <option value="HTML File" />
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>

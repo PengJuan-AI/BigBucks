@@ -98,7 +98,6 @@
         var one = document.getElementsByName("checkone");
         one.checked=true;
     }
-<<<<<<< HEAD
     function pass_shares(symbol, shares, price){
         var s = document.getElementById('shares');
         s.innerHTML = "<strong> Shares Available: " + shares + "</strong>";
@@ -106,11 +105,11 @@
         p.innerHTML = '<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>';
         selectedStock = symbol;
         share_available = shares;
-=======
-    function pass_shares(shares){
-        var p = document.getElementById('shares');
-        p.textContent = "Shares Available: " + shares;
->>>>>>> templates
+// =======
+//     function pass_shares(shares){
+//         var p = document.getElementById('shares');
+//         p.textContent = "Shares Available: " + shares;
+// >>>>>>> templates
     }
     $('#submit').on('submit', function(event) {
             event.preventDefault();
