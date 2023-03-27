@@ -18,7 +18,7 @@ def buy():
     info['balance'] = get_balance(info['userid'])
 
     if request.method == 'POST':
-        print("In post")
+        print("In buy:")
         print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
@@ -57,12 +57,14 @@ def sell():
     info['balance'] = get_balance(info['userid'])
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
 
-    value = []
+    price = []
     for asset in portfolio:
-        current_value = get_asset_value(asset['symbol'], id)
-        value.append(current_value)
+        current_price = get_live_price(asset['symbol'])
+        price.append(current_price)
 
     if request.method=='POST':
+        print("In sell")
+        print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
         price = get_live_price(symbol)
@@ -75,6 +77,7 @@ def sell():
 
         if shares_traded>shares_owned:
             error = 'Shares owned are not enough'
+            print(error)
         else:
             sell_asset(id,symbol,balance, amount, shares_traded, shares_owned)
             update_orders(date, id, symbol, shares_traded, price, action)
@@ -82,7 +85,7 @@ def sell():
         flash(error)
         # return redirect(url_for('index'))
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio, value=value)
+    return render_template('order/sell.html', info=info, portfolio=portfolio, price=price)
 
 
 # Get balance
@@ -90,7 +93,6 @@ def get_balance(id):
     balance = get_db().execute(
         'SELECT balance FROM Balance WHERE userid = ?',(id,)
     ).fetchone()[0]
-    
     return balance
 
 # use functions from data_processor
@@ -126,7 +128,7 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
                    )
     else:
         value = get_asset_value(symbol, userid)
-        db.execute("UPDATE portfolio SET shares=? and value=? WHERE symbol=? and userid=?",
+        db.execute("UPDATE portfolio SET shares=?, value=? WHERE symbol=? and userid=?",
                    (shares_owned+shares_traded, value+amount, symbol, userid, )
                    )
     
@@ -137,30 +139,23 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
         
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
+    print("Share owned: ", shares_owned)
+    print("Shares traded: ", shares_traded)
+
     db = get_db()
 
     if shares_traded==shares_owned:
         db.execute("DELETE FROM portfolio WHERE symbol=? and userid=?", (symbol, userid))
     else:
         value = get_asset_value(symbol, userid)
-        db.execute("UPDATE portfolio SET shares=? and value=? WHERE symbol=? and userid=?",
+        db.execute("UPDATE portfolio SET shares=?, value=? WHERE symbol=? and userid=?",
                (shares_owned-shares_traded, value-amount, symbol, userid) )
-
+        shares = db.execute("SELECT shares from portfolio WHERE symbol=? and userid=?",(symbol, userid)).fetchone()[0]
+        print(shares)
     # Deduct amount from user's balance
     db.execute("UPDATE balance SET balance=? WHERE userid=?", (balance + amount, userid))
 
     db.commit()
-
-# unnecessary in next step
-# def update_asset_info(assetid, shares_traded):
-#     '''
-#     after one asset is traded, the outstanding shares of it decrease
-#     '''
-#     db = get_db()
-#     outstanding = db.execute('SELECT shares FROM assets_info WHERE assetid=?', (assetid,)).fetchone()[0]
-#     db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
-#                (outstanding-shares_traded, assetid)
-#     )
 
 def update_orders(date,id, symbol, shares, price, action ):
     db = get_db()
@@ -192,8 +187,8 @@ def transaction():
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
     txn_record = get_db().execute('SELECT * FROM orders WHERE userid=?',(id,)).fetchall()
-    print(txn_record)
-    print(type(txn_record))
+    # print(txn_record)
+    # print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
 
 # test

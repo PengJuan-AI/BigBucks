@@ -7,8 +7,5 @@ VALUES
 INSERT INTO balance (balance)
 VALUES (1000000);
 
-INSERT into Assets_info (symbol, name, shares)
-VALUES ('AAPL','apple',4800000),('TSLA','tesla',3500000);
-
-INSERT into Assets_data (assetid, history_date, open, high, low, close, adj_close, volume)
-VALUES (1, '2023-3-15', 63, 65, 62, 63, 63.5, 1200000),(2,'2023-3-15', 51, 55, 51,52,52.5,1000000);
+INSERT into Assets_data (symbol, history_date, open, high, low, close, adj_close, volume)
+VALUES ('AAPL', '2023-3-15', 63, 65, 62, 63, 63.5, 1200000),(2,'2023-3-15', 51, 55, 51,52,52.5,1000000);
