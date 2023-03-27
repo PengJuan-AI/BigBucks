@@ -18,7 +18,7 @@ def buy():
     info['balance'] = get_balance(info['userid'])
 
     if request.method == 'POST':
-        print("In post")
+        print("In buy:")
         print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
@@ -63,6 +63,8 @@ def sell():
         value.append(current_value)
 
     if request.method=='POST':
+        print("In sell")
+        print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
         price = get_live_price(symbol)
@@ -151,17 +153,6 @@ def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
 
     db.commit()
 
-# unnecessary in next step
-# def update_asset_info(assetid, shares_traded):
-#     '''
-#     after one asset is traded, the outstanding shares of it decrease
-#     '''
-#     db = get_db()
-#     outstanding = db.execute('SELECT shares FROM assets_info WHERE assetid=?', (assetid,)).fetchone()[0]
-#     db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
-#                (outstanding-shares_traded, assetid)
-#     )
-
 def update_orders(date,id, symbol, shares, price, action ):
     db = get_db()
     db.execute('INSERT INTO orders (order_date, userid, symbol, quantity, price, action) VALUES (?,?,?,?,?,?)',
@@ -192,8 +183,8 @@ def transaction():
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
     txn_record = get_db().execute('SELECT * FROM orders WHERE userid=?',(id,)).fetchall()
-    print(txn_record)
-    print(type(txn_record))
+    # print(txn_record)
+    # print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
 
 # test
