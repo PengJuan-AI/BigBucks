@@ -25,3 +25,11 @@ def portfolio():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     return render_template('portfolio.html',portfolio=portfolio)
+
+@bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
+def get_hist_data(symbol):
+    db = get_db()
+
+    hist = db.execute("SELECT close FROM assets_data, history_date WHERE symbol=?",(symbol,)).fetchall()
+
+    return hist
