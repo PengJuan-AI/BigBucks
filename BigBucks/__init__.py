@@ -36,4 +36,7 @@ def create_app(test_config=None):
     from . import order
     app.register_blueprint(order.bp)
 
+    from . import analysis
+    app.register_blueprint(analysis.bp)
+
     return app

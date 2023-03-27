@@ -124,11 +124,14 @@
             </a>
             <ul class="treeview-menu" id="subsidebar">
               <li id="analysis"><a href="#"><i class="fa fa-circle-o"></i><span>Return & Volatility</span></a></li>
-              <li id="analysis"><a href="#"><i class="fa fa-circle-o"></i><span>Efficient Frontier</span></a></li>
-              <li id="analysis"><a href="#"><i class="fa fa-circle-o"></i><span>Market</span></a></li>
+              <li id="analysis"><a href="{{ url_for('analysis.ef') }}"><i class="fa fa-circle-o"></i><span>Efficient
+                    Frontier</span></a></li>
+              <li id="analysis"><a href="{{ url_for('analysis.market') }}"><i
+                    class="fa fa-circle-o"></i><span>Market</span></a></li>
             </ul>
           </li>
-          <li id="portfolio"><a href="#"><i class="fa fa-pie-chart"></i> <span>Portfolio</span></a></li>
+          <li id="portfolio"><a href="{{ url_for('analysis.portfolio') }}"><i class="fa fa-pie-chart"></i>
+              <span>Portfolio</span></a></li>
         </ul>
         <script>
           // window.onload = function () {
@@ -173,6 +176,14 @@
         </script>
       </section>
     </aside>
+
+    <style>
+      .middle-box {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+    </style>
 
     <!-- specific pages -->
     <div class="content-wrapper">
