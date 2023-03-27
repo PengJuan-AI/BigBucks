@@ -3,7 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from .live_data_processor import get_company_name,get_company_shares, get_live_price
+from .live_data_processor import get_company_name,get_company_shares, get_live_price, store_historical_data
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
@@ -136,6 +136,9 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     db.execute("UPDATE balance SET balance=? WHERE userid=?",(balance-amount, userid))
     
     db.commit()
+
+    # add historical data of this asset
+    update_asset_data(symbol)
         
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
@@ -162,6 +165,14 @@ def update_orders(date,id, symbol, shares, price, action ):
     db.execute('INSERT INTO orders (order_date, userid, symbol, quantity, price, action) VALUES (?,?,?,?,?,?)',
                (date, id, symbol,shares, price, action))
     db.commit()
+
+def update_asset_data(symbol):
+    db = get_db()
+
+    asset = db.execute("SELECT * FROM assets_data WHERE symbol=?", (symbol,)).fetchone()
+
+    if asset is None:
+        store_historical_data(symbol)
 
 # def update_asset_info(assetid, shares_traded):
 #     '''

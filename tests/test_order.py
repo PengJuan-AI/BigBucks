@@ -1,7 +1,7 @@
 import pytest
 from flask import g, session
 from BigBucks.db import get_db
-from BigBucks.order import get_balance, buy_asset, get_company_name,get_company_shares
+from BigBucks.order import get_balance, buy_asset, get_company_name,get_company_shares,update_asset_data
 from live_data_processor import get_live_price
 
 def test_buy(client, auth,app):
@@ -26,6 +26,9 @@ def test_buy(client, auth,app):
         order = db.execute("SELECT * FROM orders WHERE order_date='2023-3-27' and symbol='AAPL' and userid=1").fetchone()
         assert order['action'] == 'buy'
         assert order['quantity'] == 100
+        # test if asset data is inserted
+        asset = db.execute("SELECT close, history_date date FROM assets_data WHERE symbol=? Order BY history_date DESC",(symbol,)).fetchone()
+        assert asset is not None
 
 def test_sell(client, auth, app):
     auth.login()
