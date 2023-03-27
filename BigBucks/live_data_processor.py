@@ -38,6 +38,30 @@ def get_live_price(symbol):
     live_price = round(si.get_live_price(symbol),2)
     return live_price
 
+# Get the sector of a company by its symbol from Yahoo Finance
+def get_company_sector(symbol):
+    url = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile"
+    with urllib.request.urlopen(url) as response:
+        data = json.loads(response.read().decode())
+    if 'quoteSummary' in data and 'result' in data['quoteSummary'] and \
+            data['quoteSummary']['result'][0]['assetProfile'] and 'sector' in data['quoteSummary']['result'][0]['assetProfile']:
+        sector = data['quoteSummary']['result'][0]['assetProfile']['sector']
+        return sector
+    else:
+        return None
+
+# Get the industry of a company by its symbol from Yahoo Finance    
+def get_company_industry(symbol):
+    url = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile"
+    with urllib.request.urlopen(url) as response:
+        data = json.loads(response.read().decode())
+    if 'quoteSummary' in data and 'result' in data['quoteSummary'] and \
+            data['quoteSummary']['result'][0]['assetProfile'] and 'industry' in data['quoteSummary']['result'][0]['assetProfile']:
+        industry = data['quoteSummary']['result'][0]['assetProfile']['industry']
+        return industry
+    else:
+        return None
+
 # Store historical data into database
 def store_historical_data(symbol):
     end_date = datetime.today().strftime('%Y-%m-%d')
@@ -94,6 +118,16 @@ def get_company_shares_by_name(company_name):
 def store_data_by_name(company_name):
     symbol = get_symbol_by_name(company_name)
     store_historical_data(symbol)
+
+def get_sector_by_name(company_name):
+    symbol = get_symbol_by_name(company_name)
+    sector = get_company_sector(symbol)
+    return sector
+
+def get_industry_by_name(company_name):
+    symbol = get_symbol_by_name(company_name)
+    industry = get_company_industry(symbol)
+    return industry
 
 '''
 #test
