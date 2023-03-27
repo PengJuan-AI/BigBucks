@@ -59,7 +59,7 @@ def sell():
 
     value = []
     for asset in portfolio:
-        current_value = get_asset_value(asset['symbol'], id)
+        current_value = get_live_price(asset['symbol'])
         value.append(current_value)
 
     if request.method=='POST':
