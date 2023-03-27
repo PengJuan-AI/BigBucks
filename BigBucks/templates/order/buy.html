@@ -87,7 +87,7 @@
                     $('#input_error').hide();
                 },
                 error: function() {
-                    alert('Error occurred while getting stock info');
+                    alert('Please enter correct symbol!');
                 }
             });
         });
@@ -116,7 +116,7 @@
         });
     
         $('#submit').on('submit', function(event) {
-            if($('.spinner input').val() >= 100 || $('.spinner input').val() <= share_available){
+            if($('.spinner input').val() >= 100 && $('.spinner input').val() <= share_available){
                 event.preventDefault();
                 $.ajax({
                     url: '/order/buy',
