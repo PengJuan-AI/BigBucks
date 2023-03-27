@@ -57,10 +57,10 @@ def sell():
     info['balance'] = get_balance(info['userid'])
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
 
-    value = []
+    price = []
     for asset in portfolio:
-        current_value = get_live_price(asset['symbol'])
-        value.append(current_value)
+        current_price = get_live_price(asset['symbol'])
+        price.append(current_price)
 
     if request.method=='POST':
         print("In sell")
@@ -77,6 +77,7 @@ def sell():
 
         if shares_traded>shares_owned:
             error = 'Shares owned are not enough'
+            print(error)
         else:
             sell_asset(id,symbol,balance, amount, shares_traded, shares_owned)
             update_orders(date, id, symbol, shares_traded, price, action)
@@ -84,7 +85,7 @@ def sell():
         flash(error)
         # return redirect(url_for('index'))
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio, value=value)
+    return render_template('order/sell.html', info=info, portfolio=portfolio, price=price)
 
 
 # Get balance
@@ -139,6 +140,9 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
         
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
+    print("Share owned: ", shares_owned)
+    print("Shares traded: ", shares_traded)
+
     db = get_db()
 
     if shares_traded==shares_owned:
