@@ -16,4 +16,7 @@ Challenges:
 4.	currently learning Bootstrap
 5.	The visual effects of some events were not as expected, and it took time to fix them
 6.	Errors occurred when writing some jQuery functions
+7.  Bugs appear when combining all our works
+8.  Have to change database during developement and found out coupling problem
+9. Lack of proficiency of using git
 
