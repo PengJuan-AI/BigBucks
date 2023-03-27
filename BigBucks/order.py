@@ -93,7 +93,6 @@ def get_balance(id):
     balance = get_db().execute(
         'SELECT balance FROM Balance WHERE userid = ?',(id,)
     ).fetchone()[0]
-    
     return balance
 
 # use functions from data_processor
@@ -129,7 +128,7 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
                    )
     else:
         value = get_asset_value(symbol, userid)
-        db.execute("UPDATE portfolio SET shares=? and value=? WHERE symbol=? and userid=?",
+        db.execute("UPDATE portfolio SET shares=?, value=? WHERE symbol=? and userid=?",
                    (shares_owned+shares_traded, value+amount, symbol, userid, )
                    )
     
@@ -149,9 +148,10 @@ def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
         db.execute("DELETE FROM portfolio WHERE symbol=? and userid=?", (symbol, userid))
     else:
         value = get_asset_value(symbol, userid)
-        db.execute("UPDATE portfolio SET shares=? and value=? WHERE symbol=? and userid=?",
+        db.execute("UPDATE portfolio SET shares=?, value=? WHERE symbol=? and userid=?",
                (shares_owned-shares_traded, value-amount, symbol, userid) )
-
+        shares = db.execute("SELECT shares from portfolio WHERE symbol=? and userid=?",(symbol, userid)).fetchone()[0]
+        print(shares)
     # Deduct amount from user's balance
     db.execute("UPDATE balance SET balance=? WHERE userid=?", (balance + amount, userid))
 
