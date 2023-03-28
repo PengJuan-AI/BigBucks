@@ -43,7 +43,7 @@ def store_historical_data(symbol):
     end_date = datetime.today().strftime('%Y-%m-%d')
     start_date = (datetime.today() - timedelta(days=5*365)).strftime('%Y-%m-%d')
     stock_data = yf.download(symbol, start=start_date, end=end_date)
-
+    print('enddate: ', end_date)
     db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'BigBucks.db'))
     conn = sqlite3.connect(db_path)
     

@@ -142,8 +142,6 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
         
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
-    print("Share owned: ", shares_owned)
-    print("Shares traded: ", shares_traded)
 
     db = get_db()
 
@@ -167,10 +165,11 @@ def update_orders(date,id, symbol, shares, price, action ):
     db.commit()
 
 def update_asset_data(symbol):
+    print("In update asset data")
     db = get_db()
 
     asset = db.execute("SELECT * FROM assets_data WHERE symbol=?", (symbol,)).fetchone()
-
+    print("This asset is ", asset)
     if asset is None:
         store_historical_data(symbol)
 

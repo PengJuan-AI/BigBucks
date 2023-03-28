@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/test_portfolio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/BigBucks.db" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/BigBucks.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/live_data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/live_data_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BigBucks/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_portfolio.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_portfolio.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,6 +161,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/GroupProject$get_asset_data_from_Yahoo.coverage" NAME="get_asset_data_from_Yahoo Coverage Results" MODIFIED="1679367513466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BigBucks" />
+    <SUITE FILE_PATH="coverage/GroupProject$get_asset_data_from_Yahoo.coverage" NAME="get_asset_data_from_Yahoo Coverage Results" MODIFIED="1679955197967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BigBucks" />
   </component>
 </project>
