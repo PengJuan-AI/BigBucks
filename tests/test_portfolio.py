@@ -13,9 +13,9 @@ def test_get_hist_data(client, auth, app):
     with app.app_context():
         client.post('/order/buy',
                     data={'symbol': symbol, 'date': '2023-3-27', 'price': price, 'share': 100, 'action': 'buy'})
+        
+        response =  client.post('analysis/portfolio/AAPL') 
+        print(response.data)
 
-        # data = get_hist_data('AAPL')
-        assert client.post('analysis/portfolio/AAPL').status_code == 200
-        #data = get_db().execute("SELECT close, history_date FROM assets_data Where symbol=?"
-
-
+        assert response.status_code == 200
+        assert b'{"date"' in response.data
