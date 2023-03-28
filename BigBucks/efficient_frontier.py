@@ -9,7 +9,29 @@ Draw efficient frontier line
 '''
 import pandas as pd
 import numpy as np
-from Parse_data import parse_data
+# from Parse_data import parse_data
+from BigBucks.db import get_db
+from Packages.get_weights import get_portfolio_weights
+
+# each stock's return and volatility
+def return_volatility(symbol):
+    db = get_db()
+    data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=?",(symbol,)).fetchall())
+    
+    print(data.tail(5))
+    p1 = data.iloc[1:, :]
+    p0 = data.iloc[0:-1, :]
+    returns = np.divide(p1, p0) - 1 
+    # print(returns)
+    
+    avg_return = np.average(returns)
+    std = np.std(returns)
+    
+    return avg_return, std
+    
+def efficient_frontier():
+    pass
+
 
 class Portfolio:
     '''
@@ -73,23 +95,22 @@ def covariance_matrix(assets):
     return np.cov(returns)
 
 # Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    data = parse_data()
-    assets = list(data.columns)
-    print(assets)
+# if __name__ == '__main__':
+#     data = parse_data()
+#     assets = list(data.columns)
+#     print(assets)
+# 
+#     portfolio = Portfolio()
+#     for a in assets:
+#         if a=='Time':
+#             continue
+#         else:
+#             asset = Asset(a, data[[a]])
+#             asset.print()
+#             portfolio.add_asset(asset)
+# 
+#     portfolio.print()
+#     matrix = portfolio.get_covariance_matrix()
+#     print(matrix)
+#     portfolio.correlation()
 
-    portfolio = Portfolio()
-    for a in assets:
-        if a=='Time':
-            continue
-        else:
-            asset = Asset(a, data[[a]])
-            asset.print()
-            portfolio.add_asset(asset)
-
-    portfolio.print()
-    matrix = portfolio.get_covariance_matrix()
-    print(matrix)
-    portfolio.correlation()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
