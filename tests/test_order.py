@@ -27,8 +27,9 @@ def test_buy(client, auth,app):
         assert order['action'] == 'buy'
         assert order['quantity'] == 100
         # test if asset data is inserted
-        asset = db.execute("SELECT * FROM assets_data WHERE symbol=?",(symbol,)).fetchone()
+        asset = db.execute("SELECT * FROM assets_data WHERE symbol=? ORDER BY history_date DESC",(symbol,)).fetchone()
         assert asset is not None
+        assert asset[1].strftime('%Y-%m-%d') == '2023-03-24'
 
 def test_sell(client, auth, app):
     auth.login()

@@ -15,8 +15,7 @@ def test_get_hist_data(client, auth, app):
                     data={'symbol': symbol, 'date': '2023-3-27', 'price': price, 'share': 100, 'action': 'buy'})
 
         # data = get_hist_data('AAPL')
-        # assert client.post('analysis/portfolio/AAPL').status_code == 200
-        data = get_db().execute("SELECT close, history_date FROM assets_data Where symbol=?"
-                                "ORDER BY history_date DESC", (symbol,) ).fetchone()
+        assert client.post('analysis/portfolio/AAPL').status_code == 200
+        #data = get_db().execute("SELECT close, history_date FROM assets_data Where symbol=?"
 
-        assert data[1].strftime('%Y-%m-%d') == '2023-03-24'
+
