@@ -16,8 +16,9 @@ from Packages.get_weights import get_portfolio_weights
 # each stock's return and volatility
 def cal_returns(symbol):
     db = get_db()
-    data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=?",(symbol,)).fetchall())
-
+    period = 5*250
+    data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=? "
+                                   "ORDER BY history_date DESC LIMIT ?",(symbol,period)).fetchall())
     # print(data.tail(5))
     p1 = data.iloc[1:, :]
     p0 = data.iloc[0:-1, :]
@@ -32,14 +33,22 @@ def cal_std(returns):
     # print(np.std(returns))
     return np.std(returns)
 
-def cal_cov(returns):
-    return returns.cov()
+def cal_cov(portfolio):
+    # returns = pd.DataFrame()
+    returns = {}
+    for symbol in portfolio.columns:
+        returns[symbol] = list(cal_returns(symbol))
 
-def port_return(w, r):
-    return np.sum(w*r)
+    returns = pd.DataFrame(data=returns)
+    print(returns)
+    # return returns.cov()
 
-def port_volatility(w, cov):
-    return np.sqrt(((w.dot(cov)).dot(w.T)))
+def port_return(portfolio):
+    return np.sum(portfolio['Weight']*portfolio['Return'])
+
+def port_volatility(portfolio):
+    cov = cal_cov(portfolio)
+    return np.sqrt(((portfolio['Weight'].dot(cov)).dot(portfolio['Weight'].T)))
 
 
 def efficient_frontier(id):
@@ -48,10 +57,13 @@ def efficient_frontier(id):
     for symbol in portfolio.keys():
         portfolio[symbol] = [portfolio[symbol], cal_avg_return(cal_returns(symbol)),cal_std(cal_returns(symbol))]
 
-    df = pd.DataFrame(data=portfolio, index=['Weight','Return','Volatility']).T
+    print(portfolio)
+    # df = pd.DataFrame(data=portfolio, index=portfolio.keys(), columns=['Weight','Return','Volatility']).T
+    df = pd.DataFrame(data=portfolio)
+    # df.columns = ['Weight','Return','Volatility']
     print(df)
-    R = port_return(df['Weight'], df['Return'])
-    print(R)
+    # R = port_return(df)
+    cov = cal_cov(df)
 
     
 class Portfolio:
