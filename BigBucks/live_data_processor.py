@@ -38,33 +38,44 @@ def get_live_price(symbol):
     live_price = round(si.get_live_price(symbol),2)
     return live_price
 
+# Get the sector of a company by its symbol from Yahoo Finance
+def get_company_sector(symbol):
+    url = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile"
+    with urllib.request.urlopen(url) as response:
+        data = json.loads(response.read().decode())
+    if 'quoteSummary' in data and 'result' in data['quoteSummary'] and \
+            data['quoteSummary']['result'][0]['assetProfile'] and 'sector' in data['quoteSummary']['result'][0]['assetProfile']:
+        sector = data['quoteSummary']['result'][0]['assetProfile']['sector']
+        return sector
+    else:
+        return None
+
+# Get the industry of a company by its symbol from Yahoo Finance    
+def get_company_industry(symbol):
+    url = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile"
+    with urllib.request.urlopen(url) as response:
+        data = json.loads(response.read().decode())
+    if 'quoteSummary' in data and 'result' in data['quoteSummary'] and \
+            data['quoteSummary']['result'][0]['assetProfile'] and 'industry' in data['quoteSummary']['result'][0]['assetProfile']:
+        industry = data['quoteSummary']['result'][0]['assetProfile']['industry']
+        return industry
+    else:
+        return None
+
 # Store historical data into database
-def store_historical_data(symbol):
+def get_historical_data(symbol):
     end_date = datetime.today().strftime('%Y-%m-%d')
     start_date = (datetime.today() - timedelta(days=5*365)).strftime('%Y-%m-%d')
     stock_data = yf.download(symbol, start=start_date, end=end_date)
+    # db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'BigBucks.db'))
+    # conn = sqlite3.connect(db_path)
+    #
+    # c = conn.cursor()
+        # c.execute("INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (symbol, history_date, open_price, high_price, low_price, close_price, adj_close_price, volume))
+    # conn.commit()
+    # conn.close()
 
-    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'BigBucks.db'))
-    conn = sqlite3.connect(db_path)
-    
-    c = conn.cursor()
-
-    for index, row in stock_data.iterrows():
-        symbol = symbol
-        history_date = index.strftime('%Y-%m-%d')
-        open_price = row['Open']
-        high_price = row['High']
-        low_price = row['Low']
-        close_price = row['Close']
-        adj_close_price = row['Adj Close']
-        volume = row['Volume']
-
-        c.execute("INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                  (symbol, history_date, open_price, high_price, low_price, close_price, adj_close_price, volume))
-
-    conn.commit()
-    conn.close()
-
+    return stock_data
 
 def get_symbol_by_name(company_name):
     # construct the URL to retrieve the stock symbol for the given company name
@@ -94,6 +105,16 @@ def get_company_shares_by_name(company_name):
 def store_data_by_name(company_name):
     symbol = get_symbol_by_name(company_name)
     store_historical_data(symbol)
+
+def get_sector_by_name(company_name):
+    symbol = get_symbol_by_name(company_name)
+    sector = get_company_sector(symbol)
+    return sector
+
+def get_industry_by_name(company_name):
+    symbol = get_symbol_by_name(company_name)
+    industry = get_company_industry(symbol)
+    return industry
 
 '''
 #test

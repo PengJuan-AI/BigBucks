@@ -25,3 +25,19 @@ def portfolio():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     return render_template('portfolio.html',portfolio=portfolio)
+
+@bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
+def get_hist_data(symbol):
+    db = get_db()
+
+    if request.method=='POST':
+        hist = db.execute("SELECT strftime('%Y-%m-%d',history_date),round(close,2) FROM assets_data WHERE symbol=?"
+                      "ORDER BY history_date DESC",(symbol,)).fetchall()
+        import pandas as pd
+        df = pd.DataFrame(hist, columns=['date','price'])
+        data = {
+            'date': list(df['date']),
+            'price': list(df['price'])
+        }
+        return jsonify(data)
+        # return hist
