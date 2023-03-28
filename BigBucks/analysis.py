@@ -29,11 +29,11 @@ def portfolio():
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):
     db = get_db()
-    
+
     if request.method=='POST':
         hist = db.execute("SELECT close, history_date FROM assets_data WHERE symbol=?"
                       "ORDER BY history_date DESC",(symbol,)).fetchall()
-        print(hist)
+        # print(hist)
         data = {
             'date': hist['history_date'],
             'price': hist['close']

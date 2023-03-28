@@ -3,7 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from .live_data_processor import get_company_name,get_company_shares, get_live_price, store_historical_data
+from .live_data_processor import get_company_name,get_company_shares, get_live_price, get_historical_data
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
@@ -166,12 +166,22 @@ def update_orders(date,id, symbol, shares, price, action ):
 
 def update_asset_data(symbol):
     print("In update asset data")
+    data = get_historical_data(symbol)
     db = get_db()
+    sql = "INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
-    asset = db.execute("SELECT * FROM assets_data WHERE symbol=?", (symbol,)).fetchone()
-    print("This asset is ", asset)
-    if asset is None:
-        store_historical_data(symbol)
+    for index, row in data.iterrows():
+        symbol = symbol
+        history_date = index.strftime('%Y-%m-%d')
+        open_price = row['Open']
+        high_price = row['High']
+        low_price = row['Low']
+        close_price = row['Close']
+        adj_close_price = row['Adj Close']
+        volume = row['Volume']
+        db.execute(sql, (symbol, history_date, open_price, high_price, low_price, close_price, adj_close_price, volume))
+
+    db.commit()
 
 # def update_asset_info(assetid, shares_traded):
 #     '''
