@@ -17,26 +17,42 @@ from Packages.get_weights import get_portfolio_weights
 def cal_returns(symbol):
     db = get_db()
     data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=?",(symbol,)).fetchall())
-    
-    print(data.tail(5))
+
+    # print(data.tail(5))
     p1 = data.iloc[1:, :]
     p0 = data.iloc[0:-1, :]
-    returns = np.divide(p1, p0) - 1 
-    # print(returns)
-    return returns
+    returns = np.divide(p1, p0) - 1
+
+    return np.array(returns)
 
 def cal_avg_return(returns):
     return np.average(returns)
+
 def cal_std(returns):
+    # print(np.std(returns))
     return np.std(returns)
+
+def cal_cov(returns):
+    return returns.cov()
+
+def port_return(w, r):
+    return np.sum(w*r)
+
+def port_volatility(w, cov):
+    return np.sqrt(((w.dot(cov)).dot(w.T)))
+
 
 def efficient_frontier(id):
     db = get_db()
     portfolio = get_portfolio_weights(id)
     for symbol in portfolio.keys():
-        portfolio.loc[symbol,'avg_r'] = (cal_avg_return(cal_returns(symbol)))
-        portfolio.loc[symbol,'std'] = (cal_std(cal_returns(symbol)))
-    print(portfolio)
+        portfolio[symbol] = [portfolio[symbol], cal_avg_return(cal_returns(symbol)),cal_std(cal_returns(symbol))]
+
+    df = pd.DataFrame(data=portfolio, index=['Weight','Return','Volatility']).T
+    print(df)
+    R = port_return(df['Weight'], df['Return'])
+    print(R)
+
     
 class Portfolio:
     '''
@@ -85,11 +101,6 @@ class Asset:
     def print(self):
         print(self._name)
 
-def calculate_avg_return(hist_return):
-    return np.average(hist_return)
-
-def calculate_std(hist_return):
-    return np.std(hist_return)
 
 def covariance_matrix(assets):
     returns = []

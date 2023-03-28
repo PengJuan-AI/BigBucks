@@ -9,7 +9,7 @@ def get_portfolio_weights(id):
                              "Having userid=?", (id,)).fetchone()[0]
     
     for p in pf:
-        weights[p[0]] = [round(p[1]/total_value,2)]
-    print(weights)
+        weights[p[0]] = round(p[1]/total_value,2)
+    # print(weights)
     
-    return pd.DataFrame(weights,columns=["weight"])
+    return weights

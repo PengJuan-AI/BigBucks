@@ -18,8 +18,8 @@ def test_get_weights(client, app, auth):
                     data={'symbol': 'TSLA', 'date': '2023-3-15', 'price': price2, 'share': 200, 'action': 'buy'})
         total_value = price1*200+price2*200
         weights = get_portfolio_weights(1)
-        assert weights.weight[0] == round(price1*200/total_value,2)
-        assert weights.loc[0,'weight']+weights.loc[1,'weight'] == 1
+        assert weights['AAPL'] == round(price1*200/total_value,2)
+        assert weights['AAPL']+weights['TSLA'] == 1
 
 def test_return_volatility(client, app, auth):
     auth.login()
