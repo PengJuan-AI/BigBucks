@@ -4,7 +4,7 @@ from BigBucks.db import get_db
 # from BigBucks.order import get_balance, buy_asset, get_company_name,get_company_shares
 from live_data_processor import get_live_price
 from BigBucks.Packages.get_weights import get_portfolio_weights
-from efficient_frontier import return_volatility
+from efficient_frontier import cal_returns,efficient_frontier
 
 def test_get_weights(client, app, auth):
     auth.login()
@@ -18,8 +18,8 @@ def test_get_weights(client, app, auth):
                     data={'symbol': 'TSLA', 'date': '2023-3-15', 'price': price2, 'share': 200, 'action': 'buy'})
         total_value = price1*200+price2*200
         weights = get_portfolio_weights(1)
-        assert weights['AAPL'] == round(price1*200/total_value,2)
-        assert weights['TSLA']+weights['AAPL'] == 1
+        assert weights.weight[0] == round(price1*200/total_value,2)
+        assert weights.loc[0,'weight']+weights.loc[1,'weight'] == 1
 
 def test_return_volatility(client, app, auth):
     auth.login()
@@ -31,4 +31,16 @@ def test_return_volatility(client, app, auth):
                 data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200, 'action': 'buy'})
         
         for s in symbols:
-            assert return_volatility(s) is not None
+            assert cal_returns(s) is not None
+            
+def test_ef(auth, client, app):
+    auth.login()
+    symbols = ['AAPL', 'TSLA']
+
+    with app.app_context():
+        for s in symbols:
+            response = client.post('/order/buy',
+                        data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
+                              'action': 'buy'})
+        efficient_frontier(1)
+        assert None is not None

@@ -14,7 +14,7 @@ from BigBucks.db import get_db
 from Packages.get_weights import get_portfolio_weights
 
 # each stock's return and volatility
-def return_volatility(symbol):
+def cal_returns(symbol):
     db = get_db()
     data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=?",(symbol,)).fetchall())
     
@@ -23,16 +23,21 @@ def return_volatility(symbol):
     p0 = data.iloc[0:-1, :]
     returns = np.divide(p1, p0) - 1 
     # print(returns)
-    
-    avg_return = np.average(returns)
-    std = np.std(returns)
-    
-    return avg_return, std
-    
-def efficient_frontier():
-    pass
+    return returns
 
+def cal_avg_return(returns):
+    return np.average(returns)
+def cal_std(returns):
+    return np.std(returns)
 
+def efficient_frontier(id):
+    db = get_db()
+    portfolio = get_portfolio_weights(id)
+    for symbol in portfolio.keys():
+        portfolio.loc[symbol,'avg_r'] = (cal_avg_return(cal_returns(symbol)))
+        portfolio.loc[symbol,'std'] = (cal_std(cal_returns(symbol)))
+    print(portfolio)
+    
 class Portfolio:
     '''
     portfolio: userid, assetid, shares, weight

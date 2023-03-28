@@ -1,4 +1,5 @@
 from BigBucks.db import get_db
+import pandas as pd
 
 def get_portfolio_weights(id):
     weights = {}
@@ -8,7 +9,7 @@ def get_portfolio_weights(id):
                              "Having userid=?", (id,)).fetchone()[0]
     
     for p in pf:
-        weights[p[0]] = round(p[1]/total_value,2)
+        weights[p[0]] = [round(p[1]/total_value,2)]
     print(weights)
     
-    return weights
+    return pd.DataFrame(weights,columns=["weight"])
