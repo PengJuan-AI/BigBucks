@@ -14,25 +14,63 @@ from BigBucks.db import get_db
 from Packages.get_weights import get_portfolio_weights
 
 # each stock's return and volatility
-def return_volatility(symbol):
+def cal_returns(symbol):
     db = get_db()
-    data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=?",(symbol,)).fetchall())
-    
-    print(data.tail(5))
+    period = 5*250
+    data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=? "
+                                   "ORDER BY history_date DESC LIMIT ?",
+                                   (symbol,period)).fetchall(), columns=[symbol]
+                        )
+    data = data.iloc[::-1]
     p1 = data.iloc[1:, :]
     p0 = data.iloc[0:-1, :]
-    returns = np.divide(p1, p0) - 1 
-    # print(returns)
-    
-    avg_return = np.average(returns)
-    std = np.std(returns)
-    
-    return avg_return, std
-    
-def efficient_frontier():
-    pass
+    returns = np.divide(p1, p0) - 1
+    # return np.array(returns)
+    return returns
+
+def cal_avg_return(returns):
+    return np.average(np.array(returns))
+
+def cal_std(returns):
+    # print(np.std(returns))
+    return np.std(np.array(returns))
+
+def cal_cov(portfolio):
+    # returns = pd.DataFrame()
+    returns = {}
+    for symbol in portfolio.columns:
+        returns[symbol] = list(cal_returns(symbol)[symbol])
+
+    result = pd.DataFrame(data=returns)
+    # result.to_excel('test_data.xlsx',sheet_name='returns')
+    # print("==============================")
+    # print("results:")
+    # print(result)
+    return result.cov()
+
+def port_return(portfolio):
+    return np.sum(portfolio['Weight']*portfolio['Return'])
+
+def port_volatility(portfolio):
+    cov = cal_cov(portfolio)
+    return np.sqrt(((portfolio['Weight'].dot(cov)).dot(portfolio['Weight'].T)))
 
 
+def efficient_frontier(id):
+    db = get_db()
+    portfolio = get_portfolio_weights(id)
+    for symbol in portfolio.keys():
+        portfolio[symbol] = [portfolio[symbol], cal_avg_return(cal_returns(symbol)),cal_std(cal_returns(symbol))]
+
+    print("Portfolio: ", portfolio)
+    df = pd.DataFrame(data=portfolio)
+    print(df)
+    # R = port_return(df)
+    cov = cal_cov(df)
+    print(cov)
+
+
+    
 class Portfolio:
     '''
     portfolio: userid, assetid, shares, weight
@@ -80,11 +118,6 @@ class Asset:
     def print(self):
         print(self._name)
 
-def calculate_avg_return(hist_return):
-    return np.average(hist_return)
-
-def calculate_std(hist_return):
-    return np.std(hist_return)
 
 def covariance_matrix(assets):
     returns = []

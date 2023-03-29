@@ -1,4 +1,5 @@
 from BigBucks.db import get_db
+import pandas as pd
 
 def get_portfolio_weights(id):
     weights = {}
@@ -9,6 +10,6 @@ def get_portfolio_weights(id):
     
     for p in pf:
         weights[p[0]] = round(p[1]/total_value,2)
-    print(weights)
+    # print(weights)
     
     return weights
