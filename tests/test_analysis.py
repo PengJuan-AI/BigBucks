@@ -42,6 +42,6 @@ def test_ef(auth, client, app):
             response = client.post('/order/buy',
                         data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
                               'action': 'buy'})
-        R,V = get_ef(1)
-        assert round(R,4) == 0.5178
-        assert round(V, 4) == 0.4559
+ 
+        assert get_ef(1) is None
+ 

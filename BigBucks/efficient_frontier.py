@@ -15,7 +15,6 @@ from BigBucks.db import get_db
 from Packages.get_weights import get_portfolio_weights
 
 
-
 # each stock's return and volatility
 def cal_returns(symbol):
     db = get_db()
@@ -32,7 +31,7 @@ def cal_returns(symbol):
     return returns
 
 def cal_avg_return(returns):
-    return np.average(np.array(returns))
+    return np.mean(np.array(returns))*252
 
 def cal_std(returns):
     # print(np.std(returns))
@@ -52,17 +51,24 @@ def cal_cov(portfolio):
 
 def cal_port_return(weight,r):
     # annual
-    return np.sum(weight*r)*252
+    return np.sum(weight*r)
 
 def cal_port_volatility(weight, cov):
     # annual
-    # cov = cal_cov(portfolio.T)
-    return np.sqrt(((weight.dot(cov)).dot(weight.T))*252)
+    return np.sqrt(((weight.dot(cov)).dot(weight.T)))
 
 def get_sharpe(r,v):
     r_free = 0.03
     return (r-r_free)/v
+def draw(R,V):
+    import matplotlib.pyplot as plt
 
+    plt.figure(figsize=(5, 5))
+    plt.scatter(V, R)
+    plt.xlabel('Volatility')
+    plt.ylabel('Return')
+    plt.show()
+    
 def get_ef(id):
     # db = get_db()
     r = []
@@ -73,14 +79,11 @@ def get_ef(id):
         r.append(cal_avg_return(cal_returns(symbol)))
     # df = pd.DataFrame(data=portfolio,index=['Weight','Return','Volatility']).T
     df = pd.DataFrame(data=portfolio)
-    print("Portfolio: \n", df)
-    efficient_frontier(df,10, 0.1, r)
-    # R = port_return(df)
-    # V = port_volatility(df)
-    # print('R: ',R, 'V: ',V)
-
-    # return R,V
-    return 0.2, 0.5
+    # print("Portfolio: \n", df)
+    print("r:\n",r)
+    W,R,V = efficient_frontier(df,100, 0.005, r)
+    draw(R,V)
+    return W,R,V
 
 def efficient_frontier(df, num, gap, r):
 
@@ -88,14 +91,16 @@ def efficient_frontier(df, num, gap, r):
     port_vol = np.zeros(num)
     weights = np.zeros((num, len(df.columns)))
     w0 = np.ones(df.shape[1])/df.shape[1]
+    covar = df.cov()
+    print("w0: ", w0)
 
     for i in range(num):
         bounds = Bounds(0, 1)  # all weights between (0,1)
         # linear_constrain = LinearConstraint(np.ones((df.shape[1],), dtype=int), 1, 1)
-        re = cal_port_return(r, w0) + i * gap
+        # re = cal_port_return(r, w0) + i * gap
+        re = 0 + i*gap
         double_constraint = LinearConstraint([np.ones(df.shape[1]), r], [1, re], [1, re])
         x0 = w0  # x0 is the initial guess
-        covar = df.cov()
         # Define fun to calculate volatility
         fun1 = lambda w: np.sqrt(np.dot(w, np.dot(w, covar)))
         result = minimize(fun1, x0, method='SLSQP', constraints=double_constraint, bounds=bounds)
@@ -109,31 +114,5 @@ def efficient_frontier(df, num, gap, r):
     print("port_re:", port_return)
     print("port_vol:", port_vol)
     
-def covariance_matrix(assets):
-    returns = []
-    for asset in assets:
-        returns.append(asset.get_returns())
-
-    # return_array = np.array(returns)
-    return np.cov(returns)
-
-# Press the green button in the gutter to run the script.
-# if __name__ == '__main__':
-#     data = parse_data()
-#     assets = list(data.columns)
-#     print(assets)
-# 
-#     portfolio = Portfolio()
-#     for a in assets:
-#         if a=='Time':
-#             continue
-#         else:
-#             asset = Asset(a, data[[a]])
-#             asset.print()
-#             portfolio.add_asset(asset)
-# 
-#     portfolio.print()
-#     matrix = portfolio.get_covariance_matrix()
-#     print(matrix)
-#     portfolio.correlation()
+    return weights,port_return,port_vol
 
