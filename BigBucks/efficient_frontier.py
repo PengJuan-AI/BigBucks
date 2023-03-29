@@ -18,30 +18,35 @@ def cal_returns(symbol):
     db = get_db()
     period = 5*250
     data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=? "
-                                   "ORDER BY history_date DESC LIMIT ?",(symbol,period)).fetchall())
-    # print(data.tail(5))
+                                   "ORDER BY history_date DESC LIMIT ?",
+                                   (symbol,period)).fetchall(), columns=[symbol]
+                        )
+    data = data.iloc[::-1]
     p1 = data.iloc[1:, :]
     p0 = data.iloc[0:-1, :]
     returns = np.divide(p1, p0) - 1
-
-    return np.array(returns)
+    # return np.array(returns)
+    return returns
 
 def cal_avg_return(returns):
-    return np.average(returns)
+    return np.average(np.array(returns))
 
 def cal_std(returns):
     # print(np.std(returns))
-    return np.std(returns)
+    return np.std(np.array(returns))
 
 def cal_cov(portfolio):
     # returns = pd.DataFrame()
     returns = {}
     for symbol in portfolio.columns:
-        returns[symbol] = list(cal_returns(symbol))
+        returns[symbol] = list(cal_returns(symbol)[symbol])
 
-    returns = pd.DataFrame(data=returns)
-    print(returns)
-    # return returns.cov()
+    result = pd.DataFrame(data=returns)
+    # result.to_excel('test_data.xlsx',sheet_name='returns')
+    # print("==============================")
+    # print("results:")
+    # print(result)
+    return result.cov()
 
 def port_return(portfolio):
     return np.sum(portfolio['Weight']*portfolio['Return'])
@@ -57,13 +62,13 @@ def efficient_frontier(id):
     for symbol in portfolio.keys():
         portfolio[symbol] = [portfolio[symbol], cal_avg_return(cal_returns(symbol)),cal_std(cal_returns(symbol))]
 
-    print(portfolio)
-    # df = pd.DataFrame(data=portfolio, index=portfolio.keys(), columns=['Weight','Return','Volatility']).T
+    print("Portfolio: ", portfolio)
     df = pd.DataFrame(data=portfolio)
-    # df.columns = ['Weight','Return','Volatility']
     print(df)
     # R = port_return(df)
     cov = cal_cov(df)
+    print(cov)
+
 
     
 class Portfolio:
