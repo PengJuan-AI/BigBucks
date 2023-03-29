@@ -4,7 +4,7 @@ from BigBucks.db import get_db
 # from BigBucks.order import get_balance, buy_asset, get_company_name,get_company_shares
 from live_data_processor import get_live_price
 from BigBucks.Packages.get_weights import get_portfolio_weights
-from efficient_frontier import cal_returns,efficient_frontier
+from efficient_frontier import cal_returns,get_ef,cal_port_return,cal_port_volatility
 
 # def test_get_weights(client, app, auth):
 #     auth.login()
@@ -42,5 +42,6 @@ def test_ef(auth, client, app):
             response = client.post('/order/buy',
                         data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
                               'action': 'buy'})
-        efficient_frontier(1)
-        assert None is not None
+        R,V = get_ef(1)
+        assert round(R,4) == 0.5178
+        assert round(V, 4) == 0.4559
