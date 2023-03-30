@@ -32,7 +32,7 @@ def get_hist_data(symbol):
 
     if request.method=='POST':
         hist = db.execute("SELECT strftime('%Y-%m-%d',history_date),round(close,2) FROM assets_data WHERE symbol=?"
-                      "ORDER BY history_date DESC",(symbol,)).fetchall()
+                      "ORDER BY history_date ASC",(symbol,)).fetchall()
         import pandas as pd
         df = pd.DataFrame(hist, columns=['date','price'])
         data = {
