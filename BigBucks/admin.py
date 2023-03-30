@@ -7,7 +7,7 @@ from .db import get_db
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 # admin home page
-@bp.route('/home', methods=('GET','POST'))
-@login_required
+@bp.route('/', methods=('GET','POST'))
+@admin_login_required
 def home():
     return render_template('admin/home.html')

@@ -13,14 +13,14 @@ from werkzeug.security import generate_password_hash
 
 from .db import get_db
 
-bp = Blueprint("adminauth", __name__, url_prefix="/adminauth")
+bp = Blueprint("admin_auth", __name__, url_prefix="/adminauth")
 
 
 def admin_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for("auth.login"))
+        if g.admin is None:
+            return redirect(url_for("admin_auth.login"))
 
         return view(**kwargs)
 
