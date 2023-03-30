@@ -22,9 +22,9 @@ def ef():
     r, v, sharpe = get_port_info(id)
 
     port_info = {
-        'port_return': r,
-        'port_vol': v,
-        'sharpe': sharpe
+        'port_return': round(r,2),
+        'port_vol': round(v,2),
+        'sharpe': round(sharpe,2)
     }
 
 
