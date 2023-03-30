@@ -58,8 +58,9 @@ def cal_port_volatility(weight, cov):
     return np.sqrt(((weight.dot(cov)).dot(weight.T)))
 
 def get_sharpe(r,v):
-    r_free = 0.03
-    return (r-r_free)/v
+    # r_free = 0.03
+    return r/v
+
 def draw(R,V):
     import matplotlib.pyplot as plt
 
@@ -68,7 +69,21 @@ def draw(R,V):
     plt.xlabel('Volatility')
     plt.ylabel('Return')
     plt.show()
-    
+
+def get_port_info(id):
+    portfolio = get_portfolio_weights(id)
+    weights = []
+    r = []
+    for symbol in portfolio.keys():
+        weights.append(portfolio[symbol])
+        r.append(cal_avg_return(cal_returns(symbol)))
+
+    r = cal_port_return(weights,r)
+    v = cal_port_volatility(weights, cal_cov(portfolio))
+    sharpe = get_sharpe(r,v)
+
+    return r,v,sharpe
+
 def get_ef(id):
     # db = get_db()
     r = []
