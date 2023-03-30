@@ -50,7 +50,7 @@
                 <p id="symbol">Asset Symbol: </p>
                 <p id="shares">Shares Available: </p>
             </div>
-            <div id="chart" style="width: 600px; height: 400px;"></div>
+            <div id="chart" style="width: 600px; height: 400px;margin: 0 auto;"></div>
         </div>
     </div>
 </div>
@@ -77,17 +77,41 @@
             console.log(data);
             var chart = echarts.init(document.getElementById("chart"));
             chart.setOption({
+                title: {
+                    text: 'Historical Data of ' + symbol,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    position: function (pt) {
+                    return [pt[0], '10%'];
+                    }
+                },
                 xAxis: {
                 type: "category",
-                data: data.date
+                data: data.date,
+                boundaryGap: false,
                 },
                 yAxis: {
                 type: "value"
                 },
+                dataZoom: [
+                    {
+                    type: 'inside',
+                    start: 0,
+                    end: 10
+                    },
+                    {
+                    start: 0,
+                    end: 10
+                    }
+                ],
                 series: [{
+                name: 'price',
                 data: data.price,
                 type: "line",
-                smooth: true
+                smooth: true,
+                symbol: 'none'
                 }]
             });
             });
