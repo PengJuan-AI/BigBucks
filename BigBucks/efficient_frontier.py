@@ -74,31 +74,42 @@ def get_ef(id):
     r = []
     portfolio = get_portfolio_weights(id)
     for symbol in portfolio.keys():
-        # portfolio[symbol] = [portfolio[symbol], cal_avg_return(cal_returns(symbol)),cal_std(cal_returns(symbol))]
         portfolio[symbol] = list(cal_returns(symbol)[symbol])
         r.append(cal_avg_return(cal_returns(symbol)))
-    # df = pd.DataFrame(data=portfolio,index=['Weight','Return','Volatility']).T
+        
     df = pd.DataFrame(data=portfolio)
     # print("Portfolio: \n", df)
     print("r:\n",r)
-    W,R,V = efficient_frontier(df,100, 0.005, r)
-    draw(R,V)
+    W,R,V = efficient_frontier(df,100, r)
+    # draw(R,V)
     return W,R,V
 
-def efficient_frontier(df, num, gap, r):
+def get_best_w(df):
+    bounds = Bounds(0, 1)  # all weights between (0,1)
+    linear_constrain = LinearConstraint(np.ones((df.shape[1],), dtype=int), 1, 1)
 
+    weight = np.ones(df.shape[1])
+    x0 = weight / np.sum(weight)  # x0 is the initial guess
+    covar = df.cov()
+    # Define fun to calculate volatility
+    fun = lambda w: np.sqrt(np.dot(w, np.dot(w, covar)))
+    res = minimize(fun, x0, method='SLSQP', constraints=linear_constrain, bounds=bounds)
+
+    return res.x
+
+def efficient_frontier(df, num, r):
+    
+    w0 = get_best_w(df)
+    gap = (np.amax(r) - cal_port_return(w0,r))/num
     port_return = np.zeros(num)
     port_vol = np.zeros(num)
     weights = np.zeros((num, len(df.columns)))
-    w0 = np.ones(df.shape[1])/df.shape[1]
     covar = df.cov()
     print("w0: ", w0)
 
     for i in range(num):
         bounds = Bounds(0, 1)  # all weights between (0,1)
-        # linear_constrain = LinearConstraint(np.ones((df.shape[1],), dtype=int), 1, 1)
-        # re = cal_port_return(r, w0) + i * gap
-        re = 0 + i*gap
+        re = cal_port_return(w0, r) + i * gap
         double_constraint = LinearConstraint([np.ones(df.shape[1]), r], [1, re], [1, re])
         x0 = w0  # x0 is the initial guess
         # Define fun to calculate volatility
@@ -113,6 +124,6 @@ def efficient_frontier(df, num, gap, r):
     print("weights:", weights)
     print("port_re:", port_return)
     print("port_vol:", port_vol)
-    
+
     return weights,port_return,port_vol
 

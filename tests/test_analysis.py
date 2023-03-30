@@ -2,6 +2,7 @@ import pytest
 from flask import g, session
 from BigBucks.db import get_db
 # from BigBucks.order import get_balance, buy_asset, get_company_name,get_company_shares
+import numpy as np
 from live_data_processor import get_live_price
 from BigBucks.Packages.get_weights import get_portfolio_weights
 from efficient_frontier import cal_returns,get_ef,cal_port_return,cal_port_volatility
@@ -35,13 +36,14 @@ from efficient_frontier import cal_returns,get_ef,cal_port_return,cal_port_volat
             
 def test_ef(auth, client, app):
     auth.login()
-    symbols = ['AAPL', 'TSLA']
+    symbols = ['AAPL', 'TSLA', 'MSFT', 'GM']
 
     with app.app_context():
         for s in symbols:
             response = client.post('/order/buy',
                         data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
                               'action': 'buy'})
- 
-        assert get_ef(1) is None
- 
+        W,R,V = get_ef(1)
+        assert W is not None
+        assert V.shape[0] == 100
+        assert np.amax(R) < 1
