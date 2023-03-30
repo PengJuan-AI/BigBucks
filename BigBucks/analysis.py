@@ -13,17 +13,20 @@ bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 def ef():
     id = g.user['userid']
     weights, returns, vols = get_ef(id)
-    efficient_frontier = jsonify({
-        'weights': weights,
-        'returns': returns,
-        'volatilities': vols
-    })
+
+    efficient_frontier = {
+        'weights': list(weights),
+        'returns': list(returns),
+        'volatilities': list(vols)
+    }
     r, v, sharpe = get_port_info(id)
-    port_info = jsonify({
+
+    port_info = {
         'port_return': r,
         'port_vol': v,
         'sharpe': sharpe
-    })
+    }
+
 
     return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info)
 
