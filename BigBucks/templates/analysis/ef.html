@@ -6,11 +6,26 @@
 <div class="box">
     <div class="col-md-8 middle-box">
         <div class="box box-warning">
-            <div class="box-header with-border">
-            <h3 class="box-title">Efficient Frontier</h3>
+            <div class="box-header with-border text-center">
+            <h3 class="box-title"><strong>Efficient Frontier</strong></h3>
             </div>
+            <div class="row">
+                <div class="col-sm-4 text-center">
+                    <h5>Portfolio Return</h5>
+                    <input name="rtn" class="form-control" value="{{ return }}" readonly>
+                </div>
+                <div class="col-sm-4 text-center">
+                    <h5>Portfolio Volatility</h5>
+                    <input name="vol" class="form-control" value="{{ volatility }}" readonly>
+                </div>
+                <div class="col-sm-4 text-center">
+                    <h5>Sharpe Ratio</h5>
+                    <input name="sharpe" class="form-control" value="{{ sharpe }}" readonly>
+                </div>
+            </div>
+
             <!-- for efficient frontier -->
-            <div class="container">
+            <div id="ef" class="row">
             </div>    
         </div>
     </div>

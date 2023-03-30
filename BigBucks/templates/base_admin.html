@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %} - BigBucks Admin</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='bower_components/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/Ionicons/css/ionicons.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skins/skin-blue.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/google_fonts.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
+
+    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/edu-modal-alert-confirm.js') }}"></script>
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Main Header -->
+        <header class="main-header">
+
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <span class="logo-lg"><b>BigBucks Admin</b></span>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button -->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"></a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-image"
+                                    alt="User Image">
+                                <span class="caret" style="color:black"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header">
+                                    <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle"
+                                        alt="User Image">
+                                    <p style="font-size:30px">
+                                        <strong>Admin {{ session.admin_name }}</strong>
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" class="btn btn-default btn-flat">Account Settings</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="{{ url_for('admin_auth.logout') }}" class="btn btn-default btn-flat">Log Out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+
+            </nav>
+        </header>
+
+        <!-- Left sidebar -->
+        <aside class="main-sidebar">
+
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>Welcome, Admin {{ session.admin_name }}</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Active</a>
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu" data-widget="tree" id="mainsidebar">
+                    <p class="header" style="background-color:#FFA500;padding:3px"></p>
+                    <li id="home"><a href="#"><i class="fa fa-home"></i> <span>Home</span></a></li>
+                    <li id="order"><a href="#"><i class="fa fa-sticky-note"></i>
+                            <span>Add Admin</span></a>
+                    </li>
+                    <li id="analysis" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-line-chart"></i> <span>Analysis</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu" id="subsidebar">
+                            <li id="analysis"><a href="#"><i
+                                        class="fa fa-circle-o"></i><span>Risk-return Profile</span></a></li>
+                            <li id="analysis"><a href="#"><i
+                                        class="fa fa-circle-o"></i><span>Stocks of All Users</span></a></li>
+                            <li id="analysis"><a href="#"><i
+                                        class="fa fa-circle-o"></i><span>Current Day's Market Orders</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <script>
+                    $(function () {
+                        $('.sidebar-menu li:not(.treeview) > a').on('click', function () {    // onclick events
+                            var $parent = $(this).parent().addClass('active');
+                            // $parent.siblings('.treeview.active').find('> a').trigger('click');
+                            $parent.siblings().removeClass('active').find('li').removeClass('active');
+                            $parent.closest('.treeview').addClass('active');
+                            $parent.closest('.treeview').siblings().removeClass('active');
+                        });
+                        $('.sidebar-menu a').each(function () {    // activate the li of current page after loaded DOMs
+                            if (this.href === window.location.href) {
+                                $(this).parent().addClass('active')
+                                    .closest('.treeview-menu').addClass('.menu-open')
+                                    .closest('.treeview').addClass('active');
+                            }
+                        });
+                    });
+                </script>
+            </section>
+        </aside>
+
+        <style>
+            .middle-box {
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, 0);
+            }
+        </style>
+
+        <!-- specific pages -->
+        <div class="content-wrapper">
+            {% block main_body %}
+            {% endblock %}
+        </div>
+
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+            </div>
+        </footer>
+
+        <!-- background -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+
+</body>
+
+</html>
