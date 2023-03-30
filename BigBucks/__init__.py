@@ -39,4 +39,10 @@ def create_app(test_config=None):
     from . import analysis
     app.register_blueprint(analysis.bp)
 
+    from . import admin_auth
+    app.register_blueprint(admin_auth.bp)
+
+    from . import admin
+    app.register_blueprint(admin.bp)
+
     return app

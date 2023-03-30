@@ -13,6 +13,14 @@ CREATE TABLE user (
   password TEXT NOT NULL
 );
 
+CREATE TABLE admin (
+  adminid INTEGER PRIMARY KEY AUTOINCREMENT,
+  admin_name TEXT UNIQUE NOT NULL,
+--  firstname TEXT NOT NULL,
+--   lastname TEXT NOT NULL,
+  password TEXT NOT NULL
+);
+
 CREATE TABLE Portfolio (
   userid INTEGER NOT NULL,
   symbol INTEGER NOT NULL,
