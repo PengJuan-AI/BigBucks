@@ -9,9 +9,11 @@ Draw efficient frontier line
 '''
 import pandas as pd
 import numpy as np
+from scipy.optimize import minimize,LinearConstraint,Bounds
 # from Parse_data import parse_data
 from BigBucks.db import get_db
 from Packages.get_weights import get_portfolio_weights
+
 
 # each stock's return and volatility
 def cal_returns(symbol):
@@ -29,14 +31,13 @@ def cal_returns(symbol):
     return returns
 
 def cal_avg_return(returns):
-    return np.average(np.array(returns))
+    return np.mean(np.array(returns))*252
 
 def cal_std(returns):
     # print(np.std(returns))
     return np.std(np.array(returns))
 
 def cal_cov(portfolio):
-    # returns = pd.DataFrame()
     returns = {}
     for symbol in portfolio.columns:
         returns[symbol] = list(cal_returns(symbol)[symbol])
@@ -48,102 +49,81 @@ def cal_cov(portfolio):
     # print(result)
     return result.cov()
 
-def port_return(portfolio):
-    return np.sum(portfolio['Weight']*portfolio['Return'])
+def cal_port_return(weight,r):
+    # annual
+    return np.sum(weight*r)
 
-def port_volatility(portfolio):
-    cov = cal_cov(portfolio)
-    return np.sqrt(((portfolio['Weight'].dot(cov)).dot(portfolio['Weight'].T)))
+def cal_port_volatility(weight, cov):
+    # annual
+    return np.sqrt(((weight.dot(cov)).dot(weight.T)))
 
+def get_sharpe(r,v):
+    r_free = 0.03
+    return (r-r_free)/v
+def draw(R,V):
+    import matplotlib.pyplot as plt
 
-def efficient_frontier(id):
-    db = get_db()
+    plt.figure(figsize=(5, 5))
+    plt.scatter(V, R)
+    plt.xlabel('Volatility')
+    plt.ylabel('Return')
+    plt.show()
+    
+def get_ef(id):
+    # db = get_db()
+    r = []
     portfolio = get_portfolio_weights(id)
     for symbol in portfolio.keys():
-        portfolio[symbol] = [portfolio[symbol], cal_avg_return(cal_returns(symbol)),cal_std(cal_returns(symbol))]
-
-    print("Portfolio: ", portfolio)
+        portfolio[symbol] = list(cal_returns(symbol)[symbol])
+        r.append(cal_avg_return(cal_returns(symbol)))
+        
     df = pd.DataFrame(data=portfolio)
-    print(df)
-    # R = port_return(df)
-    cov = cal_cov(df)
-    print(cov)
+    # print("Portfolio: \n", df)
+    print("r:\n",r)
+    W,R,V = efficient_frontier(df,100, r)
+    # draw(R,V)
+    return W,R,V
 
+def get_best_w(df):
+    bounds = Bounds(0, 1)  # all weights between (0,1)
+    linear_constrain = LinearConstraint(np.ones((df.shape[1],), dtype=int), 1, 1)
 
+    weight = np.ones(df.shape[1])
+    x0 = weight / np.sum(weight)  # x0 is the initial guess
+    covar = df.cov()
+    # Define fun to calculate volatility
+    fun = lambda w: np.sqrt(np.dot(w, np.dot(w, covar)))
+    res = minimize(fun, x0, method='SLSQP', constraints=linear_constrain, bounds=bounds)
+
+    return res.x
+
+def efficient_frontier(df, num, r):
     
-class Portfolio:
-    '''
-    portfolio: userid, assetid, shares, weight
-    '''
-    def __init__(self):
-        self._assets = []
+    w0 = get_best_w(df)
+    gap = (np.amax(r) - cal_port_return(w0,r))/num
+    port_return = np.zeros(num)
+    port_vol = np.zeros(num)
+    weights = np.zeros((num, len(df.columns)))
+    covar = df.cov()
+    print("w0: ", w0)
 
-    def add_asset(self, Asset):
-        self._assets.append(Asset)
+    for i in range(num):
+        bounds = Bounds(0, 1)  # all weights between (0,1)
+        re = cal_port_return(w0, r) + i * gap
+        double_constraint = LinearConstraint([np.ones(df.shape[1]), r], [1, re], [1, re])
+        x0 = w0  # x0 is the initial guess
+        # Define fun to calculate volatility
+        fun1 = lambda w: np.sqrt(np.dot(w, np.dot(w, covar)))
+        result = minimize(fun1, x0, method='SLSQP', constraints=double_constraint, bounds=bounds)
 
-    def portfolio_return(self):
-        # need weight
-        pass
-    def portfolio_volatility(self):
-        # need weight
-        pass
-    # def get_sharpe(self, risk_free):
-    def correlation(self):
-        matrix = pd.DataFrame([a.get_returns() for a in self._assets]).T
-        print(matrix.corr())
+        weights[i,:] = result.x
+        port_return[i] = re
+        port_vol[i] = cal_port_volatility(result.x, covar)
 
-    def get_covariance_matrix(self):
-        return covariance_matrix(self._assets)
+    # print("Min_weight: ",res.x)
+    print("weights:", weights)
+    print("port_re:", port_return)
+    print("port_vol:", port_vol)
 
-    def print(self):
-        for a in self._assets:
-            a.print()
-
-class Asset:
-    def __init__(self, name, hist):
-        self._name = name
-        p1 = hist.iloc[1:,:]
-        p0 = hist.iloc[0:-1,:]
-        returns = np.divide(p1,p0)-1
-        # returns = hist.iloc[1:,0]/hist.iloc[0:-1,0]-1
-        self.returns = returns[self._name]
-
-    def get_returns(self):
-        return self.returns
-    def avg_return(self):
-        return calculate_avg_return(self.returns)
-    def volatility(self):
-        return calculate_std(self.returns)
-
-    def print(self):
-        print(self._name)
-
-
-def covariance_matrix(assets):
-    returns = []
-    for asset in assets:
-        returns.append(asset.get_returns())
-
-    # return_array = np.array(returns)
-    return np.cov(returns)
-
-# Press the green button in the gutter to run the script.
-# if __name__ == '__main__':
-#     data = parse_data()
-#     assets = list(data.columns)
-#     print(assets)
-# 
-#     portfolio = Portfolio()
-#     for a in assets:
-#         if a=='Time':
-#             continue
-#         else:
-#             asset = Asset(a, data[[a]])
-#             asset.print()
-#             portfolio.add_asset(asset)
-# 
-#     portfolio.print()
-#     matrix = portfolio.get_covariance_matrix()
-#     print(matrix)
-#     portfolio.correlation()
+    return weights,port_return,port_vol
 
