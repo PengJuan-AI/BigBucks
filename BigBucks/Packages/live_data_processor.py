@@ -92,44 +92,54 @@ def get_symbol_by_name(company_name):
     # extract the stock symbol from the data dictionary and return it
     return data['quotes'][0]['symbol']
 
-def get_live_price_by_name(company_name):
-    symbol = get_symbol_by_name(company_name)
-    live_price = get_live_price(symbol)
-    return live_price
+def get_live_price_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        live_price = get_live_price(symbol)
+        return live_price
+    else:
+        live_price = get_live_price(input)
+        return live_price
 
-def get_company_shares_by_name(company_name):
-    symbol = get_symbol_by_name(company_name)
-    shares_outstanding = get_company_shares(symbol)
-    return shares_outstanding
+def get_company_shares_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        shares_outstanding = get_company_shares(symbol)
+        return shares_outstanding
+    else:
+        shares_outstanding = get_company_shares(input)
+        return shares_outstanding
 
-def store_data_by_name(company_name):
-    symbol = get_symbol_by_name(company_name)
-    store_historical_data(symbol)
+def get_data_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        stock_data = get_historical_data(symbol)
+        return stock_data
+    else:
+        stock_data = get_historical_data(input)
+        return stock_data
 
-def get_sector_by_name(company_name):
-    symbol = get_symbol_by_name(company_name)
-    sector = get_company_sector(symbol)
-    return sector
+def get_sector_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        sector = get_company_sector(symbol)
+        return sector
+    else:
+        sector = get_company_sector(input)
+        return sector
 
-def get_industry_by_name(company_name):
-    symbol = get_symbol_by_name(company_name)
-    industry = get_company_industry(symbol)
-    return industry
+def get_industry_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        industry = get_company_industry(symbol)
+        return industry
+    else:
+        industry = get_company_industry(input)
+        return industry
 
 '''
-#test
-symbols = ['AAPL', 'MSFT']
-for symbol in symbols:
-    store_stock_data(symbol)
-    live_price = get_live_price(symbol)
-    print(live_price)
-
-company_name = 'microsof'
-s = get_company_shares_by_name(company_name)
-p = get_live_price_by_name(company_name)
-b = get_symbol_by_name(company_name)
-store_data_by_name(company_name)
-print(s)
-print(p)
+a = get_live_price_by_input('msft')
+b = get_live_price_by_input('micros')
+print(a)
 print(b)
 '''
