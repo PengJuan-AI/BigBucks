@@ -3,7 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from efficient_frontier import get_ef, get_port_info
+from .efficient_frontier import get_ef, get_port_info
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 

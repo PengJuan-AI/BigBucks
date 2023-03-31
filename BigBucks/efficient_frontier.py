@@ -12,7 +12,7 @@ import numpy as np
 from scipy.optimize import minimize,LinearConstraint,Bounds
 # from Parse_data import parse_data
 from BigBucks.db import get_db
-from Packages.get_weights import get_portfolio_weights
+from .Packages.get_weights import get_portfolio_weights
 
 
 # each stock's return and volatility
