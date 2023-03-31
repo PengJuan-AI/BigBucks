@@ -1,0 +1,120 @@
+{% extends 'base1.html' %}
+
+{% block title %}Portfolio{% endblock %}
+
+{% block main_body %}
+<div class="box">
+    <div class="col-md-4">
+        <div class="box box-warning">
+            <div class="box-header with-border text-center">
+                <h3 class="box-title"><strong>Currently Owned Assets</strong></h3>
+            </div>
+            <div class="row">
+                <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" id="search-input">
+                </div>
+                <button type="button" class="btn btn-default" id="search-btn">Search Asset</button>
+                </form>
+            </div>
+            <div class="box-body table-responsive no-padding">
+            <form action="#" method="POST">
+                <table class="table table-dark" id="portfolio-table">
+                    <thead>
+                    <tr>
+                        <th>Asset Symbol</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for asset in portfolio %}
+                        <tr>
+                            <td>{{ asset[1] }}</td>
+                            <td>
+                                <a type="button" href="#" onclick="display_stock_info('{{ asset[1] }}', '{{ asset[2] }}')" class="btn btn-success btn-xs">View Data</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="box box-primary">
+            <div class="box-header with-border text-center">
+                <h3 class="box-title"><strong>Asset Information and Data</strong></h3>
+            </div>
+            <div class="container" style="font-size:16px;color:steelblue">
+                <p id="symbol">Asset Symbol: </p>
+                <p id="shares">Shares Available: </p>
+            </div>
+            <div id="chart" style="width: 600px; height: 400px;margin: 0 auto;"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+
+<script>
+    function pass_shares(symbol, shares){
+        var sy = document.getElementById('symbol');
+        sy.innerHTML = "Asset Symbol: " + symbol;
+        var sh = document.getElementById('shares');
+        sh.innerHTML = "Shares Available: " + shares;
+    }
+
+    function display_stock_info(symbol, shares) {
+        pass_shares(symbol, shares);
+        fetch(`/analysis/portfolio/${symbol}`, {
+            method: "POST"
+        })
+            .then(response => response.json())
+            .then(data => {
+            // 在 div 中绘制图表
+            console.log(symbol);
+            console.log(data);
+            var chart = echarts.init(document.getElementById("chart"));
+            chart.setOption({
+                title: {
+                    text: 'Historical Data of ' + symbol,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    position: function (pt) {
+                    return [pt[0], '10%'];
+                    }
+                },
+                xAxis: {
+                type: "category",
+                data: data.date,
+                boundaryGap: false,
+                },
+                yAxis: {
+                type: "value"
+                },
+                dataZoom: [
+                    {
+                    type: 'inside',
+                    start: 0,
+                    end: 10
+                    },
+                    {
+                    start: 0,
+                    end: 10
+                    }
+                ],
+                series: [{
+                name: 'price',
+                data: data.price,
+                type: "line",
+                smooth: true,
+                symbol: 'none'
+                }]
+            });
+            });
+            }
+</script>
+{% endblock %}

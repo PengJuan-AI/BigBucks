@@ -1,0 +1,75 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block main_body %}
+<section class="content-header">
+    <h1>
+        Admin Home Page
+    </h1>
+</section>
+
+<!-- Main content -->
+<section class="content container-fluid">
+
+    <!-- Blue box -->
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{ user_num }}</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-ios-people"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Green box -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ total_balance }}</h3>
+                    <p>Total Balance of All Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-social-usd"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yellow box -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ portfolio_data.asset }}</h3>
+                    <p>Total Stocks of All Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-connection-bars"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Red box -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>{{ portfolio_data.shares }}</h3>
+                    <p>Total Shares of All Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-clipboard"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}

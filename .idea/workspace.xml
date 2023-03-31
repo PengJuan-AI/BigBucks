@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/BigBucks/templates/analysis/ef.html" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/templates/analysis/ef.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks.egg-info/SOURCES.txt" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks.egg-info/SOURCES.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +163,7 @@
       <workItem from="1680111543471" duration="9210000" />
       <workItem from="1680206407082" duration="4666000" />
       <workItem from="1680220694251" duration="720000" />
-      <workItem from="1680286699378" duration="3192000" />
+      <workItem from="1680286699378" duration="5090000" />
     </task>
     <servers />
   </component>
