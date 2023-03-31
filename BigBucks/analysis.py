@@ -3,8 +3,8 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from .Packages.efficient_frontier import get_ef, get_port_info
-from .Packages.get_weights import get_portfolio_weights
+from Packages.efficient_frontier import get_ef, get_port_info
+from Packages.get_weights import get_portfolio_weights
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 
