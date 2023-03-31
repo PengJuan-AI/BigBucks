@@ -3,7 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from Packages.live_data_processor import get_company_name,get_company_shares, get_live_price, get_historical_data
+from .Packages.live_data_processor import get_company_name,get_company_shares, get_live_price, get_historical_data
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
