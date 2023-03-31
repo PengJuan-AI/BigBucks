@@ -4,8 +4,8 @@ import pandas as pd
 def get_portfolio_weights(id):
     weights = {}
     db = get_db()
-    pf = db.execute("SELECT symbol, value from portfolio WHERE userid=?",(id,))
-
+    pf = db.execute("SELECT symbol, value from portfolio WHERE userid=?",(id,)).fetchall()
+    print(pf)
     if not pf:
         return None
     else:

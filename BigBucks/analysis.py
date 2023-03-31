@@ -41,7 +41,6 @@ def ef():
             'sharpe': round(sharpe,2)
         }
 
-
     return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info, error=error)
 
 # market
