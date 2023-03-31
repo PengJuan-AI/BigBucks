@@ -3,6 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
+from efficient_frontier import get_ef, get_port_info
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 
@@ -10,7 +11,24 @@ bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 @bp.route('/ef', methods=('GET','POST'))
 @login_required
 def ef():
-    return render_template('analysis/ef.html')
+    id = g.user['userid']
+    weights, returns, vols = get_ef(id)
+
+    efficient_frontier = {
+        'weights': list(weights),
+        'returns': list(returns),
+        'volatilities': list(vols)
+    }
+    r, v, sharpe = get_port_info(id)
+
+    port_info = {
+        'port_return': round(r,2),
+        'port_vol': round(v,2),
+        'sharpe': round(sharpe,2)
+    }
+
+
+    return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info)
 
 # market
 @bp.route('/market', methods=('GET','POST'))
@@ -32,7 +50,7 @@ def get_hist_data(symbol):
 
     if request.method=='POST':
         hist = db.execute("SELECT strftime('%Y-%m-%d',history_date),round(close,2) FROM assets_data WHERE symbol=?"
-                      "ORDER BY history_date DESC",(symbol,)).fetchall()
+                      "ORDER BY history_date ASC",(symbol,)).fetchall()
         import pandas as pd
         df = pd.DataFrame(hist, columns=['date','price'])
         data = {

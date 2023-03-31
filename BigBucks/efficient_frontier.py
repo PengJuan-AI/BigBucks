@@ -58,8 +58,9 @@ def cal_port_volatility(weight, cov):
     return np.sqrt(((weight.dot(cov)).dot(weight.T)))
 
 def get_sharpe(r,v):
-    r_free = 0.03
-    return (r-r_free)/v
+    # r_free = 0.03
+    return r/v
+
 def draw(R,V):
     import matplotlib.pyplot as plt
 
@@ -68,7 +69,24 @@ def draw(R,V):
     plt.xlabel('Volatility')
     plt.ylabel('Return')
     plt.show()
-    
+
+def get_port_info(id):
+    portfolio = get_portfolio_weights(id)
+    weights = []
+    r = []
+    for symbol in portfolio.keys():
+        weights.append(portfolio[symbol])
+        r.append(cal_avg_return(cal_returns(symbol)))
+    weights = np.array(weights)
+    r = np.array(r)
+    df = pd.DataFrame(data=portfolio, index=range(len(portfolio)))
+
+    port_r = cal_port_return(weights,r)
+    port_v = cal_port_volatility(weights, cal_cov(df))
+    sharpe = get_sharpe(port_r, port_v)
+
+    return port_r,port_v,sharpe
+
 def get_ef(id):
     # db = get_db()
     r = []
@@ -104,6 +122,9 @@ def efficient_frontier(df, num, r):
     port_return = np.zeros(num)
     port_vol = np.zeros(num)
     weights = np.zeros((num, len(df.columns)))
+    # port_return = []
+    # port_vol = []
+    # weights = []
     covar = df.cov()
     print("w0: ", w0)
 
@@ -119,11 +140,13 @@ def efficient_frontier(df, num, r):
         weights[i,:] = result.x
         port_return[i] = re
         port_vol[i] = cal_port_volatility(result.x, covar)
-
+        # weights.append(result.x)
+        # port_return.append(re)
+        # port_vol.append(cal_port_volatility(result.x, covar))
     # print("Min_weight: ",res.x)
-    print("weights:", weights)
-    print("port_re:", port_return)
-    print("port_vol:", port_vol)
+    # print("weights:", weights)
+    # print("port_re:", port_return)
+    # print("port_vol:", port_vol)
 
     return weights,port_return,port_vol
 

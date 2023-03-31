@@ -45,5 +45,16 @@ def test_ef(auth, client, app):
                               'action': 'buy'})
         W,R,V = get_ef(1)
         assert W is not None
-        assert V.shape[0] == 100
+        assert len(V) == 100
         assert np.amax(R) < 1
+
+def test_ef_bp(auth, client, app):
+    auth.login()
+    symbols = ['AAPL', 'TSLA', 'MSFT', 'GM']
+
+    with app.app_context():
+        for s in symbols:
+            client.post('/order/buy',
+                                   data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,'action': 'buy'})
+
+        assert client.get('analysis/ef').status_code == 200
