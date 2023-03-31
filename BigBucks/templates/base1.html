@@ -45,7 +45,7 @@
         <!-- Sidebar toggle button -->
         <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"></a>
         <div class="navbar-custom-menu">
-          {% if session %}
+          {% if session.user_name %}
           <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
               <!-- Menu Toggle Button -->
@@ -93,7 +93,7 @@
 
         <!-- Sidebar user panel -->
         <div class="user-panel">
-          {% if session %}
+          {% if session.user_name %}
           <div class="pull-left image">
             <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
           </div>

@@ -3,36 +3,73 @@
 {% block title %}Home{% endblock %}
 
 {% block main_body %}
-<style>
-.bgimg{
-    opacity:100%;
-    height:100%;
-    background-position:center;
-    background-size:cover;
-    position:relative;
-    color:white;
-}
-.topleft{
-    position:absolute;
-    top:0;
-}
-.middle-message{
-    position:absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-img {
-    max-width: 100%;
-    height: auto;
-}
-</style>
-<div class="bgimg">
-    <div class="topleft">
-    <div class="middle-message">
-        <h1 style="color:white;font-family:'Josefin Sans', sans-serif;font-size: 75px;"><strong>Welcome, Admin</strong></h1>
+<section class="content-header">
+    <h1>
+        Admin Home Page
+    </h1>
+</section>
+
+<!-- Main content -->
+<section class="content container-fluid">
+
+    <!-- Blue box -->
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{ user_num }}</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-ios-people"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Green box -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ total_balance }}</h3>
+                    <p>Total Balance of All Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-social-usd"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yellow box -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ portfolio_data.asset }}</h3>
+                    <p>Total Stocks of All Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-connection-bars"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Red box -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>{{ portfolio_data.shares }}</h3>
+                    <p>Total Shares of All Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-clipboard"></i>
+                </div>
+            </div>
+        </div>
+
     </div>
-    </div>
-</div>
+
+</section>
 {% endblock %}
