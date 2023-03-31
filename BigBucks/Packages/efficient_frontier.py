@@ -70,8 +70,8 @@ def draw(R,V):
     plt.ylabel('Return')
     plt.show()
 
-def get_port_info(id):
-    portfolio = get_portfolio_weights(id)
+def get_port_info(portfolio):
+    # portfolio = get_portfolio_weights(id)
     weights = []
     r = []
     for symbol in portfolio.keys():
@@ -79,7 +79,9 @@ def get_port_info(id):
         r.append(cal_avg_return(cal_returns(symbol)))
     weights = np.array(weights)
     r = np.array(r)
+    # print(portfolio)
     df = pd.DataFrame(data=portfolio, index=range(len(portfolio)))
+    # df = pd.DataFrame(data=portfolio)
 
     port_r = cal_port_return(weights,r)
     port_v = cal_port_volatility(weights, cal_cov(df))
@@ -87,18 +89,19 @@ def get_port_info(id):
 
     return port_r,port_v,sharpe
 
-def get_ef(id):
+def get_ef(portfolio):
     # db = get_db()
-    r = []
-    portfolio = get_portfolio_weights(id)
+    r = {}
+    avg_r = []
+    # portfolio = get_portfolio_weights(id)
     for symbol in portfolio.keys():
-        portfolio[symbol] = list(cal_returns(symbol)[symbol])
-        r.append(cal_avg_return(cal_returns(symbol)))
+        r[symbol] = list(cal_returns(symbol)[symbol])
+        avg_r.append(cal_avg_return(cal_returns(symbol)))
         
-    df = pd.DataFrame(data=portfolio)
+    df = pd.DataFrame(data=r)
     # print("Portfolio: \n", df)
-    print("r:\n",r)
-    W,R,V = efficient_frontier(df,100, r)
+    # print("r:\n",)
+    W,R,V = efficient_frontier(df,100, avg_r)
     # draw(R,V)
     return W,R,V
 
