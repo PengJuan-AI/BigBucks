@@ -3,7 +3,12 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
+<<<<<<< HEAD
 from .efficient_frontier import get_ef, get_port_info
+=======
+from Packages.efficient_frontier import get_ef, get_port_info
+from Packages.get_weights import get_portfolio_weights
+>>>>>>> 458de205139993e9193e3b0f126406f10eb5cad9
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 
@@ -12,23 +17,35 @@ bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 @login_required
 def ef():
     id = g.user['userid']
-    weights, returns, vols = get_ef(id)
+    port = get_portfolio_weights(id)
+    error = None
+    if not port:
+        efficient_frontier = None
+        port_info = {
+            'port_return': 0,
+            'port_vol': 0,
+            'sharpe': 0
+        }
+        error = "Please add asset into your portfolio."
+    else:
+        print("Initial")
+        print(port)
+        weights, returns, vols = get_ef(port)
+        print("Second")
+        print(port)
+        r, v, sharpe = get_port_info(port)
+        efficient_frontier = {
+            'weights': list(weights),
+            'returns': list(returns),
+            'volatilities': list(vols)
+        }
+        port_info = {
+            'port_return': round(r,2),
+            'port_vol': round(v,2),
+            'sharpe': round(sharpe,2)
+        }
 
-    efficient_frontier = {
-        'weights': list(weights),
-        'returns': list(returns),
-        'volatilities': list(vols)
-    }
-    r, v, sharpe = get_port_info(id)
-
-    port_info = {
-        'port_return': round(r,2),
-        'port_vol': round(v,2),
-        'sharpe': round(sharpe,2)
-    }
-
-
-    return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info)
+    return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info, error=error)
 
 # market
 @bp.route('/market', methods=('GET','POST'))
