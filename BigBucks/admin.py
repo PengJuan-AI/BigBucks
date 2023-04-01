@@ -4,6 +4,7 @@ from flask import (
 from werkzeug.security import generate_password_hash
 from .admin_auth import admin_login_required
 from .db import get_db
+from .Packages.get_weights import get_all_weights
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -77,3 +78,9 @@ def view_admins():
     db = get_db()
     admins = db.execute("SELECT adminid, admin_name FROM admin")
     return render_template("admin/view_admins.html",admins=admins)
+
+@bp.route('/risk_return')
+@admin_login_required
+def risk_return():
+    get_all_weights()
+    pass

@@ -1,5 +1,18 @@
 from BigBucks.db import get_db
 import pandas as pd
+import numpy as np
+
+def get_all_weights():
+    weights = {}
+    db = get_db()
+    pf = db.execute("SELECT symbol, sum(value) from portfolio GROUP BY symbol", (id,)).fetchall()
+
+    if not pf:
+        return None
+    else:
+        total_value = np.sum(pf[1])
+        print(total_value)
+
 
 def get_portfolio_weights(id):
     weights = {}
