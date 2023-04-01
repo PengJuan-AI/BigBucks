@@ -17,8 +17,7 @@ def get_all_weights():
         print(df)
         weights = df.set_index('Symbol')['weights'].to_dict()
 
-        print(weights)
-
+    return weights
 
 def get_portfolio_weights(id):
     weights = {}

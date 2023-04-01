@@ -91,3 +91,10 @@ def risk_return():
         r, v, sharpe = get_port_info(portfolio)
 
     return redirect(url_for("admin.home"))
+
+@bp.route('/today_orders')
+@admin_login_required
+def today_orders():
+
+
+    return redirect(url_for("admin.home"))
