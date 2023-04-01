@@ -6,6 +6,7 @@ from .admin_auth import admin_login_required
 from .db import get_db
 from .Packages.get_weights import get_all_weights
 from .Packages.efficient_frontier import get_ef,get_port_info
+import datetime
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -95,6 +96,21 @@ def risk_return():
 @bp.route('/today_orders')
 @admin_login_required
 def today_orders():
+    db = get_db()
+    today = datetime.date.today()
+    # print(today)
+    info = {}
+    result = db.execute("SELECT * FROM orders WHERE order_date==?",(today,)).fetchall()
+
+    if not result:
+        error = "No users buy any asset today."
+    else:
+        num = 0
+        for order in result:
+            num+=1
+            info[num] = list(order)
+
+        print(info)
 
 
     return redirect(url_for("admin.home"))
