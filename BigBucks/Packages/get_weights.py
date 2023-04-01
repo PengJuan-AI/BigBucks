@@ -5,7 +5,7 @@ import numpy as np
 def get_all_weights():
     weights = {}
     db = get_db()
-    pf = db.execute("SELECT symbol, sum(value) from portfolio GROUP BY symbol", (id,)).fetchall()
+    pf = db.execute("SELECT symbol, sum(value) from portfolio GROUP BY symbol").fetchall()
 
     if not pf:
         return None

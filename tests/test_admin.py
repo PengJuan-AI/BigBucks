@@ -5,5 +5,10 @@ from BigBucks.db import get_db
 import numpy as np
 from BigBucks.Packages.get_weights import get_all_weights
 
-def test_risk_return(auth):
+def test_risk_return(auth, app):
     auth.login_admin()
+    auth.login()
+
+    with app.app_context():
+        assert get_all_weights() is None
+
