@@ -14,7 +14,7 @@ def home():
     db = get_db()
     user_num = db.execute("SELECT COUNT(*) FROM user").fetchone()
     total_balance = db.execute("SELECT SUM(balance) FROM balance").fetchone()
-    portfolio_data = db.execute("SELECT COUNT(*), SUM(shares) FROM portfolio").fetchone()
+    portfolio_data = db.execute("SELECT COUNT(DISTINCT symbol), SUM(shares) FROM portfolio").fetchone()
     # do not show none
     if not total_balance[0]:
         num_t_balance = 0
