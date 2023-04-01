@@ -10,8 +10,10 @@ def get_all_weights():
     if not pf:
         return None
     else:
-        total_value = np.sum(pf[1])
+        df = pd.DataFrame(pf, columns=['Symbol', 'Value'])
+        total_value = np.sum(df['Value'])
         print(total_value)
+
 
 
 def get_portfolio_weights(id):

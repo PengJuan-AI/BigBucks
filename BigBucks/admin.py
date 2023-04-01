@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash
 from .admin_auth import admin_login_required
 from .db import get_db
 from .Packages.get_weights import get_all_weights
+from .Packages.efficient_frontier import get_ef,get_port_info
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -82,5 +83,11 @@ def view_admins():
 @bp.route('/risk_return')
 @admin_login_required
 def risk_return():
-    get_all_weights()
-    pass
+    portfolio = get_all_weights()
+    if not portfolio:
+        error = "Not users buy any assets yet."
+    else:
+        weights, returns, vols =  get_ef(portfolio)
+        r, v, sharpe = get_port_info(portfolio)
+
+    return redirect(url_for("admin.home"))
