@@ -13,7 +13,11 @@ def get_all_weights():
         df = pd.DataFrame(pf, columns=['Symbol', 'Value'])
         total_value = np.sum(df['Value'])
         print(total_value)
+        df['weights'] = round(df['Value']/total_value,2)
+        print(df)
+        weights = df.set_index('Symbol')['weights'].to_dict()
 
+        print(weights)
 
 
 def get_portfolio_weights(id):
