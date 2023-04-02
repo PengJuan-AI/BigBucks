@@ -1,12 +1,10 @@
-# Sprint3 plan
+# Sprint4 plan
 
-### User Portfolio Analysis
-1. return profile
-   1. return profile templates
-   2. return profile blueprints
-   3. js
-2. efficient frontier
-   1. templates
-   2. blueprint
-   3. efficient frontier function
-   4. js to draw charts
+### administrator interface
+1. analyze all users portfolio with risk-return profile
+2. track current market orders
+
+### user interface
+1.advanced charts for users: 7 charts
+2. search function for order 
+   1. users can search asset they want to buy by either name or symbol
