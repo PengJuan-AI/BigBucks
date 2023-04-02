@@ -118,7 +118,7 @@ def today_orders():
     # info = {}
     info = []
     error = None
-    result = db.execute("SELECT * FROM orders WHERE order_date==?",(today,)).fetchall()
+    result = db.execute("SELECT * FROM orders WHERE order_date=?",(today,)).fetchall()
 
     if not result:
         error = "No users buy any asset today."
@@ -132,3 +132,39 @@ def today_orders():
         print(info)
 
     return render_template("admin/today_orders.html",info=info,error=error)
+
+@bp.route('/account_settings', methods=('GET','POST'))
+@admin_login_required
+def account_settings():
+    db = get_db()
+    admin_id = session["admin_id"]
+    ori_admin = db.execute("SELECT admin_name FROM admin WHERE adminid = ?",(admin_id,)).fetchone()
+    if request.method == "POST":
+        admin_name = request.form["admin_name"]
+        password = request.form["password"]
+        print(admin_name,password)
+        error = None
+
+        if not admin_name:
+            error = "Admin name is required"
+        elif not password:
+            error = "Password is required"
+
+        if error is None:
+            try:
+                db.execute(
+                    "UPDATE admin SET admin_name = ?, password = ? WHERE adminid = ?",
+                    (admin_name, generate_password_hash(password), admin_id,)
+                )
+                db.commit()
+            except db.IntegrityError:
+                error = f"Admin name {admin_name} is occupied!"
+            else:
+                info = "Successfully saved changes!"
+                return render_template("admin/edit_acnt.html",info=info,admin_name=admin_name)
+
+        flash(error)
+        return render_template("admin/edit_acnt.html",error=error,admin_name=ori_admin[0])
+
+    else:
+        return render_template("admin/edit_acnt.html",admin_name=ori_admin[0])
