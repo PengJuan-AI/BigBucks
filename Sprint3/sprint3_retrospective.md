@@ -23,4 +23,6 @@ Challenges:
 7.  Bugs appear when combining all our works
 8.  Have to change database during developement and found out coupling problem
 9. Lack of proficiency of using git
+10. Not sure of the formula to calculate Figure 7.1 of Balch
+11. Often encounter merge conflict
 
