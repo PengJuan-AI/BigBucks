@@ -7,7 +7,11 @@ Successes:
 6.	implemented the design and successfully created pages for signing in and up, showing transaction records, and placing buy and sell orders
 7.	added events on website pages to improve the usability
 8.	transferred data between the frontend and the backend, and successfully showed user’s data on the frontend
-9.	
+9.	designed the user interfaces for administrators
+10.     realized the required functions for administrators, including generating the risk-return profile of all stocks held by account holders, listing stocks across all users, and listing the summary of current day’s market orders across all users
+11.     realized other functions for administrators, including signing in, editing the account information of the current administrator, adding new administrators, and viewing the data of balance across all users
+12.     allowed account holders to edit the information in their account
+
 
 Challenges:
 1.	API doesn’t work
