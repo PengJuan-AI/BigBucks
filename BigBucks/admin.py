@@ -77,6 +77,17 @@ def view_users():
     ORDER BY u.userid")
     return render_template("admin/view_users.html",users=users)
 
+# view user stock data
+@bp.route('/view_stocks')
+@admin_login_required
+def view_stocks():
+    db = get_db()
+    stocks = db.execute("SELECT symbol, SUM(shares) as ttl_shares\
+    FROM portfolio \
+    GROUP BY symbol \
+    ORDER BY ttl_shares")
+    return render_template("admin/view_stocks.html",stocks=stocks)
+
 # view admin data
 @bp.route('/view_admins')
 @admin_login_required
