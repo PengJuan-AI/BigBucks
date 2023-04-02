@@ -142,7 +142,6 @@ def account_settings():
     if request.method == "POST":
         admin_name = request.form["admin_name"]
         password = request.form["password"]
-        print(admin_name,password)
         error = None
 
         if not admin_name:
@@ -161,6 +160,7 @@ def account_settings():
                 error = f"Admin name {admin_name} is occupied!"
             else:
                 info = "Successfully saved changes!"
+                session["admin_name"] = admin_name
                 return render_template("admin/edit_acnt.html",info=info,admin_name=admin_name)
 
         flash(error)
