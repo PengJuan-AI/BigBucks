@@ -70,7 +70,11 @@ def add_admin():
 @admin_login_required
 def view_users():
     db = get_db()
-    users = db.execute("SELECT userid, username FROM user")
+    users = db.execute("SELECT u.userid, u.username, b.balance \
+    FROM user AS u \
+    INNER JOIN balance AS b \
+    ON b.userid = u.userid \
+    ORDER BY u.userid")
     return render_template("admin/view_users.html",users=users)
 
 # view admin data
@@ -85,13 +89,14 @@ def view_admins():
 @admin_login_required
 def risk_return():
     portfolio = get_all_weights()
+    error = None
     if not portfolio:
         error = "Not users buy any assets yet."
     else:
         weights, returns, vols =  get_ef(portfolio)
         r, v, sharpe = get_port_info(portfolio)
-
-    return redirect(url_for("admin.home"))
+    
+    return render_template("admin/risk_return.html",rtn=r,vol=v,sharpe=sharpe,error=error)
 
 @bp.route('/today_orders')
 @admin_login_required
@@ -99,18 +104,20 @@ def today_orders():
     db = get_db()
     today = datetime.date.today()
     # print(today)
-    info = {}
+    # info = {}
+    info = []
+    error = None
     result = db.execute("SELECT * FROM orders WHERE order_date==?",(today,)).fetchall()
 
     if not result:
         error = "No users buy any asset today."
     else:
-        num = 0
+        # num = 0
         for order in result:
-            num+=1
-            info[num] = list(order)
+            # num+=1
+            # info[num] = list(order)
+            info.append(list(order))
 
         print(info)
 
-
-    return redirect(url_for("admin.home"))
+    return render_template("admin/today_orders.html",info=info,error=error)

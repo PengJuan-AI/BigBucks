@@ -1,0 +1,52 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Market Orders{% endblock %}
+
+{% block main_body %}
+<section class="content-header">
+    <h1>
+        Current Day's Market Orders
+    </h1>
+</section>
+
+<section class="content container-fluid">
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="box box-primary">
+                <div class="box-body table-responsive no-padding">
+                {% if error %}
+                <p class="text-center" style="color:red">{{ error }}</p>
+                {% else %}    
+                <form>
+                    <table class="table table-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>User ID</th>
+                            <th>Date</th>
+                            <th>Stock Symbol</th>
+                            <th>Shares</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for rowdata in info %}
+                        <tr>
+                            <td>{{ rowdata[0] }}</td>
+                            <td>{{ rowdata[2] }}</td>
+                            <td>{{ rowdata[1] }}</td>
+                            <td>{{ rowdata[3] }}</td>
+                            <td>{{ rowdata[4] }}</td>
+                            <td>{{ rowdata[5] }}</td>
+                            <td>{{ rowdata[6] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </form>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

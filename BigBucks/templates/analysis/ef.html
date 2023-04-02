@@ -7,7 +7,7 @@
     <div class="col-md-8 middle-box">
         <div class="box box-warning">
             <div class="box-header with-border text-center">
-            <h3 class="box-title"><strong>Efficient Frontier</strong></h3>
+                <h3 class="box-title"><strong>Efficient Frontier</strong></h3>
             </div>
             <div class="row">
                 <div class="col-sm-4 text-center">
@@ -25,11 +25,11 @@
             </div>
 
             <!-- for efficient frontier -->
-            <div id="ef" class="row">
+            <div id="ef" class="container-fluid text-center">
                 {% if error %}
-                    <div>{{ error }}</div>
+                <div style="color:red">{{ error }}</div>
                 {% endif %}
-            </div>    
+            </div>
         </div>
     </div>
 </div>
