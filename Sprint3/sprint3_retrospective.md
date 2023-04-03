@@ -11,6 +11,7 @@ Successes:
 10.     realized the required functions for administrators, including generating the risk-return profile of all stocks held by account holders, listing stocks across all users, and listing the summary of current day’s market orders across all users
 11.     realized other functions for administrators, including signing in, editing the account information of the current administrator, adding new administrators, and viewing the data of balance across all users
 12.     allowed account holders to edit the information in their account
+13.     Support the display of stock charts
 
 
 Challenges:
@@ -25,4 +26,5 @@ Challenges:
 9. Lack of proficiency of using git
 10. Not sure of the formula to calculate Figure 7.1 of Balch
 11. Often encounter merge conflict
+12. Tried out different image display tools
 
