@@ -34,3 +34,28 @@
     </div>
 </div>
 {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+
+<script>
+    var chart = echarts.init(document.getElementById("chart"));
+    chart.setOption({
+        title: {
+            text: 'Efficient Frontier',
+            left: 'center'
+        },
+        legend: {
+            bottom: 5
+        },
+        xAxis: {},
+        yAxis: {},
+        series: [
+            {
+                name: "Efficient Frontier",
+                symbolSize: 20,
+                data: [],
+                type: 'scatter'
+            }
+        ]
+    });
+
+</script>
