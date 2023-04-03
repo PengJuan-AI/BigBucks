@@ -41,7 +41,7 @@
 <script>
     // function draw_ef(){
         var chart = echarts.init(document.getElementById("ef"));
-        //var data = {{ ef['risk-return'] }};
+        var data = {{ ef['risk-return'] }};
         //console.log(data)
         var option = {
             title: {
@@ -51,13 +51,13 @@
             legend: {
                 bottom: 5
             },
-            xAxis: {},
-            yAxis: {},
+            xAxis: {min:data[1][0] },
+            yAxis: {min:data[1][1]},
             series: [
                 {
                     name: "Efficient Frontier",
-                    symbolSize: 20,
-                    data: {{ ef['risk-return'] }},
+                    symbolSize: 5,
+                    data: data,
                     type: 'scatter'
                 }
             ]
