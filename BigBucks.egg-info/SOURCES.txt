@@ -6970,12 +6970,17 @@ BigBucks/templates/base_admin.html
 BigBucks/templates/portfolio.html
 BigBucks/templates/utils.js
 BigBucks/templates/admin/add.html
+BigBucks/templates/admin/edit_acnt.html
 BigBucks/templates/admin/home.html
 BigBucks/templates/admin/login.html
+BigBucks/templates/admin/risk_return.html
+BigBucks/templates/admin/today_orders.html
 BigBucks/templates/admin/view_admins.html
+BigBucks/templates/admin/view_stocks.html
 BigBucks/templates/admin/view_users.html
 BigBucks/templates/analysis/ef.html
 BigBucks/templates/analysis/market.html
+BigBucks/templates/auth/account.html
 BigBucks/templates/auth/login.html
 BigBucks/templates/auth/register.html
 BigBucks/templates/order/buy.html

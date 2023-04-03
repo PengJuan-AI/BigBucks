@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/Packages/efficient_frontier.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/Packages/efficient_frontier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/templates/analysis/ef.html" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/templates/analysis/ef.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +166,7 @@
       <workItem from="1680366504751" duration="8812000" />
       <workItem from="1680472161228" duration="2737000" />
       <workItem from="1680475354638" duration="343000" />
-      <workItem from="1680537542132" duration="4436000" />
+      <workItem from="1680537542132" duration="6791000" />
     </task>
     <servers />
   </component>
