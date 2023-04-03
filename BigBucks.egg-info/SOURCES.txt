@@ -15,6 +15,10 @@ BigBucks.egg-info/SOURCES.txt
 BigBucks.egg-info/dependency_links.txt
 BigBucks.egg-info/requires.txt
 BigBucks.egg-info/top_level.txt
+BigBucks/Packages/efficient_frontier.py
+BigBucks/Packages/get_weights.py
+BigBucks/Packages/live_data_processor.py
+BigBucks/Packages/static_data_processor.py
 BigBucks/static/.DS_Store
 BigBucks/static/package.json
 BigBucks/static/bower_components/.DS_Store
