@@ -33,12 +33,14 @@
         </div>
     </div>
 </div>
-{% endblock %}
+
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
 
 <script>
-    var chart = echarts.init(document.getElementById("chart"));
-    chart.setOption({
+    var chart = document.getElementById("ef");
+    var data = {{ ef['risk_return'] |safe }};
+    console.log(data)
+    var option = {
         title: {
             text: 'Efficient Frontier',
             left: 'center'
@@ -52,10 +54,12 @@
             {
                 name: "Efficient Frontier",
                 symbolSize: 20,
-                data: {{ ef.risk_return }},
+                data: data,
                 type: 'scatter'
             }
         ]
-    });
+    };
+    option && chart.setOption(option);
 
 </script>
+{% endblock %}
