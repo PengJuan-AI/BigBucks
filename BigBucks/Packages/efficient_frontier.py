@@ -145,7 +145,7 @@ def efficient_frontier(df, num, r):
         # port_vol[i] = cal_port_volatility(result.x, covar)
         port_risk_return.append([re, cal_port_volatility(result.x, covar)])
 
-    print("port_risk_return:", port_risk_return)
+    # print("port_risk_return:", port_risk_return)
 
     # return weights,port_return,port_vol, port_risk_return
     return weights, port_risk_return

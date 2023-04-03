@@ -25,9 +25,11 @@
             </div>
 
             <!-- for efficient frontier -->
-            <div id="ef" class="container-fluid text-center">
+            <div class="container-fluid text-center">
                 {% if error %}
-                <div style="color:red">{{ error }}</div>
+                    <div style="color:red">{{ error }}</div>
+                {% else %}
+                    <div id="ef"></div>
                 {% endif %}
             </div>
         </div>
@@ -37,29 +39,30 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
 
 <script>
-    var chart = document.getElementById("ef");
-    var data = {{ ef['risk_return'] |safe }};
-    console.log(data)
-    var option = {
-        title: {
-            text: 'Efficient Frontier',
-            left: 'center'
-        },
-        legend: {
-            bottom: 5
-        },
-        xAxis: {},
-        yAxis: {},
-        series: [
-            {
-                name: "Efficient Frontier",
-                symbolSize: 20,
-                data: data,
-                type: 'scatter'
-            }
-        ]
-    };
-    option && chart.setOption(option);
-
+    // function draw_ef(){
+        var chart = echarts.init(document.getElementById("ef"));
+        //var data = {{ ef['risk-return'] }};
+        //console.log(data)
+        var option = {
+            title: {
+                text: 'Efficient Frontier',
+                left: 'center'
+            },
+            legend: {
+                bottom: 5
+            },
+            xAxis: {},
+            yAxis: {},
+            series: [
+                {
+                    name: "Efficient Frontier",
+                    symbolSize: 20,
+                    data: {{ ef['risk-return'] }},
+                    type: 'scatter'
+                }
+            ]
+        };
+        option&&chart.setOption(option);
+    // }
 </script>
 {% endblock %}
