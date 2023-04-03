@@ -24,16 +24,15 @@ def ef():
         }
         error = "Please add asset into your portfolio."
     else:
-        print("Initial")
-        print(port)
-        weights, returns, vols = get_ef(port)
-        print("Second")
-        print(port)
+        # weights, returns, vols, risk_return = get_ef(port)
+        weights, risk_return = get_ef(port)
+
         r, v, sharpe = get_port_info(port)
         efficient_frontier = {
             'weights': list(weights),
-            'returns': list(returns),
-            'volatilities': list(vols)
+            # 'returns': list(returns),
+            # 'volatilities': list(vols),
+            'risk-return': list(risk_return)
         }
         port_info = {
             'port_return': round(r,2),
