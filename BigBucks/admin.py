@@ -102,12 +102,18 @@ def risk_return():
     portfolio = get_all_weights()
     error = None
     if not portfolio:
+        risk_re = 0
+        port_info = {
+            'rtn': 0,
+            'vol': 0,
+            'sharpe': 0
+        }
         error = "Not users buy any assets yet."
     else:
         weights, risk_re =  get_ef(portfolio)
         r, v, sharpe = get_port_info(portfolio)
     
-    return render_template("admin/risk_return.html",ef=risk_re,rtn=r,vol=v,sharpe=sharpe,error=error)
+    return render_template("admin/risk_return.html",ef=risk_re,info=port_info,error=error)
 
 @bp.route('/today_orders')
 @admin_login_required
