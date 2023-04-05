@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/BigBucks/Packages/Regression.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BigBucks/templates/admin/risk_return.html" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/templates/admin/risk_return.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BigBucks/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/analysis.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,6 +171,7 @@
       <workItem from="1680537542132" duration="8231000" />
       <workItem from="1680551241665" duration="641000" />
       <workItem from="1680551917512" duration="1492000" />
+      <workItem from="1680656644175" duration="3523000" />
     </task>
     <servers />
   </component>

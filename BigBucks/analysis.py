@@ -1,9 +1,10 @@
 from flask import (
     Blueprint, flash, g, jsonify, redirect, render_template, request, url_for
 )
+import pandas as pd
 from .auth import login_required
 from .db import get_db
-from .Packages.efficient_frontier import get_ef, get_port_info
+from .Packages.efficient_frontier import cal_returns, get_ef, get_port_info
 from .Packages.get_weights import get_portfolio_weights
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
@@ -54,6 +55,8 @@ def market():
 def portfolio():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
+    # index and asset return
+
     return render_template('portfolio.html',portfolio=portfolio)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
@@ -63,11 +66,14 @@ def get_hist_data(symbol):
     if request.method=='POST':
         hist = db.execute("SELECT strftime('%Y-%m-%d',history_date),round(close,2) FROM assets_data WHERE symbol=?"
                       "ORDER BY history_date ASC",(symbol,)).fetchall()
-        import pandas as pd
         df = pd.DataFrame(hist, columns=['date','price'])
         data = {
             'date': list(df['date']),
             'price': list(df['price'])
         }
+        stock_return = cal_returns(symbol)
+        # index_return = cal_returns('SPY')
+        print(stock_return)
+
         return jsonify(data)
         # return hist
