@@ -69,11 +69,11 @@ def get_hist_data(symbol):
         df = pd.DataFrame(hist, columns=['date','price'])
         data = {
             'date': list(df['date']),
-            'price': list(df['price'])
+            'price': list(df['price']),
+            'return': list(cal_returns(symbol)[symbol])
         }
-        stock_return = cal_returns(symbol)
         # index_return = cal_returns('SPY')
-        print(stock_return)
+        print(data)
 
         return jsonify(data)
         # return hist
