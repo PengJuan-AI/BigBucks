@@ -101,6 +101,7 @@ def get_ef(portfolio):
     df = pd.DataFrame(data=r)
     # W,R,V, risk_return = efficient_frontier(df,100, avg_r)
     W,risk_return = efficient_frontier(df, 100, avg_r)
+    draw(risk_return[0], risk_return[1])
 
     return W,risk_return
 
