@@ -57,6 +57,9 @@
             <div id="chart1" class="chart-div"></div>
             <div id="chart2" class="chart-div"></div>
             <div id="chart3" class="chart-div"></div>
+            <div id="chart4" class="chart-div"></div>
+            <div id="chart5" class="chart-div"></div>
+            <div id="chart6" class="chart-div"></div>
             <!-- <div id="chart3" class="chart-div"></div> -->
         </div>
     </div>
@@ -88,6 +91,9 @@
             draw_daily_price_movement(data, symbol);
             draw_daily_price_change(data, symbol);
             draw_scatter_graph(data, symbol);
+            draw_return_with_date_graph(data, symbol);
+            draw_return_scatter_plot(data, symbol);
+            draw_bar_diagram_of_return(data, symbol);
             });
         }
     function draw_historical_data(data, symbol) {
@@ -334,6 +340,137 @@ function linearRegression(x, y) {
     const intercept = (sumY - slope * sumX) / n;
 
     return { slope, intercept };
+}
+
+function draw_return_with_date_graph(data, symbol) {
+    var chart = echarts.init(document.getElementById("chart4"));
+            chart.setOption({
+                title: {
+                    text: 'Daily Return of ' + symbol,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    position: function (pt) {
+                    return [pt[0], '10%'];
+                    }
+                },
+                xAxis: {
+                type: "category",
+                data: data.date,
+                boundaryGap: false,
+                },
+                yAxis: {
+                type: "value"
+                },
+                dataZoom: [
+                    {
+                    type: 'inside',
+                    start: 0,
+                    end: 10
+                    },
+                    {
+                    start: 0,
+                    end: 10
+                    }
+                ],
+                series: [{
+                name: 'return',
+                data: data.return,
+                type: "line",
+                symbol: 'none'
+                }]
+            });
+}
+
+function draw_return_scatter_plot(data, symbol) {
+    const scatterData = data.return.slice(1, data.return.length - 1).map((value, index) => [data.return.slice(0, data.return.length - 2)[index], value]);
+
+    var chart = echarts.init(document.getElementById("chart4"));
+            chart.setOption({
+                title: {
+                    text: 'Return Scatter Plot of ' + symbol,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    position: function (pt) {
+                    return [pt[0], '10%'];
+                    }
+                },
+                xAxis: {
+                    type: "value",
+                    name: `${symbol} return(-1)`,
+                },
+                yAxis: {
+                    type: "value",
+                    name: `${symbol} return`,
+                },
+                dataZoom: [
+                    {
+                    type: 'inside',
+                    start: 0,
+                    end: 10
+                    },
+                    {
+                    start: 0,
+                    end: 10
+                    }
+                ],
+                series: [{
+                name: "Scatter",
+                type: "scatter",
+                data: scatterData,
+                symbolSize: 1,
+                }]
+            });
+}
+
+function prepare_histogram_data(data, numBins) {
+    const minValue = Math.min(...data);
+    const maxValue = Math.max(...data);
+    const binWidth = (maxValue - minValue) / numBins;
+
+    const bins = new Array(numBins).fill(0);
+    for (let i = 0; i < data.length; i++) {
+        const binIndex = Math.min(Math.floor((data[i] - minValue) / binWidth), numBins - 1);
+        bins[binIndex]++;
+    }
+
+    const binLabels = bins.map((_, i) => `${(minValue + binWidth * i).toFixed(2)} - ${(minValue + binWidth * (i + 1)).toFixed(2)}`);
+
+    return {bins, binLabels};
+}
+
+function draw_bar_diagram_of_return(data, symbol) {
+    const numBins = 25; 
+    const histogramData = prepare_histogram_data(data.return, numBins);
+
+    const chart = echarts.init(document.getElementById("chart4"));
+    chart.setOption({
+        title: {
+            text: `Histogram of ${symbol} Returns`,
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        xAxis: {
+            type: "category",
+            data: histogramData.binLabels
+        },
+        yAxis: {
+            type: "value"
+        },
+        series: [{
+            name: 'return',
+            data: histogramData.bins,
+            type: "bar"
+        }]
+    });
 }
 </script>
 {% endblock %}
