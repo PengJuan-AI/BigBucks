@@ -63,17 +63,25 @@ def portfolio():
 def get_hist_data(symbol):
     db = get_db()
 
-    if request.method=='POST':
-        hist = db.execute("SELECT strftime('%Y-%m-%d',history_date),round(close,2) FROM assets_data WHERE symbol=?"
-                      "ORDER BY history_date ASC",(symbol,)).fetchall()
-        df = pd.DataFrame(hist, columns=['date','price'])
+    if request.method == 'POST':
+        hist_symbol = db.execute("SELECT strftime('%Y-%m-%d', history_date) as date, round(close, 2) as price FROM assets_data WHERE symbol=? ORDER BY history_date ASC", (symbol,)).fetchall()
+        hist_SPY = db.execute("SELECT strftime('%Y-%m-%d', history_date) as SPY_date, round(close, 2) as SPY_price FROM assets_data WHERE symbol='SPY' ORDER BY history_date ASC").fetchall()
+
+        df_symbol = pd.DataFrame(hist_symbol, columns=['date', 'price'])
+        df_SPY = pd.DataFrame(hist_SPY, columns=['SPY_date', 'SPY_price'])
+
+        df = pd.merge(df_symbol, df_SPY, left_on='date', right_on='SPY_date')
+        df = df.drop(columns=['SPY_date'])
+
         data = {
             'date': list(df['date']),
             'price': list(df['price']),
-            'return': list(cal_returns(symbol)[symbol])
+            'price_SPY': list(df['SPY_price']),
+            'return': list(cal_returns(symbol)[symbol]),
+            'return_SPY': list(cal_returns('SPY')['SPY'])
         }
         # index_return = cal_returns('SPY')
-        print(data)
+        # print(data)
 
         return jsonify(data)
         # return hist

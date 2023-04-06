@@ -51,6 +51,12 @@
                 <p id="shares">Shares Available: </p>
             </div>
             <div id="chart" style="width: 600px; height: 400px;margin: 1rem auto;"></div>
+            <!-- <div id="chart2" style="width: 600px; height: 400px;margin: 1rem auto;"></div> -->
+        </div>
+        <div class="container">
+            <div id="chart1" class="chart-div"></div>
+            <div id="chart2" class="chart-div"></div>
+            <!-- <div id="chart3" class="chart-div"></div> -->
         </div>
     </div>
 </div>
@@ -75,7 +81,15 @@
             // 在 div 中绘制图表
             console.log(symbol);
             console.log(data);
-            var chart = echarts.init(document.getElementById("chart"));
+            console.log(data.return.length)
+            console.log(data.return_SPY.length)
+            draw_historical_data(data, symbol);
+            draw_daily_price_movement(data, symbol);
+            draw_daily_price_change(data, symbol);
+            });
+        }
+    function draw_historical_data(data, symbol) {
+        var chart = echarts.init(document.getElementById("chart"));
             chart.setOption({
                 title: {
                     text: 'Historical Data of ' + symbol,
@@ -114,7 +128,137 @@
                 symbol: 'none'
                 }]
             });
-            });
+    }
+
+    function draw_daily_price_movement(data, symbol) {
+    // Calculate daily price movement
+    let dailyPriceMovement = [];
+    const firstDayPrice = data.price[0];
+
+    let spyDailyPriceMovement = [];
+    const spyFirstDayPrice = data.price_SPY[0];
+
+    for (let i = 0; i < data.return.length; i++) {
+        dailyPriceMovement.push(data.price[i] / firstDayPrice);
+    }
+
+    for (let i = 0; i < data.return_SPY.length; i++) {
+        spyDailyPriceMovement.push(data.price_SPY[i] / spyFirstDayPrice);
+    }
+
+    // Initialize the chart with the Chart2 element
+    var chart = echarts.init(document.getElementById("chart1"));
+
+    // Configure and draw the chart
+    chart.setOption({
+        title: {
+            text: 'Daily Price Movement of ' + symbol,
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
             }
+        },
+        xAxis: {
+            type: "category",
+            data: data.date,
+            boundaryGap: false,
+        },
+        yAxis: {
+            type: "value"
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 10
+            },
+            {
+                start: 0,
+                end: 10
+            }
+        ],
+        series: [{
+            name: 'Daily Price Movement',
+            data: dailyPriceMovement,
+            type: "line",
+            smooth: true,
+            symbol: 'none'
+        },
+        {
+            name: 'SPY Daily Price Movement',
+            data: spyDailyPriceMovement,
+            type: "line",
+            smooth: true,
+            symbol: 'none'
+        }]
+    });
+}  
+
+function draw_daily_price_change(data, symbol) {
+    // Calculate daily price movement
+    let dailyPriceChange = [];
+    let spyDailyPriceChange = [];
+
+    for (let i = 1; i < data.price.length; i++) {
+        dailyPriceChange.push(data.price[i] / data.price[i - 1]);
+    }
+
+    for (let i = 1; i < data.price_SPY.length; i++) {
+        spyDailyPriceChange.push(data.price_SPY[i] / data.price_SPY[i - 1]);
+    }
+
+    // Initialize the chart with the Chart2 element
+    var chart = echarts.init(document.getElementById("chart2"));
+
+    // Configure and draw the chart
+    chart.setOption({
+        title: {
+            text: 'Daily Price Change of ' + symbol,
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        xAxis: {
+            type: "category",
+            data: data.date,
+            boundaryGap: false,
+        },
+        yAxis: {
+            type: "value"
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 10
+            },
+            {
+                start: 0,
+                end: 10
+            }
+        ],
+        series: [{
+            name: 'Daily Price Change',
+            data: dailyPriceChange,
+            type: "line",
+            smooth: true,
+            symbol: 'none'
+        },
+        {
+            name: 'SPY Daily Price Change',
+            data: spyDailyPriceChange,
+            type: "line",
+            smooth: true,
+            symbol: 'none'
+        }]
+    });
+}
 </script>
 {% endblock %}
