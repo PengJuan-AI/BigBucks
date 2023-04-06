@@ -56,6 +56,7 @@
         <div class="container">
             <div id="chart1" class="chart-div"></div>
             <div id="chart2" class="chart-div"></div>
+            <div id="chart3" class="chart-div"></div>
             <!-- <div id="chart3" class="chart-div"></div> -->
         </div>
     </div>
@@ -86,6 +87,7 @@
             draw_historical_data(data, symbol);
             draw_daily_price_movement(data, symbol);
             draw_daily_price_change(data, symbol);
+            draw_scatter_graph(data, symbol);
             });
         }
     function draw_historical_data(data, symbol) {
@@ -124,7 +126,6 @@
                 name: 'price',
                 data: data.price,
                 type: "line",
-                smooth: true,
                 symbol: 'none'
                 }]
             });
@@ -184,14 +185,12 @@
             name: 'Daily Price Movement',
             data: dailyPriceMovement,
             type: "line",
-            smooth: true,
             symbol: 'none'
         },
         {
             name: 'SPY Daily Price Movement',
             data: spyDailyPriceMovement,
             type: "line",
-            smooth: true,
             symbol: 'none'
         }]
     });
@@ -225,6 +224,9 @@ function draw_daily_price_change(data, symbol) {
                 return [pt[0], '10%'];
             }
         },
+        // legend: {
+        //     data: [symbol, 'SPY']
+        // },
         xAxis: {
             type: "category",
             data: data.date,
@@ -248,17 +250,90 @@ function draw_daily_price_change(data, symbol) {
             name: 'Daily Price Change',
             data: dailyPriceChange,
             type: "line",
-            smooth: true,
             symbol: 'none'
         },
         {
             name: 'SPY Daily Price Change',
             data: spyDailyPriceChange,
             type: "line",
-            smooth: true,
             symbol: 'none'
         }]
     });
+}
+
+function draw_scatter_graph(data, symbol) {
+    const regressionModel = linearRegression(data.return_SPY, data.return);
+    const slope = regressionModel.slope;
+    const intercept = regressionModel.intercept;
+
+    const xMin = Math.min(...data.return_SPY);
+    const xMax = Math.max(...data.return_SPY);
+    const lineStart = [xMin, xMin * slope + intercept];
+    const lineEnd = [xMax, xMax * slope + intercept];
+
+    const scatterData = data.return.map((value, index) => [data.return_SPY[index], value]);
+
+    const chart = echarts.init(document.getElementById("chart3"));
+
+    chart.setOption({
+        title: {
+            text: `Scatter Plot of ${symbol} Returns vs SPY Returns`,
+            left: "center",
+        },
+        tooltip: {
+            trigger: "axis",
+            axisPointer: {
+                type: "cross",
+            },
+        },
+        xAxis: {
+            type: "value",
+            name: "SPY Returns",
+        },
+        yAxis: {
+            type: "value",
+            name: `${symbol} Returns`,
+        },
+        series: [
+            {
+                name: "Scatter",
+                type: "scatter",
+                data: scatterData,
+                symbolSize: 1,
+            },
+            {
+                name: "Linear Regression",
+                type: "line",
+                data: [lineStart, lineEnd],
+                markLine: {
+                    label: {
+                        show: true,
+                        formatter: "y = " + slope.toFixed(2) + "x + " + intercept.toFixed(2),
+                    },
+                },
+            },
+        ],
+    });
+}
+
+function linearRegression(x, y) {
+    const n = x.length;
+    let sumX = 0;
+    let sumY = 0;
+    let sumXY = 0;
+    let sumX2 = 0;
+
+    for (let i = 0; i < n; i++) {
+        sumX += x[i];
+        sumY += y[i];
+        sumXY += x[i] * y[i];
+        sumX2 += x[i] * x[i];
+    }
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    return { slope, intercept };
 }
 </script>
 {% endblock %}
