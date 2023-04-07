@@ -50,30 +50,83 @@
                 <p id="symbol">Asset Symbol: </p>
                 <p id="shares">Shares Available: </p>
             </div>
-            <div id="chart" style="width: 600px; height: 400px;margin: 1rem auto;"></div>
+            <div id="chartWrapper" style="display: none;">
+                <select id="chartSelector">
+                    <option value="chart1">Historical Data</option>
+                    <option value="chart2">Daily Price Movement</option>
+                    <option value="chart3">Daily Price Change</option>
+                    <option value="chart4">Scatter Graph</option>
+                    <option value="chart5">Daily Return</option>
+                    <option value="chart6">Scatter Plot of Returns</option>
+                    <option value="chart7">Histogram of Returns</option>
+                </select>
+                <div id="chartContainer" style="width: 600px; height: 400px;margin: 1rem auto;"></div>
+            </div>
+            <!-- <div id="chart" style="width: 600px; height: 400px;margin: 1rem auto;"></div> -->
             <!-- <div id="chart2" style="width: 600px; height: 400px;margin: 1rem auto;"></div> -->
         </div>
-        <div class="container">
+        <!-- <div class="container">
             <div id="chart1" class="chart-div"></div>
             <div id="chart2" class="chart-div"></div>
             <div id="chart3" class="chart-div"></div>
             <div id="chart4" class="chart-div"></div>
             <div id="chart5" class="chart-div"></div>
             <div id="chart6" class="chart-div"></div>
-            <!-- <div id="chart3" class="chart-div"></div> -->
-        </div>
+            <div id="chart3" class="chart-div"></div> -->
+        <!-- </div> --> 
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
 
 <script>
+    let currentData = null;
+    let currentSymbol = null;
+    var chart = echarts.init(document.getElementById("chartContainer"));
+
     function pass_shares(symbol, shares){
         var sy = document.getElementById('symbol');
         sy.innerHTML = "Asset Symbol: " + symbol;
         var sh = document.getElementById('shares');
         sh.innerHTML = "Shares Available: " + shares;
     }
+
+    document.getElementById("chartSelector").addEventListener("change", function(event) {
+        const selectedChart = event.target.value;
+        const chartContainer = document.getElementById("chartContainer");
+
+        // 在每次选择时清除先前的图表
+        // chartContainer.innerHTML = '';
+
+        // 根据选择的值调用相应的绘图函数
+        switch (selectedChart) {
+            case "chart1":
+                console.log("historical data");
+                draw_historical_data(currentData, currentSymbol);
+                break;
+            case "chart2":
+                console.log(currentData);
+                draw_daily_price_movement(currentData, currentSymbol);
+                break;
+            case "chart3":
+                draw_daily_price_change(currentData, currentSymbol);
+                break;
+            case "chart4":
+                draw_scatter_graph(currentData, currentSymbol);
+                break;
+            case "chart5":
+                draw_return_with_date_graph(currentData, currentSymbol);
+                break;
+            case "chart6":
+                draw_return_scatter_plot(currentData, currentSymbol);
+                break;
+            case "chart7":
+                draw_bar_diagram_of_return(currentData, currentSymbol);
+                break;
+            default:
+                break;
+        }
+    });
 
     function display_stock_info(symbol, shares) {
         pass_shares(symbol, shares);
@@ -83,21 +136,25 @@
             .then(response => response.json())
             .then(data => {
             // 在 div 中绘制图表
-            console.log(symbol);
-            console.log(data);
-            console.log(data.return.length)
-            console.log(data.return_SPY.length)
-            draw_historical_data(data, symbol);
-            draw_daily_price_movement(data, symbol);
-            draw_daily_price_change(data, symbol);
-            draw_scatter_graph(data, symbol);
-            draw_return_with_date_graph(data, symbol);
-            draw_return_scatter_plot(data, symbol);
-            draw_bar_diagram_of_return(data, symbol);
+            currentData = data;
+            currentSymbol = symbol;
+            // console.log(data.return.length)
+            // console.log(data.return_SPY.length)
+            // draw_historical_data(data, symbol);
+            // draw_daily_price_movement(data, symbol);
+            // draw_daily_price_change(data, symbol);
+            // draw_scatter_graph(data, symbol);
+            // draw_return_with_date_graph(data, symbol);
+            // draw_return_scatter_plot(data, symbol);
+            // draw_bar_diagram_of_return(data, symbol);
+            document.getElementById("chartWrapper").style.display = "block";
+
+            // 绘制默认图表
+            draw_historical_data(currentData, currentSymbol);
             });
         }
     function draw_historical_data(data, symbol) {
-        var chart = echarts.init(document.getElementById("chart"));
+        // var chart = echarts.init(document.getElementById("chartContainer"));
             chart.setOption({
                 title: {
                     text: 'Historical Data of ' + symbol,
@@ -154,7 +211,7 @@
     }
 
     // Initialize the chart with the Chart2 element
-    var chart = echarts.init(document.getElementById("chart1"));
+    // var chart = echarts.init(document.getElementById("chartContainer"));
 
     // Configure and draw the chart
     chart.setOption({
@@ -216,7 +273,7 @@ function draw_daily_price_change(data, symbol) {
     }
 
     // Initialize the chart with the Chart2 element
-    var chart = echarts.init(document.getElementById("chart2"));
+    // var chart = echarts.init(document.getElementById("chartContainer"));
 
     // Configure and draw the chart
     chart.setOption({
@@ -279,7 +336,7 @@ function draw_scatter_graph(data, symbol) {
 
     const scatterData = data.return.map((value, index) => [data.return_SPY[index], value]);
 
-    const chart = echarts.init(document.getElementById("chart3"));
+    // const chart = echarts.init(document.getElementById("chartContainer"));
 
     chart.setOption({
         title: {
@@ -343,7 +400,7 @@ function linearRegression(x, y) {
 }
 
 function draw_return_with_date_graph(data, symbol) {
-    var chart = echarts.init(document.getElementById("chart4"));
+    // var chart = echarts.init(document.getElementById("chartContainer"));
             chart.setOption({
                 title: {
                     text: 'Daily Return of ' + symbol,
@@ -386,7 +443,7 @@ function draw_return_with_date_graph(data, symbol) {
 function draw_return_scatter_plot(data, symbol) {
     const scatterData = data.return.slice(1, data.return.length - 1).map((value, index) => [data.return.slice(0, data.return.length - 2)[index], value]);
 
-    var chart = echarts.init(document.getElementById("chart4"));
+    // var chart = echarts.init(document.getElementById("chartContainer"));
             chart.setOption({
                 title: {
                     text: 'Return Scatter Plot of ' + symbol,
@@ -446,7 +503,7 @@ function draw_bar_diagram_of_return(data, symbol) {
     const numBins = 25; 
     const histogramData = prepare_histogram_data(data.return, numBins);
 
-    const chart = echarts.init(document.getElementById("chart4"));
+    // const chart = echarts.init(document.getElementById("chartContainer"));
     chart.setOption({
         title: {
             text: `Histogram of ${symbol} Returns`,
