@@ -1,0 +1,58 @@
+{% extends "base1.html" %}
+
+{% block title %}Account{% endblock %}
+
+{% block main_body %}
+<section class="content-header">
+    <h1>
+        Account Settings
+    </h1>
+
+</section>
+
+<section class="content container-fluid">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Edit Account</span>
+                    </h2>
+                </div>
+                {% if error %}
+                <p class="text-center" style="color:red">{{ error }}</p>
+                {% elif info %}
+                <p class="text-center" style="color:green">{{ info }}</p>
+                {% endif %}
+                <form class="form-horizontal" action="{{ url_for('auth.account_settings') }}" method="post">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">User Name: </label>
+                            <div class="col-sm-4">
+                                <input type="text" name="user_name" value="{{ user_name }}" class="form-control"
+                                    placeholder="enter user name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Password: </label>
+                            <div class="col-sm-4">
+                                <input type="password" name="password" value="{{ password }}" class="form-control"
+                                    placeholder="enter password" required>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="box-footer">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-warning">Save Changes</button> &nbsp;
+                            <button type="reset" class="btn btn-default">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

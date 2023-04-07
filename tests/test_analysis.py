@@ -3,9 +3,9 @@ from flask import g, session
 from BigBucks.db import get_db
 # from BigBucks.order import get_balance, buy_asset, get_company_name,get_company_shares
 import numpy as np
-from live_data_processor import get_live_price
+from Packages.live_data_processor import get_live_price
 from BigBucks.Packages.get_weights import get_portfolio_weights
-from efficient_frontier import cal_returns,get_ef,cal_port_return,cal_port_volatility
+from Packages.efficient_frontier import cal_returns,get_ef,cal_port_return,cal_port_volatility
 
 # def test_get_weights(client, app, auth):
 #     auth.login()
@@ -43,10 +43,12 @@ def test_ef(auth, client, app):
             response = client.post('/order/buy',
                         data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
                               'action': 'buy'})
-        W,R,V = get_ef(1)
+        port = get_portfolio_weights(1)
+        W,risk_return = get_ef(port)
+
         assert W is not None
-        assert len(V) == 100
-        assert np.amax(R) < 1
+        assert len(risk_return) == 100
+        # assert np.amax(R) < 1
 
 def test_ef_bp(auth, client, app):
     auth.login()

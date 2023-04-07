@@ -3,12 +3,8 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-<<<<<<< HEAD
-from .efficient_frontier import get_ef, get_port_info
-=======
-from Packages.efficient_frontier import get_ef, get_port_info
-from Packages.get_weights import get_portfolio_weights
->>>>>>> 458de205139993e9193e3b0f126406f10eb5cad9
+from .Packages.efficient_frontier import get_ef, get_port_info
+from .Packages.get_weights import get_portfolio_weights
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 
@@ -28,16 +24,15 @@ def ef():
         }
         error = "Please add asset into your portfolio."
     else:
-        print("Initial")
-        print(port)
-        weights, returns, vols = get_ef(port)
-        print("Second")
-        print(port)
+        # weights, returns, vols, risk_return = get_ef(port)
+        weights, risk_return = get_ef(port)
+
         r, v, sharpe = get_port_info(port)
         efficient_frontier = {
             'weights': list(weights),
-            'returns': list(returns),
-            'volatilities': list(vols)
+            # 'returns': list(returns),
+            # 'volatilities': list(vols),
+            'risk-return': list(risk_return)
         }
         port_info = {
             'port_return': round(r,2),

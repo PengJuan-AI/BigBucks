@@ -123,3 +123,40 @@ def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for("index"))
+
+@bp.route("/account",methods=("GET","POST"))
+@login_required
+def account_settings():
+    db = get_db()
+    user_id = session["user_id"]
+    ori_user = db.execute("SELECT username FROM user WHERE userid = ?",(user_id,)).fetchone()
+    if request.method == "POST":
+        user_name = request.form["user_name"]
+        password = request.form["password"]
+        error = None
+
+        if not user_name:
+            error = "Username is required"
+        elif not password:
+            error = "Password is required"
+
+        if error is None:
+            try:
+                db.execute(
+                    "UPDATE user SET username = ?, password = ? WHERE userid = ?",
+                    (user_name, generate_password_hash(password), user_id,)
+                )
+                db.commit()
+            except db.IntegrityError:
+                error = f"Username {user_name} is occupied!"
+            else:
+                info = "Successfully saved changes!"
+                session["user_name"] = user_name
+                return render_template("auth/account.html",info=info,user_name=user_name)
+
+        flash(error)
+        return render_template("auth/account.html",error=error,user_name=ori_user[0])
+
+    else:
+        return render_template("auth/account.html",user_name=ori_user[0])
+

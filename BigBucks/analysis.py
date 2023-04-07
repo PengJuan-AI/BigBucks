@@ -1,9 +1,10 @@
 from flask import (
     Blueprint, flash, g, jsonify, redirect, render_template, request, url_for
 )
+import pandas as pd
 from .auth import login_required
 from .db import get_db
-from .Packages.efficient_frontier import get_ef, get_port_info
+from .Packages.efficient_frontier import cal_returns, get_ef, get_port_info
 from .Packages.get_weights import get_portfolio_weights
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
@@ -54,20 +55,33 @@ def market():
 def portfolio():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
+    # index and asset return
+
     return render_template('portfolio.html',portfolio=portfolio)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):
     db = get_db()
 
-    if request.method=='POST':
-        hist = db.execute("SELECT strftime('%Y-%m-%d',history_date),round(close,2) FROM assets_data WHERE symbol=?"
-                      "ORDER BY history_date ASC",(symbol,)).fetchall()
-        import pandas as pd
-        df = pd.DataFrame(hist, columns=['date','price'])
+    if request.method == 'POST':
+        hist_symbol = db.execute("SELECT strftime('%Y-%m-%d', history_date) as date, round(close, 2) as price FROM assets_data WHERE symbol=? ORDER BY history_date ASC", (symbol,)).fetchall()
+        hist_SPY = db.execute("SELECT strftime('%Y-%m-%d', history_date) as SPY_date, round(close, 2) as SPY_price FROM assets_data WHERE symbol='SPY' ORDER BY history_date ASC").fetchall()
+
+        df_symbol = pd.DataFrame(hist_symbol, columns=['date', 'price'])
+        df_SPY = pd.DataFrame(hist_SPY, columns=['SPY_date', 'SPY_price'])
+
+        df = pd.merge(df_symbol, df_SPY, left_on='date', right_on='SPY_date')
+        df = df.drop(columns=['SPY_date'])
+
         data = {
             'date': list(df['date']),
-            'price': list(df['price'])
+            'price': list(df['price']),
+            'price_SPY': list(df['SPY_price']),
+            'return': list(cal_returns(symbol)[symbol]),
+            'return_SPY': list(cal_returns('SPY')['SPY'])
         }
+        # index_return = cal_returns('SPY')
+        # print(data)
+
         return jsonify(data)
         # return hist

@@ -4,6 +4,9 @@ from flask import (
 from werkzeug.security import generate_password_hash
 from .admin_auth import admin_login_required
 from .db import get_db
+from .Packages.get_weights import get_all_weights
+from .Packages.efficient_frontier import get_ef,get_port_info
+import datetime
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -14,7 +17,7 @@ def home():
     db = get_db()
     user_num = db.execute("SELECT COUNT(*) FROM user").fetchone()
     total_balance = db.execute("SELECT SUM(balance) FROM balance").fetchone()
-    portfolio_data = db.execute("SELECT COUNT(*), SUM(shares) FROM portfolio").fetchone()
+    portfolio_data = db.execute("SELECT COUNT(DISTINCT symbol), SUM(shares) FROM portfolio").fetchone()
     # do not show none
     if not total_balance[0]:
         num_t_balance = 0
@@ -67,8 +70,23 @@ def add_admin():
 @admin_login_required
 def view_users():
     db = get_db()
-    users = db.execute("SELECT userid, username FROM user")
+    users = db.execute("SELECT u.userid, u.username, b.balance \
+    FROM user AS u \
+    INNER JOIN balance AS b \
+    ON b.userid = u.userid \
+    ORDER BY u.userid")
     return render_template("admin/view_users.html",users=users)
+
+# view user stock data
+@bp.route('/view_stocks')
+@admin_login_required
+def view_stocks():
+    db = get_db()
+    stocks = db.execute("SELECT symbol, SUM(shares) as ttl_shares\
+    FROM portfolio \
+    GROUP BY symbol \
+    ORDER BY ttl_shares")
+    return render_template("admin/view_stocks.html",stocks=stocks)
 
 # view admin data
 @bp.route('/view_admins')
@@ -77,3 +95,76 @@ def view_admins():
     db = get_db()
     admins = db.execute("SELECT adminid, admin_name FROM admin")
     return render_template("admin/view_admins.html",admins=admins)
+
+@bp.route('/risk_return')
+@admin_login_required
+def risk_return():
+    portfolio = get_all_weights()
+    error = None
+    if not portfolio:
+        error = "Not users buy any assets yet."
+    else:
+        weights, risk_re =  get_ef(portfolio)
+        r, v, sharpe = get_port_info(portfolio)
+    
+    return render_template("admin/risk_return.html",ef=risk_re,rtn=r,vol=v,sharpe=sharpe,error=error)
+
+@bp.route('/today_orders')
+@admin_login_required
+def today_orders():
+    db = get_db()
+    today = datetime.date.today()
+    # print(today)
+    # info = {}
+    info = []
+    error = None
+    result = db.execute("SELECT * FROM orders WHERE order_date=?",(today,)).fetchall()
+
+    if not result:
+        error = "No users buy any asset today."
+    else:
+        # num = 0
+        for order in result:
+            # num+=1
+            # info[num] = list(order)
+            info.append(list(order))
+
+        print(info)
+
+    return render_template("admin/today_orders.html",info=info,error=error)
+
+@bp.route('/account_settings', methods=('GET','POST'))
+@admin_login_required
+def account_settings():
+    db = get_db()
+    admin_id = session["admin_id"]
+    ori_admin = db.execute("SELECT admin_name FROM admin WHERE adminid = ?",(admin_id,)).fetchone()
+    if request.method == "POST":
+        admin_name = request.form["admin_name"]
+        password = request.form["password"]
+        error = None
+
+        if not admin_name:
+            error = "Admin name is required"
+        elif not password:
+            error = "Password is required"
+
+        if error is None:
+            try:
+                db.execute(
+                    "UPDATE admin SET admin_name = ?, password = ? WHERE adminid = ?",
+                    (admin_name, generate_password_hash(password), admin_id,)
+                )
+                db.commit()
+            except db.IntegrityError:
+                error = f"Admin name {admin_name} is occupied!"
+            else:
+                info = "Successfully saved changes!"
+                session["admin_name"] = admin_name
+                return render_template("admin/edit_acnt.html",info=info,admin_name=admin_name)
+
+        flash(error)
+        return render_template("admin/edit_acnt.html",error=error,admin_name=ori_admin[0])
+
+    else:
+        return render_template("admin/edit_acnt.html",admin_name=ori_admin[0])
