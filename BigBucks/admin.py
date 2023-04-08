@@ -83,10 +83,18 @@ def view_users():
 @admin_login_required
 def view_stocks():
     db = get_db()
-    stocks = db.execute("SELECT symbol, SUM(shares) as ttl_shares\
-    FROM portfolio \
-    GROUP BY symbol \
-    ORDER BY ttl_shares")
+    # stocks = db.execute("SELECT symbol, SUM(shares) as ttl_shares FROM portfolio GROUP BY symbol ORDER BY ttl_shares")
+    stocks=[]
+    stock_info = db.execute("SELECT symbol, SUM(shares), SUM(value) FROM portfolio GROUP BY symbol ORDER BY symbol").fetchall()
+    for s in stock_info:
+        stock = {}
+        stock['symbol'] = s[0]
+        stock['name'] = get_company_name(s[0])
+        stock['shares_held'] = s[1]
+        stock['price_per_share'] = round(s[2]/s[1],2)
+        print(stock)
+        stocks.append(stock)
+
     return render_template("admin/view_stocks.html",stocks=stocks)
 
 # view admin data

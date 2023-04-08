@@ -19,12 +19,16 @@
                     <table class="table table-dark">
                         <tr>
                             <th>Stock Symbol</th>
-                            <th>Total Shares</th>
+                            <th>Stock Name</th>
+                            <th>Shares Held</th>
+                            <th>Price/share</th>
                         </tr>
                         {% for stock in stocks %}
                         <tr>
-                            <td>{{ stock[0] }}</td>
-                            <td>{{ stock[1] }}</td>
+                            <td>{{ stock['symbol'] }}</td>
+                            <td>{{ stock['name'] }}</td>
+                            <td>{{ stock['shares_held'] }}</td>
+                            <td>{{ stock['price_per_share'] }}</td>
                         </tr>
                         {% endfor %}
                     </table>
