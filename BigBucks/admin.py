@@ -120,8 +120,6 @@ def risk_return():
 def today_orders():
     db = get_db()
     today = datetime.date.today()
-    # print(today)
-    # info = {}
     info = []
     error = None
     result = db.execute("SELECT * FROM orders WHERE order_date=?",(today,)).fetchall()
@@ -131,11 +129,15 @@ def today_orders():
     else:
         # num = 0
         for order in result:
-            # num+=1
-            # info[num] = list(order)
-            info.append(list(order))
+            _info = {}
+            _info['Date'] = order[1]
+            _info['symbol'] = order[3]
+            _info['shares'] = order[4]
+            _info['price'] = order[5]
+            _info['action'] = order[6]
+            info.append(_info)
 
-        print(info)
+        print(_info)
 
     return render_template("admin/today_orders.html",info=info,error=error)
 

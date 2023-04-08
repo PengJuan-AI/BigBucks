@@ -21,23 +21,23 @@
                 <form>
                     <table class="table table-dark">
                         <tr>
-                            <th>Order ID</th>
-                            <th>User ID</th>
+<!--                            <th>Order ID</th>-->
                             <th>Date</th>
                             <th>Stock Symbol</th>
+                            <th>Name</th>
                             <th>Shares</th>
                             <th>Price</th>
                             <th>Action</th>
                         </tr>
                         {% for rowdata in info %}
                         <tr>
-                            <td>{{ rowdata[0] }}</td>
-                            <td>{{ rowdata[2] }}</td>
-                            <td>{{ rowdata[1] }}</td>
-                            <td>{{ rowdata[3] }}</td>
-                            <td>{{ rowdata[4] }}</td>
-                            <td>{{ rowdata[5] }}</td>
-                            <td>{{ rowdata[6] }}</td>
+<!--                            <td>{{ rowdata[0] }}</td>-->
+                            <td>{{ rowdata['Date'] }}</td>
+                            <td>{{ rowdata['symbol'] }}</td>
+                            <td>{{ rowdata['symbol'] }}</td>
+                            <td>{{ rowdata['shares'] }}</td>
+                            <td>{{ rowdata['price'] }}</td>
+                            <td>{{ rowdata['action'] }}</td>
                         </tr>
                         {% endfor %}
                     </table>
