@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="89e472a2-ed92-4389-865b-c3c29c86e3d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/BigBucks/Packages/efficient_frontier.py" beforeDir="false" afterPath="$PROJECT_DIR$/BigBucks/Packages/efficient_frontier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/instance/flaskr.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/instance/flaskr.sqlite" afterDir="false" />
+>>>>>>> main
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

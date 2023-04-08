@@ -101,7 +101,7 @@ def get_ef(portfolio):
     df = pd.DataFrame(data=r)
     # W,R,V, risk_return = efficient_frontier(df,100, avg_r)
     W,risk_return = efficient_frontier(df, 100, avg_r)
-    draw(risk_return[0], risk_return[1])
+    # draw(risk_return[0], risk_return[1])
 
     return W,risk_return
 
@@ -144,7 +144,7 @@ def efficient_frontier(df, num, r):
         weights[i,:] = result.x
         # port_return[i] = re
         # port_vol[i] = cal_port_volatility(result.x, covar)
-        port_risk_return.append([re, cal_port_volatility(result.x, covar)])
+        port_risk_return.append([cal_port_volatility(result.x, covar), re])
 
     # print("port_risk_return:", port_risk_return)
 
