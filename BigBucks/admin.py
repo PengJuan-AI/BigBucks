@@ -6,6 +6,7 @@ from .admin_auth import admin_login_required
 from .db import get_db
 from .Packages.get_weights import get_all_weights
 from .Packages.efficient_frontier import get_ef,get_port_info
+from .Packages.live_data_processor import get_company_name
 import datetime
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -132,6 +133,7 @@ def today_orders():
             _info = {}
             _info['Date'] = order[1]
             _info['symbol'] = order[3]
+            _info['name'] = get_company_name(order[3])
             _info['shares'] = order[4]
             _info['price'] = order[5]
             _info['action'] = order[6]
