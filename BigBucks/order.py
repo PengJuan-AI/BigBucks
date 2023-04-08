@@ -3,8 +3,7 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from .Packages.live_data_processor import get_company_name,get_company_shares, get_live_price, get_historical_data
-
+from .Packages.live_data_processor import *
 bp = Blueprint('order', __name__, url_prefix='/order')
 
 
@@ -23,7 +22,7 @@ def buy():
         symbol = request.form['symbol']
         date = request.form['date']
         # price = float(request.form['price'])
-        price = get_live_price(symbol)
+        price = get_live_price_by_input(symbol)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -59,7 +58,7 @@ def sell():
 
     price = []
     for asset in portfolio:
-        current_price = get_live_price(asset['symbol'])
+        current_price = get_live_price_by_input(asset['symbol'])
         price.append(current_price)
 
     if request.method=='POST':
@@ -67,7 +66,7 @@ def sell():
         print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
-        price = get_live_price(symbol)
+        price = get_live_price_by_input(symbol)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -105,11 +104,11 @@ def get_shares(userid, symbol):
     else:
         return shares[0]
 
-def get_outstanding(symbol):
-    return get_company_shares(symbol)
+def get_outstanding(input):
+    return get_company_shares_by_input(input)
 
-def get_asset_name(symbol):
-    return get_company_name(symbol)
+def get_asset_name(input):
+    return get_name_by_input(input)
 
 def get_asset_value(symbol,userid):
     return get_db().execute(
@@ -166,7 +165,7 @@ def update_orders(date,id, symbol, shares, price, action ):
 
 def update_asset_data(symbol):
     print("In update asset data")
-    data = get_historical_data(symbol)
+    data = get_data_by_input(symbol)
     db = get_db()
     sql = "INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
@@ -216,5 +215,5 @@ def transaction():
 def get_stock_info():
     # 获取股票信息的逻辑代码
     symbol = request.form.get('stockname')
-    stock_info = {'stockname': get_company_name(symbol), 'price': get_live_price(symbol), 'stocksymbol': symbol, 'outstanding': get_outstanding(symbol)}
+    stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)

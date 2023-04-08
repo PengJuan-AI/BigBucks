@@ -35,7 +35,7 @@ def get_company_shares(symbol):
 
 # Get live price of a stock by its symbol from Yahoo Finance
 def get_live_price(symbol):
-    live_price = round(si.get_live_price(symbol),2)
+    live_price = float("{:.2f}".format(round(si.get_live_price(symbol),2)))
     return live_price
 
 # Get the sector of a company by its symbol from Yahoo Finance
@@ -137,9 +137,27 @@ def get_industry_by_input(input):
         industry = get_company_industry(input)
         return industry
 
+def get_name_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        name = get_company_name(symbol)
+        return name
+    else:
+        name = get_company_name(input)
+        return name
+
+def get_symbol_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        return symbol
+    else:
+        return input
+    
 '''
-a = get_live_price_by_input('msft')
-b = get_live_price_by_input('micros')
+a = get_name_by_input('msft')
+b = get_symbol_by_input('micros')
+c = get_symbol_by_input('msft')
 print(a)
 print(b)
+print(c)
 '''
