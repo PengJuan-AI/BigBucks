@@ -1,1 +1,10 @@
+1. Add a point in efficient frontier that shows the current portfolio status
+2. Uniform transaction case
+3. Optimization of image display
 
+4. Control of trading hours (opening)
+5. Implementation of daily stock update function
+
+6. portfolio analysis
+7. Record order time when placing an order
+8. Repeated verification of password input consistency during registration
