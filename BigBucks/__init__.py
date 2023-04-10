@@ -1,6 +1,17 @@
 import os
-
 from flask import Flask,render_template
+import datetime
+from flask_apscheduler import APScheduler
+
+class Config(object):
+    SCHEDULER_API_ENGABLED=True
+
+scheduler = APScheduler()
+
+# Set interval
+@scheduler.task('interval', id='job_1', seconds=30, misfire_grace_time=900)
+def job1():
+    print(str(datetime.datetime.now()) + ' Job 1 executed')
 
 def create_app(test_config=None):
     # create and configure the app
@@ -16,6 +27,7 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
+        app.config.from_object(Config())
 
     # ensure the instance folder exists
     try:
@@ -26,6 +38,10 @@ def create_app(test_config=None):
     @app.route('/')
     def index():
         return render_template('order/index.html')
+
+    # Scheduler
+    scheduler.init_app(app)
+    scheduler.start()
 
     from . import db
     db.init_app(app)
