@@ -3,6 +3,7 @@
 1. Add a point, which stands for risk-return of users' portfolio, in efficient frontier page. 
 2. Uniform transaction case
 3. Optimization of image display
+4. Add pie chart in portfolio page
 
 ## Error handling
 4. Control of trading hours (opening)
