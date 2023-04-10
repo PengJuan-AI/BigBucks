@@ -1,4 +1,4 @@
-# Plan for sprint 4
+# Plan for sprint 5
 ## User interface
 1. Add a point, which stands for risk-return of users' portfolio, in efficient frontier page. 
 2. Uniform transaction case
@@ -10,7 +10,8 @@
 5. Implementation of daily stock update function
 
 ## Adjustment/Improvement
-6. portfolio analysis
-7. Record order time when placing an order
-8. Repeated verification of password input consistency during registration
-9. Set password limitation to enhance account security
+6. Update asset data every day --> insert new asset data.
+7. Store SPY index data automatically
+8. Record order time when placing an order
+9. Repeated verification of password input consistency during registration
+10. Set password limitation to enhance account security
