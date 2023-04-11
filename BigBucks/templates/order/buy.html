@@ -72,7 +72,7 @@
 
         $('#search').on('submit', function(event) {
             event.preventDefault();
-            stockname = $('input[name="search_name"]').val();
+            stockname = $('input[name="search_name"]').val().toUpperCase();
             $.ajax({
                 url: '/order/get_stock_info',
                 method: 'POST',

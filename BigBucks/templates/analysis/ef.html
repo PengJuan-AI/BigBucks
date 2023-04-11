@@ -42,6 +42,8 @@
     // function draw_ef(){
         var chart = echarts.init(document.getElementById("ef"));
         var data = {{ ef['risk-return'] }};
+
+        var port_data = [ {{ info['port_vol'] }}, {{ info['port_return'] }} ];
         //console.log(data)
         var option = {
             title: {
@@ -51,14 +53,31 @@
             legend: {
                 bottom: 5
             },
-            xAxis: {min:data[1][0] },
-            yAxis: {min:data[1][1]},
+            xAxis: {
+                type: 'value',
+                name: 'Risk',
+                min: data[1][0]
+            },
+            yAxis: {
+                type: 'value',
+                name: 'Return',
+                min: data[1][1]
+            },
             series: [
                 {
                     name: "Efficient Frontier",
-                    symbolSize: 5,
                     data: data,
-                    type: 'scatter'
+                    symbol: 'none',
+                    type: 'line'
+                },
+                {
+                    name: "Portfolio",
+                    type: 'scatter',
+                    data: port_data,
+                    symbolSize: 10,
+                    itemStyle: {
+                        color: 'red'
+                    }
                 }
             ]
         };

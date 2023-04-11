@@ -62,18 +62,7 @@
                 </select>
                 <div id="chartContainer" style="width: 600px; height: 400px;margin: 1rem auto;"></div>
             </div>
-            <!-- <div id="chart" style="width: 600px; height: 400px;margin: 1rem auto;"></div> -->
-            <!-- <div id="chart2" style="width: 600px; height: 400px;margin: 1rem auto;"></div> -->
         </div>
-        <!-- <div class="container">
-            <div id="chart1" class="chart-div"></div>
-            <div id="chart2" class="chart-div"></div>
-            <div id="chart3" class="chart-div"></div>
-            <div id="chart4" class="chart-div"></div>
-            <div id="chart5" class="chart-div"></div>
-            <div id="chart6" class="chart-div"></div>
-            <div id="chart3" class="chart-div"></div> -->
-        <!-- </div> --> 
     </div>
 </div>
 
@@ -83,6 +72,20 @@
     let currentData = null;
     let currentSymbol = null;
     var chart = echarts.init(document.getElementById("chartContainer"));
+
+    chart.setOption({
+        dataZoom: [
+            {
+            type: 'inside',
+            start: 0,
+            end: 10
+            },
+            {
+            start: 0,
+            end: 10
+            }
+        ]
+    })
 
     function pass_shares(symbol, shares){
         var sy = document.getElementById('symbol');
@@ -95,10 +98,6 @@
         const selectedChart = event.target.value;
         const chartContainer = document.getElementById("chartContainer");
 
-        // 在每次选择时清除先前的图表
-        // chartContainer.innerHTML = '';
-
-        // 根据选择的值调用相应的绘图函数
         switch (selectedChart) {
             case "chart1":
                 console.log("historical data");
@@ -135,26 +134,14 @@
         })
             .then(response => response.json())
             .then(data => {
-            // 在 div 中绘制图表
             currentData = data;
             currentSymbol = symbol;
-            // console.log(data.return.length)
-            // console.log(data.return_SPY.length)
-            // draw_historical_data(data, symbol);
-            // draw_daily_price_movement(data, symbol);
-            // draw_daily_price_change(data, symbol);
-            // draw_scatter_graph(data, symbol);
-            // draw_return_with_date_graph(data, symbol);
-            // draw_return_scatter_plot(data, symbol);
-            // draw_bar_diagram_of_return(data, symbol);
             document.getElementById("chartWrapper").style.display = "block";
 
-            // 绘制默认图表
             draw_historical_data(currentData, currentSymbol);
             });
         }
     function draw_historical_data(data, symbol) {
-        // var chart = echarts.init(document.getElementById("chartContainer"));
             chart.setOption({
                 title: {
                     text: 'Historical Data of ' + symbol,
@@ -174,17 +161,9 @@
                 yAxis: {
                 type: "value"
                 },
-                dataZoom: [
-                    {
-                    type: 'inside',
-                    start: 0,
-                    end: 10
-                    },
-                    {
-                    start: 0,
-                    end: 10
-                    }
-                ],
+                dataZoom: {
+                    show: true
+                },
                 series: [{
                 name: 'price',
                 data: data.price,
@@ -210,10 +189,6 @@
         spyDailyPriceMovement.push(data.price_SPY[i] / spyFirstDayPrice);
     }
 
-    // Initialize the chart with the Chart2 element
-    // var chart = echarts.init(document.getElementById("chartContainer"));
-
-    // Configure and draw the chart
     chart.setOption({
         title: {
             text: 'Daily Price Movement of ' + symbol,
@@ -233,17 +208,9 @@
         yAxis: {
             type: "value"
         },
-        dataZoom: [
-            {
-                type: 'inside',
-                start: 0,
-                end: 10
-            },
-            {
-                start: 0,
-                end: 10
-            }
-        ],
+        dataZoom: {
+            show: true
+        },
         series: [{
             name: 'Daily Price Movement',
             data: dailyPriceMovement,
@@ -272,9 +239,6 @@ function draw_daily_price_change(data, symbol) {
         spyDailyPriceChange.push(data.price_SPY[i] / data.price_SPY[i - 1]);
     }
 
-    // Initialize the chart with the Chart2 element
-    // var chart = echarts.init(document.getElementById("chartContainer"));
-
     // Configure and draw the chart
     chart.setOption({
         title: {
@@ -298,17 +262,9 @@ function draw_daily_price_change(data, symbol) {
         yAxis: {
             type: "value"
         },
-        dataZoom: [
-            {
-                type: 'inside',
-                start: 0,
-                end: 10
-            },
-            {
-                start: 0,
-                end: 10
-            }
-        ],
+        dataZoom: {
+            show: true
+        },
         series: [{
             name: 'Daily Price Change',
             data: dailyPriceChange,
@@ -336,8 +292,6 @@ function draw_scatter_graph(data, symbol) {
 
     const scatterData = data.return.map((value, index) => [data.return_SPY[index], value]);
 
-    // const chart = echarts.init(document.getElementById("chartContainer"));
-
     chart.setOption({
         title: {
             text: `Scatter Plot of ${symbol} Returns vs SPY Returns`,
@@ -348,6 +302,9 @@ function draw_scatter_graph(data, symbol) {
             axisPointer: {
                 type: "cross",
             },
+        },
+        dataZoom: {
+            show: false
         },
         xAxis: {
             type: "value",
@@ -400,7 +357,6 @@ function linearRegression(x, y) {
 }
 
 function draw_return_with_date_graph(data, symbol) {
-    // var chart = echarts.init(document.getElementById("chartContainer"));
             chart.setOption({
                 title: {
                     text: 'Daily Return of ' + symbol,
@@ -420,17 +376,9 @@ function draw_return_with_date_graph(data, symbol) {
                 yAxis: {
                 type: "value"
                 },
-                dataZoom: [
-                    {
-                    type: 'inside',
-                    start: 0,
-                    end: 10
-                    },
-                    {
-                    start: 0,
-                    end: 10
-                    }
-                ],
+                dataZoom: {
+                    show: true
+                },
                 series: [{
                 name: 'return',
                 data: data.return,
@@ -442,8 +390,6 @@ function draw_return_with_date_graph(data, symbol) {
 
 function draw_return_scatter_plot(data, symbol) {
     const scatterData = data.return.slice(1, data.return.length - 1).map((value, index) => [data.return.slice(0, data.return.length - 2)[index], value]);
-
-    // var chart = echarts.init(document.getElementById("chartContainer"));
             chart.setOption({
                 title: {
                     text: 'Return Scatter Plot of ' + symbol,
@@ -463,17 +409,9 @@ function draw_return_scatter_plot(data, symbol) {
                     type: "value",
                     name: `${symbol} return`,
                 },
-                dataZoom: [
-                    {
-                    type: 'inside',
-                    start: 0,
-                    end: 10
-                    },
-                    {
-                    start: 0,
-                    end: 10
-                    }
-                ],
+                dataZoom: {
+                    show: false
+                },
                 series: [{
                 name: "Scatter",
                 type: "scatter",
@@ -502,8 +440,7 @@ function prepare_histogram_data(data, numBins) {
 function draw_bar_diagram_of_return(data, symbol) {
     const numBins = 25; 
     const histogramData = prepare_histogram_data(data.return, numBins);
-
-    // const chart = echarts.init(document.getElementById("chartContainer"));
+    
     chart.setOption({
         title: {
             text: `Histogram of ${symbol} Returns`,
@@ -514,6 +451,9 @@ function draw_bar_diagram_of_return(data, symbol) {
             axisPointer: {
                 type: 'shadow'
             }
+        },
+        dataZoom: {
+            show: false
         },
         xAxis: {
             type: "category",
