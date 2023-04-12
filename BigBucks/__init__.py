@@ -10,11 +10,11 @@ class SchedulerConfig(object):
     JOBS=[
         {
             'id':'update_asset_data',
-            'func': '.scheduler_funcs:job2',
+            'func': 'BigBucks.scheduler_funcs:job2',
             'args': None,
             'trigger':{
                 'type': 'interval',
-                'seconds':'10'
+                'seconds':10
             }
         }
     ]
@@ -35,8 +35,8 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
-        app.config.from_object(SchedulerConfig)
 
+    app.config.from_object(SchedulerConfig)
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
