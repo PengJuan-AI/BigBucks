@@ -50,14 +50,26 @@ def ef():
 #     return render_template('analysis/market.html')
 
 # portfolio
-@bp.route('/portfolio', methods=('GET','POST'))
+# single asset
+@bp.route('/single', methods=('GET','POST'))
 @login_required
-def portfolio():
+def single_asset():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
 
     return render_template('analysis/single_asset.html',portfolio=portfolio)
+
+# portfolio
+# multiple asset
+@bp.route('/multiple', methods=('GET','POST'))
+@login_required
+def multi_asset():
+    id = g.user['userid']
+    portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
+    # index and asset return
+
+    return render_template('analysis/multi_asset.html',portfolio=portfolio)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):

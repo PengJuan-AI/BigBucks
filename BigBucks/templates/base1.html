@@ -126,9 +126,9 @@
               </span>
             </a>
             <ul class="treeview-menu" id="subsidebar">
-              <li id="portfolio"><a href="{{ url_for('analysis.portfolio') }}"><i class="fa fa-circle-o"></i>
+              <li id="portfolio"><a href="{{ url_for('analysis.single_asset') }}"><i class="fa fa-circle-o"></i>
                   <span>Single Asset</span></a></li>
-              <li id="portfolio"><a href="#"><i class="fa fa-circle-o"></i> <span>Multiple Assets</span></a></li>
+              <li id="portfolio"><a href="{{ url_for('analysis.multi_asset') }}"><i class="fa fa-circle-o"></i> <span>Multiple Assets</span></a></li>
             </ul>
           </li>
         </ul>
