@@ -164,7 +164,6 @@ def update_orders(date,id, symbol, shares, price, action ):
     db.commit()
 
 def update_asset_data(symbol):
-    print("In update asset data")
     data = get_data_by_input(symbol)
     db = get_db()
     sql = "INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
