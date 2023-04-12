@@ -57,7 +57,7 @@ def portfolio():
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
 
-    return render_template('analysis/portfolio.html',portfolio=portfolio)
+    return render_template('analysis/single_asset.html',portfolio=portfolio)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):

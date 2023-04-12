@@ -1,18 +1,18 @@
 {% extends 'base1.html' %}
 
-{% block title %}Portfolio{% endblock %}
+{% block title %}Single Asset{% endblock %}
 
 {% block main_body %}
 <div class="box">
     <div class="col-md-4">
-        <div class="box box-warning">
+        <div class="box box-success">
             <div class="box-header with-border text-center">
                 <h3 class="box-title"><strong>Currently Owned Assets</strong></h3>
             </div>
             <div class="row" style="justify-content:center;display:flex;">
                 <form class="navbar-form navbar-left">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search" id="search-input">
+                    <input type="text" class="form-control" placeholder="Input Asset Symbol" id="search-input">
                 </div>
                 <button type="button" class="btn btn-default" id="search-btn">Search Asset</button>
                 </form>
