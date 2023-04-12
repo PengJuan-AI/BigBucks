@@ -77,6 +77,14 @@ def get_historical_data(symbol):
 
     return stock_data
 
+def get_recent_data(symbol):
+    today = datetime.today()
+    start_date = (today - timedelta(days=7)).strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
+    stock_data = yf.download(symbol, start=start_date, end=end_date)
+    return stock_data.tail(1)
+
+
 def get_symbol_by_name(company_name):
     # construct the URL to retrieve the stock symbol for the given company name
     encoded_company_name = quote(company_name)
