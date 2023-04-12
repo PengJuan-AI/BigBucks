@@ -52,13 +52,17 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        conf = request.form["conf"]
         db = get_db()
         error = None
 
         if not username:
-            error = "Username is required" #zt62; Violate the OCP principle; If we want to change the error message, we must change the inside method
+            error = "Username is required"
         elif not password:
             error = "Password is required"
+        
+        if password != conf :
+            error = "Passwords do not match!"
 
         if error is None:
             try:
@@ -75,10 +79,10 @@ def register():
             except db.IntegrityError:
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
-                error = f"User {username} is already registered!" #zt62; Violate the OCP principle; If we want to change the error message, we must change the inside method. This is a common situation in this example.
+                error = f"User {username} is already registered!"
             else:
                 # Success, go to the login page.
-                return redirect(url_for("auth.login")) #zt62; Follow the SRP principle; The login function is separated with this method
+                return redirect(url_for("auth.login"))
 
         flash(error)
         session.clear()
