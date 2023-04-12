@@ -44,10 +44,10 @@ def ef():
     return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info, error=error)
 
 # market
-@bp.route('/market', methods=('GET','POST'))
-@login_required
-def market():
-    return render_template('analysis/market.html')
+# @bp.route('/market', methods=('GET','POST'))
+# @login_required
+# def market():
+#     return render_template('analysis/market.html')
 
 # portfolio
 @bp.route('/portfolio', methods=('GET','POST'))
@@ -57,7 +57,7 @@ def portfolio():
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
 
-    return render_template('portfolio.html',portfolio=portfolio)
+    return render_template('analysis/portfolio.html',portfolio=portfolio)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):
