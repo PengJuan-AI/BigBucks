@@ -2,13 +2,24 @@ import os
 from flask import Flask,render_template
 import datetime
 
-class Config(object):
+# initialize scheduler
+from flask_apscheduler import APScheduler
+scheduler = APScheduler()
+
+class SchedulerConfig(object):
+    JOBS=[
+        {
+            'id':'update_asset_data',
+            'func': '.scheduler_funcs:job2',
+            'args': None,
+            'trigger':{
+                'type': 'interval',
+                'seconds':'10'
+            }
+        }
+    ]
     SCHEDULER_API_ENGABLED=True
 
-# Set interval
-# @scheduler.task('interval', id='job_1', seconds=30, misfire_grace_time=900)
-# def job1():
-#     print(str(datetime.datetime.now()) + ' Job 1 executed')
 
 def create_app(test_config=None):
     # create and configure the app
@@ -24,7 +35,7 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
-        app.config.from_object(Config())
+        app.config.from_object(SchedulerConfig)
 
     # ensure the instance folder exists
     try:
@@ -37,8 +48,9 @@ def create_app(test_config=None):
         return render_template('order/index.html')
 
     # Scheduler
-    from . import scheduler
+    # from . import scheduler
     scheduler.init_app(app)
+    scheduler.start()
 
     from . import db
     db.init_app(app)
