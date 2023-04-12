@@ -151,6 +151,15 @@ def today_orders():
 
     return render_template("admin/today_orders.html",info=info,error=error)
 
+# @bp.route('/scheduler', methods=('GET','POST'))
+# @admin_login_required
+# def scheduler_test():
+#     from scheduler import job2
+#     time = job2()
+#
+#     return render_template("admin/scheduler.html", time=time)
+
+
 @bp.route('/account_settings', methods=('GET','POST'))
 @admin_login_required
 def account_settings():
