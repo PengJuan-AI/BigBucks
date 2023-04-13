@@ -126,9 +126,7 @@ def efficient_frontier(df, num, r):
     # port_vol = np.zeros(num)
     port_risk_return = []
     weights = np.zeros((num, len(df.columns)))
-    # port_return = []
-    # port_vol = []
-    # weights = []
+
     covar = df.cov()
     print("w0: ", w0)
 

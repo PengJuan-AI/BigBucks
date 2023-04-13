@@ -14,6 +14,6 @@ def job2():
     with scheduler.app.app_context():
         db = get_db()
         # time = str(datetime.datetime.now())
-        print(str(datetime.datetime.now()) + ' Job 2 executed')
+        # print(str(datetime.datetime.now()) + ' Job 2 executed')
     # print(time+':', test[0])
     # return render_template('admin/home.html', time=time)

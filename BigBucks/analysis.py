@@ -40,6 +40,8 @@ def ef():
             'port_vol': round(v,2),
             'sharpe': round(sharpe,2)
         }
+        print("risk-return:\n", risk_return)
+        print(r,' ',v)
 
     return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info, error=error)
 

@@ -43,8 +43,8 @@
         var chart = echarts.init(document.getElementById("ef"));
         var data = {{ ef['risk-return'] }};
 
-        var port_data = [ {{ info['port_vol'] }}, {{ info['port_return'] }} ];
-        //console.log(data)
+        var port_data = [[{{ info['port_vol'] }}, {{ info['port_return'] }}] ];
+        console.log(port_data)
         var option = {
             title: {
                 text: 'Efficient Frontier',
@@ -56,12 +56,12 @@
             xAxis: {
                 type: 'value',
                 name: 'Risk',
-                min: data[1][0]
+                min: data[0][0]
             },
             yAxis: {
                 type: 'value',
                 name: 'Return',
-                min: data[1][1]
+                min: data[0][1]
             },
             series: [
                 {
