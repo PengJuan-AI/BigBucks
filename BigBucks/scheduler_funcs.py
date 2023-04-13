@@ -13,7 +13,6 @@ import datetime
 
 # @scheduler.task('interval', id='job_1', seconds=10, misfire_grace_time=900)
 def job2():
-
     with scheduler.app.app_context():
         db = get_db()
         assets = db.execute("SELECT DISTINCT symbol FROM assets_data").fetchall()

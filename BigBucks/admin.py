@@ -19,6 +19,7 @@ def home():
     user_num = db.execute("SELECT COUNT(*) FROM user").fetchone()
     total_balance = db.execute("SELECT SUM(balance) FROM balance").fetchone()
     portfolio_data = db.execute("SELECT COUNT(DISTINCT symbol), SUM(shares) FROM portfolio").fetchone()
+    asset_data = db.execute("SELECT symbol, MAX(history_date) date FROM assets_data GROUP BY symbol").fetchall()
     # do not show none
     if not total_balance[0]:
         num_t_balance = 0
@@ -30,7 +31,14 @@ def home():
     else:
         p_data['shares'] = portfolio_data[1]
     p_data['asset'] = portfolio_data[0]
-    return render_template('admin/home.html',user_num=user_num[0],total_balance=num_t_balance,portfolio_data=p_data)
+    assets = []
+    for a in asset_data:
+        data = {}
+        data['symbol'] = a[0]
+        data['date'] = a[1]
+        assets.append(data)
+
+    return render_template('admin/home.html',assets=assets, user_num=user_num[0],total_balance=num_t_balance,portfolio_data=p_data)
 
 
 # add new admin

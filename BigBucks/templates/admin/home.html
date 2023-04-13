@@ -71,7 +71,22 @@
     </div>
     <div class="box">
         <div class="box-body">
-            <p>{{ time }}</p>
+            <table class="table table-dark">
+                    <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for asset in assets %}
+                        <tr>
+                            <td>{{ asset['symbol'] }}</td>
+                            <td>{{ asset['date'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
         </div>
     </div>
 </section>

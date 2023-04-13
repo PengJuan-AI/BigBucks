@@ -13,8 +13,11 @@ class SchedulerConfig(object):
             'func': 'BigBucks.scheduler_funcs:job2',
             'args': None,
             'trigger':{
-                'type': 'interval',
-                'seconds':60
+                # execute this scheduler at 6 in workday
+                'type': 'cron',
+                'day_of_week': "1-5",
+                'hour': '22',
+                # 'seconds':60
             }
         }
     ]
