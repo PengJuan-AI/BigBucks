@@ -128,7 +128,7 @@ def efficient_frontier(df, num, r):
     weights = np.zeros((num, len(df.columns)))
 
     covar = df.cov()
-    print("w0: ", w0)
+    # print("w0: ", w0)
 
     for i in range(num):
         bounds = Bounds(0, 1)  # all weights between (0,1)

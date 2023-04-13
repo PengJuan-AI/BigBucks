@@ -14,7 +14,7 @@ class SchedulerConfig(object):
             'args': None,
             'trigger':{
                 'type': 'interval',
-                'seconds':10
+                'seconds':60
             }
         }
     ]

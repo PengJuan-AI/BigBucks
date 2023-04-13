@@ -137,7 +137,7 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     db.commit()
 
     # add historical data of this asset
-    update_asset_data(symbol)
+    update_hist_data(symbol)
         
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
@@ -163,8 +163,16 @@ def update_orders(date,id, symbol, shares, price, action ):
                (date, id, symbol,shares, price, action))
     db.commit()
 
-def update_asset_data(symbol):
+def update_hist_data(symbol):
     data = get_data_by_input(symbol)
+    update_asset_data(symbol, data)
+
+def update_new_data(symbol):
+    # print("In update new data")
+    data = get_recent_data(symbol)
+    update_asset_data(symbol, data)
+
+def update_asset_data(symbol,data):
     db = get_db()
     sql = "INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
@@ -181,21 +189,6 @@ def update_asset_data(symbol):
 
     db.commit()
 
-# def update_asset_info(assetid, shares_traded):
-#     '''
-#     after one asset is traded, the outstanding shares of it decrease
-#     '''
-#     db = get_db()
-#     outstanding = db.execute('SELECT shares FROM assets_info WHERE assetid=?', (assetid,)).fetchone()[0]
-#     db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
-#                (outstanding-shares_traded, assetid)
-#     )
-#
-#
-# def update_orders(date,id, assetid, shares, price, action ):
-#     db = get_db()
-#     db.execute('INSERT INTO orders (order_date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
-#                (date, id, assetid,shares, price, action))
 
 # query user's transaction records
 @bp.route('/transaction',methods=('GET','POST'))
