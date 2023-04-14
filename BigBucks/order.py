@@ -62,8 +62,8 @@ def sell():
         price.append(current_price)
 
     if request.method=='POST':
-        print("In sell")
-        print(request.form)
+        # print("In sell")
+        # print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
         price = get_live_price_by_input(symbol)

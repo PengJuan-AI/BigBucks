@@ -129,6 +129,11 @@ def risk_return():
     else:
         weights, risk_re =  get_ef(portfolio)
         r, v, sharpe = get_port_info(portfolio)
+        port_info = {
+            'rtn': round(r,2),
+            'vol': round(v,2),
+            'sharpe': round(sharpe,2)
+        }
     
     return render_template("admin/risk_return.html",ef=risk_re,info=port_info,error=error)
 

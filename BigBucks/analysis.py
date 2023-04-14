@@ -31,8 +31,6 @@ def ef():
         r, v, sharpe = get_port_info(port)
         efficient_frontier = {
             'weights': list(weights),
-            # 'returns': list(returns),
-            # 'volatilities': list(vols),
             'risk-return': list(risk_return)
         }
         port_info = {
