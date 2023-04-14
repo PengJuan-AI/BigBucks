@@ -44,15 +44,16 @@ def load_logged_in_user():
 
 @bp.route("/register", methods=("GET", "POST"))
 def register():
-    """Register a new user.
-
-    Validates that the username is not already taken. Hashes the
-    password for security.
+    """
+    Register a new user.
+    New user must enter their username, password and email.
+    Validates that the username is not already taken. Hashes the password for security.
     """
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         conf = request.form["conf"]
+        email = request.form["email"]
         db = get_db()
         error = None
 
@@ -63,6 +64,11 @@ def register():
         
         if password != conf :
             error = "Passwords do not match!"
+        if not email:
+            error = "Please enter your email"
+        else:
+            if not verify_email(email):
+                error = "Wrong Email!"
 
         if error is None:
             try:
@@ -89,6 +95,18 @@ def register():
         return render_template("auth/register.html",error=error)
 
     return render_template("auth/register.html")
+
+# verify the format of user's email
+def verify_email(email):
+    import re
+    pattern = "\w+[@][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)"
+
+    print(re.match(pattern, email))
+
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
 
 
 @bp.route("/login", methods=("GET", "POST"))
