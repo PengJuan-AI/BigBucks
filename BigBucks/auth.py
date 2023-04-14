@@ -59,11 +59,15 @@ def register():
 
         if not username:
             error = "Username is required"
-        elif not password:
+        else:
+            if username_exist(username):
+                error="Username already exists!"
+
+        if not password:
             error = "Password is required"
-        
         if password != conf :
             error = "Passwords do not match!"
+
         if not email:
             error = "Please enter your email"
         else:
@@ -108,6 +112,14 @@ def verify_email(email):
     else:
         return False
 
+def username_exist(name):
+    db = get_db()
+
+    user = db.execute("SELECT * FROM user WHERE username=?",(name,)).fetchone()
+    if user: # if this username does exist
+        return True
+    else:
+        return False
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
