@@ -1,11 +1,17 @@
 '''
-Parsing data files - name hist_return
-Calculate each asset's return
-Calculate each asset's volatility
-Calculate correlation
-Calculate covariance
-For return xx to xx, calculate the minimum volatility
-Draw efficient frontier line
+cal_returns: calculate returns of an asset in 5 years by its symbol
+cal_avg_return: calculate average return (annual)
+cal_std: calculate standard deviation
+cal_cov: calculate covariance
+cal_port_return: calculate return of one portfolio
+cal_port_volatility: calculate volatility of one portfolio
+get_sharpe: calculate sharpe
+draw: draw effcient frontier
+get_port_info: return one portfolio's return, volatility and sharpe
+get_ef: return portfolio's weights of each asset, and its risk-return
+get_best_w: calculate the initial guess of weight for the calculation of efficient frontier
+efficient_frontier: using optimization to calculate dots in effcient frontier
+
 '''
 import pandas as pd
 import numpy as np
@@ -14,15 +20,13 @@ from scipy.optimize import minimize,LinearConstraint,Bounds
 from BigBucks.db import get_db
 from .get_weights import get_portfolio_weights
 
-
 # each stock's return and volatility
 def cal_returns(symbol):
     db = get_db()
-    period = 5*250
+    period = 5*250  #5yrs
     data = pd.DataFrame(db.execute("SELECT adj_close FROM assets_data WHERE symbol=? "
                                    "ORDER BY history_date DESC LIMIT ?",
-                                   (symbol,period)).fetchall(), columns=[symbol]
-                        )
+                                   (symbol,period)).fetchall(), columns=[symbol]  )
     data = data.iloc[::-1]
     p1 = data.iloc[1:, :]
     p0 = data.iloc[0:-1, :]
@@ -43,10 +47,7 @@ def cal_cov(portfolio):
         returns[symbol] = list(cal_returns(symbol)[symbol])
 
     result = pd.DataFrame(data=returns)
-    # result.to_excel('test_data.xlsx',sheet_name='returns')
-    # print("==============================")
-    # print("results:")
-    # print(result)
+
     return result.cov()
 
 def cal_port_return(weight,r):
@@ -128,7 +129,6 @@ def efficient_frontier(df, num, r):
     weights = np.zeros((num, len(df.columns)))
 
     covar = df.cov()
-    # print("w0: ", w0)
 
     for i in range(num):
         bounds = Bounds(0, 1)  # all weights between (0,1)
@@ -143,8 +143,6 @@ def efficient_frontier(df, num, r):
         # port_return[i] = re
         # port_vol[i] = cal_port_volatility(result.x, covar)
         port_risk_return.append([cal_port_volatility(result.x, covar), re])
-
-    # print("port_risk_return:", port_risk_return)
 
     # return weights,port_return,port_vol, port_risk_return
     return weights, port_risk_return

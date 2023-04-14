@@ -67,7 +67,12 @@ def multi_asset():
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
 
-    return render_template('analysis/multi_asset.html',portfolio=portfolio)
+    returns = {}
+    for asset in portfolio:
+        symbol = asset[1]
+        returns[symbol] = list(cal_returns(symbol)[symbol])
+
+    return render_template('analysis/multi_asset.html',portfolio=portfolio, returns=returns)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):
