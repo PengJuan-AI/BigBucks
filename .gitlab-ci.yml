@@ -11,7 +11,7 @@ test_db:
     - echo "Database successfully running"
 
 test_auth:
-  stage: tests
+  stage: test
   script:
     - echo "Authorization successfully running"
     - sleep 20
