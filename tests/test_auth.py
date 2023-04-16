@@ -1,4 +1,4 @@
-import pytest
+# import pytest
 from flask import g, session
 from BigBucks.db import get_db
 
