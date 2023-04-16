@@ -6,7 +6,7 @@ build-job:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
 test_db:
-  stage: tests
+  stage: test
   script:
     - echo "Database successfully running"
 
