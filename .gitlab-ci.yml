@@ -8,13 +8,14 @@ build-job:
 test_db:
   stage: test
   script:
-    - echo "Database successfully running"
+    - echo "Enter tests"
+    - cd tests
+    - python3 -m unittest test_db.py
 
 test_auth:
   stage: test
   script:
     - echo "Authorization successfully running"
-    - sleep 20
 
 # deploy-prod:
 #   stage: deploy
