@@ -3,6 +3,8 @@
 {% block title %}Sell{% endblock %}
 
 {% block main_body %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <div class="row">
     <div class="col-md-6">
         <div class="box box-success">
@@ -63,6 +65,12 @@
                                 <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
                                 </div>
                             </div>
+                            <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
+                                <input type="text" class="form-control" id="date-input" value="{{ date }}">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
                         </div>
                         <p class="text-center"><small style="color: orangered;" id="input_error"><i class="fa fa-hand-o-left"></i> Please select a stock</small></p>
                         <div class="form-group" style="font-size:18px;color:steelblue;justify-content:center;display:flex;">
@@ -104,6 +112,14 @@
                 $('#input_error').show().text('Min limit reached');
             }
         });
+
+        $('#date-input').datepicker({
+            dateFormat: 'yy-mm-dd',
+            defaultDate: new Date(),
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-100:+0"
+        });
     })(jQuery);
     function checkOne(){
         var one = document.getElementsByName("checkone");
@@ -124,7 +140,12 @@
                 url: '/order/sell',
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "sell"},
+                data: {
+                        "symbol": selectedStock,
+                        "date": $('#date-input').val(),  // add the date value here
+                        "share": $('.spinner input').val(),
+                        "action": "buy"
+                    },
                 success: function(event) {
                     alert("Your order has been successfully placed!");
                     window.location.reload();
