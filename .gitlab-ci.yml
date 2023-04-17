@@ -5,19 +5,20 @@ build-job:
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
-test_db:
+test1:
   stage: test
   script:
     - echo "Enter tests"
-    - cd tests
-    - python3 -m unittest test_db.py
+    - pytest
+    # - cd tests
+    # - python3 -m unittest test_db.py
 
-test_auth:
-  stage: test
-  script:
-    - cd tests
-    - python3 -m unittest test_auth.py
-    - echo "Authorization successfully running"
+# test_auth:
+#   stage: test
+#   script:
+#     - cd tests
+#     - python3 -m unittest test_auth.py
+#     - echo "Authorization successfully running"
 
 # deploy-prod:
 #   stage: deploy
