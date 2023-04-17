@@ -208,6 +208,6 @@ def transaction():
 def get_stock_info():
     # 获取股票信息的逻辑代码
     symbol = request.form.get('stockname')
-    symbol = request.form.get('date')
+    date = request.form.get('date')
     stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol,date), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)
