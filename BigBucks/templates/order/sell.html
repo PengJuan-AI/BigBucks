@@ -28,6 +28,7 @@
                         <th>Symbol</th>
                         <th>Shares</th>
                         <th>Value</th>
+                        <th>Date</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,6 +37,7 @@
                             <td>{{ asset[1] }}</td>
                             <td>{{ asset[2] }}</td>
                             <td>{{ asset[3] | round(2) }}</td>
+                            <td>{{ asset[4] }}</td>
                             <td>
                                 <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ price[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a>
                             </td>
@@ -69,7 +71,7 @@
                                 </div>
                             </div>
                             <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
-                                <input type="text" class="form-control" id="date-input" value="{{ date }}">
+                                <input type="text" class="form-control" placeholder="Select a date" id="date-input" value="{{ date }}">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                             </div>
@@ -121,7 +123,9 @@
             defaultDate: new Date(),
             changeMonth: true,
             changeYear: true,
-            yearRange: "-100:+0"
+            yearRange: "-100:+0",
+            startDate: {{ asset[4] }},
+            endDate: new Date()
         });
     })(jQuery);
     function checkOne(){
