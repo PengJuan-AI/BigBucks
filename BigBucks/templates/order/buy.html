@@ -17,6 +17,11 @@
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search Stock" name="search_name">
                     </div>
+                    <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-warning">Search</button>
                 </form>
             </div>
@@ -56,12 +61,6 @@
                                 <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
                             </div>
                         </div>
-                        <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
-                            <input type="text" class="form-control" id="date-input" value="{{ date }}">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-th"></span>
-                            </div>
-                        </div>
                     </div>
                     <p class="text-center"><small style="color: orangered;" id="input_error"><i
                                 class="fa fa-hand-o-left"></i> Please select a stock</small></p>
@@ -72,9 +71,6 @@
                     <div class="box-footer" style="justify-content:center;display:flex;">
                         <button type="submit" class="btn btn-info" id="submit-btn">Confirm Transaction</button>
                     </div>
-                    <!--                {% for message in get_flashed_messages() %}-->
-                    <!--                    <div class="flash">{{ message }}</div>-->
-                    <!--                {% endfor %}-->
                 </div>
             </form>
         </div>
@@ -95,7 +91,7 @@
             $.ajax({
                 url: '/order/get_stock_info',
                 method: 'POST',
-                data: { "stockname": stockname },
+                data: { "stockname": stockname, "date": $('#date-input').val()},
                 success: function (response) {
                     share_available = parseInt(account_balance / response.price, 10);
                     $('#search').find("tr").eq(1).find('td').eq(0).text(response.stockname);

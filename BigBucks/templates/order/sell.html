@@ -13,11 +13,11 @@
             </div>
             <div class="row" style="justify-content:center;display:flex;">
                 <form class="navbar-form navbar-left">
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search Stock" id="search-input">
                 </div>
                 <button type="button" class="btn btn-success" id="search-btn">Search</button>
-                <button type="button" class="btn btn-default" id="show-all-btn">Show All</button>
+                <button type="button" class="btn btn-default" id="show-all-btn">Show All</button> -->
             </form>
             </div>
             <div class="box-body table-responsive no-padding" style="justify-content:center;display:flex;">
@@ -56,7 +56,10 @@
                 <form class="form-horizontal" action="#" method="POST" id="submit">
                     <div class="box-body">
                         <h4 id="price" class="text-center" style="font-size:26px;color:darkorange"><strong>Current Price: <i class="fa fa-dollar"></i></strong></h4>
-                        <h4 class="text-center" style="font-size:22px;color:steelblue;"><strong>Shares</strong></h4>
+                        <div style="display:flex;justify-content:center;gap:60px;padding-left: 20px;">
+                            <h4 class="text-center" style="font-size:22px;color:steelblue;"><strong>Shares</strong></h4>
+                            <h4 class="text-center" style="font-size:22px;color:steelblue;"><strong>Date</strong></h4>
+                          </div>
                         <div class="form-group" style="justify-content:center;display:flex;">
                             <div class="input-group spinner">
                             <input type="text" class="form-control" value="100">
@@ -159,14 +162,14 @@
         });
     
     $("#search").click(function(){
-        var searchText = $("#searchText").val().toUpperCase(); //获取输入框中的搜索文本并转换为大写
-        $("#portfolio tbody tr").each(function() { //循环遍历“portfolio”表格的每一行
-            var userId = $(this).find("td:eq(0)").text().toUpperCase(); //获取当前行的Userid
-            var symbol = $(this).find("td:eq(1)").text().toUpperCase(); //获取当前行的Symbol
-            if (userId.indexOf(searchText) > -1 || symbol.indexOf(searchText) > -1) { //如果当前行中包含搜索文本
-                $(this).show(); //显示该行
+        var searchText = $("#searchText").val().toUpperCase();
+        $("#portfolio tbody tr").each(function() {
+            var userId = $(this).find("td:eq(0)").text().toUpperCase(); 
+            var symbol = $(this).find("td:eq(1)").text().toUpperCase(); 
+            if (userId.indexOf(searchText) > -1 || symbol.indexOf(searchText) > -1) { 
+                $(this).show();
             } else {
-                $(this).hide(); //否则隐藏该行
+                $(this).hide();
             }
         });
     });
