@@ -5,13 +5,7 @@ from .order import update_new_data
 from .Packages.live_data_processor import get_recent_data
 import datetime
 
-
-# # Set interval
-# @scheduler.task('interval', id='job_1', seconds=30, misfire_grace_time=900)
-# def job1():
-#     print(str(datetime.datetime.now()) + ' Job 1 executed')
-
-# @scheduler.task('interval', id='job_1', seconds=10, misfire_grace_time=900)
+# Update all asset data with new date data
 def job2():
     with scheduler.app.app_context():
         db = get_db()
