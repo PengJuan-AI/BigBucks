@@ -121,8 +121,8 @@ def get_live_price_by_input(input, date):
     today = datetime.today().date()
     input_date = datetime.strptime(date, '%Y-%m-%d').date()
     
-    if input_date > today:
-        return "Error: Date cannot be in the future"
+    # if input_date > today:
+    #     return "Error: Date cannot be in the future"
     
     if input.isalpha():
         symbol = get_symbol_by_name(input)
