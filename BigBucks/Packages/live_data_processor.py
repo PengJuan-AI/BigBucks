@@ -77,6 +77,12 @@ def get_historical_data(symbol):
 
     return stock_data
 
+def get_data_with_date(symbol, date):
+    end_date = (date + timedelta(days=1)).strftime('%Y-%m-%d')
+    start_date = (date - timedelta(days=1)).strftime('%Y-%m-%d')
+    stock_data = yf.download(symbol, start=start_date, end=end_date)
+    return stock_data
+
 def get_recent_data(symbol):
     today = datetime.today()
     start_date = (today - timedelta(days=7)).strftime('%Y-%m-%d')
@@ -100,6 +106,7 @@ def get_symbol_by_name(company_name):
     # extract the stock symbol from the data dictionary and return it
     return data['quotes'][0]['symbol']
 
+'''
 def get_live_price_by_input(input):
     if input.isalpha():
         symbol = get_symbol_by_name(input)
@@ -108,6 +115,27 @@ def get_live_price_by_input(input):
     else:
         live_price = get_live_price(input)
         return live_price
+'''
+
+def get_live_price_by_input(input, date):
+    today = datetime.today().date()
+    input_date = datetime.strptime(date, '%Y-%m-%d').date()
+    
+    if input_date > today:
+        return "Error: Date cannot be in the future"
+    
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+    else:
+        symbol = input
+
+    if input_date == today:
+        live_price = get_live_price(symbol)
+    else:
+        stock_data = get_data_with_date(symbol, input_date)
+        live_price = stock_data['Adj Close'].iloc[-1]
+
+    return live_price
 
 def get_company_shares_by_input(input):
     if input.isalpha():
@@ -160,12 +188,3 @@ def get_symbol_by_input(input):
         return symbol
     else:
         return input
-    
-'''
-a = get_name_by_input('msft')
-b = get_symbol_by_input('micros')
-c = get_symbol_by_input('msft')
-print(a)
-print(b)
-print(c)
-'''
