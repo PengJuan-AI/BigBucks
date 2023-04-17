@@ -18,15 +18,16 @@
                         <input type="text" class="form-control" placeholder="Search Stock" name="search_name">
                     </div>
                     <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-th"></span>
-                        </div>
+                                <input type="text" class="form-control" id="date-input" value="{{ date }}">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                            </div>
                     </div>
                     <button type="submit" class="btn btn-warning">Search</button>
                 </form>
             </div>
             <div class="box-body table-responsive no-padding" style="justify-content:center;display:flex;">
-                <form id="search_result">
+                <form>
                     <table class="table table-hover">
                         <tr>
                             <th>Stock Name</th>
@@ -71,6 +72,9 @@
                     <div class="box-footer" style="justify-content:center;display:flex;">
                         <button type="submit" class="btn btn-info" id="submit-btn">Confirm Transaction</button>
                     </div>
+                    <!--                {% for message in get_flashed_messages() %}-->
+                    <!--                    <div class="flash">{{ message }}</div>-->
+                    <!--                {% endfor %}-->
                 </div>
             </form>
         </div>
@@ -83,85 +87,81 @@
     $(document).ready(function () {
         var selectedStock = null;
         var account_balance = {{ info['balance'] }};
-        var share_available;
+    var share_available;
 
-        $('#search').on('submit', function (event) {
+    $('#search').on('submit', function (event) {
+        event.preventDefault();
+        stockname = $('input[name="search_name"]').val().toUpperCase();
+        $.ajax({
+            url: '/order/get_stock_info',
+            method: 'POST',
+            data: { "stockname": stockname },
+            success: function (response) {
+                share_available = parseInt(account_balance / response.price, 10);
+                $('#search').find("tr").eq(1).find('td').eq(0).text(response.stockname);
+                $('#search').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
+                $('#search').find("tr").eq(1).find('td').eq(2).text(response.price);
+                $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
+                selectedStock = response.stocksymbol;
+                $('#input_error').hide();
+            },
+            error: function () {
+                alert('Please enter correct symbol!');
+            }
+        });
+    });
+
+    $('.spinner .btn:first-of-type').on('click', function () {
+        var $input = $('.spinner input');
+        var currentValue = parseInt($input.val(), 10);
+        if (currentValue >= 100 && currentValue < share_available - 100) {
+            $input.val(currentValue + 100);
+            $('#input_error').hide();
+        } else {
+            $('#input_error').show().text('Max limit reached');
+        }
+    });
+
+    $('.spinner .btn:last-of-type').on('click', function () {
+        var $input = $('.spinner input');
+        var currentValue = parseInt($input.val(), 10);
+        if (currentValue > 100 && currentValue <= share_available) {
+            $input.val(currentValue - 100);
+            $('#input_error').hide();
+        } else {
+            console.log(currentValue);
+            $('#input_error').show().text('Min limit reached');
+        }
+    });
+
+    $('#submit').on('submit', function (event) {
+        if ($('.spinner input').val() >= 100 && $('.spinner input').val() <= share_available) {
             event.preventDefault();
-            stockname = $('input[name="search_name"]').val().toUpperCase();
             $.ajax({
-                url: '/order/get_stock_info',
+                url: '/order/buy',
                 method: 'POST',
-                data: { "stockname": stockname, "date": $('#date-input').val()},
-                success: function (response) {
-                    share_available = parseInt(account_balance / response.price, 10);
-                    $('#search_result').find("tr").eq(1).find('td').eq(0).text(response.stockname);
-                    $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
-                    $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
-                    $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
-                    selectedStock = response.stocksymbol;
-                    $('#input_error').hide();
+                // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
+                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy" },
+                success: function (event) {
+                    alert("Your order has been successfully placed!");
+                    window.location.reload();
                 },
                 error: function () {
-                    alert('Please enter correct symbol!');
+                    alert('Error occurred while placing order.');
                 }
             });
-        });
+        } else {
+            alert("Please enter a valid input!")
+        }
+    });
 
-        $('.spinner .btn:first-of-type').on('click', function () {
-            var $input = $('.spinner input');
-            var currentValue = parseInt($input.val(), 10);
-            if (currentValue >= 100 && currentValue < share_available - 100) {
-                $input.val(currentValue + 100);
-                $('#input_error').hide();
-            } else {
-                $('#input_error').show().text('Max limit reached');
-            }
-        });
-
-        $('.spinner .btn:last-of-type').on('click', function () {
-            var $input = $('.spinner input');
-            var currentValue = parseInt($input.val(), 10);
-            if (currentValue > 100 && currentValue <= share_available) {
-                $input.val(currentValue - 100);
-                $('#input_error').hide();
-            } else {
-                console.log(currentValue);
-                $('#input_error').show().text('Min limit reached');
-            }
-        });
-
-        $('#submit').on('submit', function (event) {
-            if ($('.spinner input').val() >= 100 && $('.spinner input').val() <= share_available) {
-                event.preventDefault();
-                $.ajax({
-                    url: '/order/buy',
-                    method: 'POST',
-                    data: {
-                        "symbol": selectedStock,
-                        "date": $('#date-input').val(),  // add the date value here
-                        "share": $('.spinner input').val(),
-                        "action": "buy"
-                    },
-                    success: function (event) {
-                        alert("Your order has been successfully placed!");
-                        window.location.reload();
-                    },
-                    error: function () {
-                        alert('Error occurred while placing order.');
-                    }
-                });
-            } else {
-                alert("Please enter a valid input!")
-            }
-        });
-
-        $('#date-input').datepicker({
+    $('#date-input').datepicker({
             dateFormat: 'yy-mm-dd',
             defaultDate: new Date(),
             changeMonth: true,
             changeYear: true,
             yearRange: "-100:+0"
         });
-    });
+});
 </script>
 {% endblock %}
