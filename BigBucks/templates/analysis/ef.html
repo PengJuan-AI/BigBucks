@@ -56,12 +56,12 @@
             xAxis: {
                 type: 'value',
                 name: 'Risk',
-                min: data[0][0]
+                min: Math.min(data[0][0], port_data[0][0] )
             },
             yAxis: {
                 type: 'value',
                 name: 'Return',
-                min: data[0][1]
+                min: Math.min(data[0][1], port_data[0][1] )
             },
             series: [
                 {
