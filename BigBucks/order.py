@@ -56,6 +56,7 @@ def sell():
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
+    # start_date = get_db().execute('SELECT symbol, MAX(order_date) FROM orders GROUP BY userid Having userid=?', (id,)).fetchall()
 
     date = datetime.today().strftime('%Y-%m-%d')
     price = []
