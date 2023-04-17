@@ -3,6 +3,8 @@
 {% block title %}Buy{% endblock %}
 
 {% block main_body %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <div class="row">
     <div class="col-md-6">
         <div class="box box-warning">
@@ -152,6 +154,14 @@
             alert("Please enter a valid input!")
         }
     });
+
+    $('#date-input').datepicker({
+            dateFormat: 'yy-mm-dd',
+            defaultDate: new Date(),
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-100:+0"
+        });
 });
 </script>
 {% endblock %}
