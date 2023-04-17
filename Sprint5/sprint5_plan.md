@@ -4,3 +4,5 @@
 
 ## Test and submit
 1. perform code checks and tests, package for submission
+2. Delopy BigBucks application
+3. Record a demostration of BigBucks
