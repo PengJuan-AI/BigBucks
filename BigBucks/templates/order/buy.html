@@ -118,7 +118,6 @@
             }
         }
 
-
     $('#search').on('submit', function (event) {
         console.log($('#date-input').val());
         event.preventDefault();
@@ -172,7 +171,7 @@
 
     $('#submit').on('submit', function (event) {
         // console.log($('#date-input').val());
-        if ($('.spinner input').val() >= 100 && $('.spinner input').val() <= share_available) {
+        if ($('.spinner input').val() >= increment && $('.spinner input').val() <= share_available) {
             event.preventDefault();
             $.ajax({
                 url: '/order/buy',
