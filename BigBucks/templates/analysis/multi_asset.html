@@ -55,7 +55,7 @@
                 <h3 class="box-title"><strong>Aggregated Graph of Selected Assets' Return</strong></h3>
             </div>
             <div class="box-body">
-                <div id="rtnchartContainer" style="width: 600px; height: 600px;margin: 1rem auto;"></div>
+                <div id="rtnchartContainer" style="width: 600px; height: 750px;margin: 1rem auto;"></div>
             </div>
         </div>
     </div>
@@ -124,7 +124,10 @@
                 asset.name = symbol;
                 asset.type = "line";
                 asset.stack = "Total";
-                asset.data = returns[index];
+                var rounded_rtn = returns[index].map(function(each){
+                    return Number(each.toFixed(2));
+                });
+                asset.data = rounded_rtn;
                 console.log(asset.data);
                 chart_data.push(asset);
                 legend.push(checkbox.id);
@@ -196,10 +199,20 @@
             legend: {
                 data: legend
             },
+            dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 10
+            },
+            {
+                start: 0,
+                end: 10
+            }],
             grid: {
                 left: '1%',
                 right: '1%',
-                bottom: '1%',
+                bottom: '7%',
                 containLabel: true
             },
             toolbox: {
@@ -218,7 +231,7 @@
             series: chart_data
         };
 
-        rtnchart.setOption(option);
+        rtnchart.setOption(option,true);
     }
 </script>
 {% endblock %}
