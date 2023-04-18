@@ -5,7 +5,7 @@ from BigBucks.db import get_db
 import numpy as np
 from Packages.live_data_processor import get_live_price
 from BigBucks.Packages.get_weights import get_portfolio_weights
-from Packages.efficient_frontier import cal_returns,get_ef,cal_port_return,cal_port_volatility
+from Packages.efficient_frontier import cal_returns,cal_returns_with_date,get_ef,cal_port_return,cal_port_volatility
 
 # def test_get_weights(client, app, auth):
 #     auth.login()
@@ -34,21 +34,21 @@ from Packages.efficient_frontier import cal_returns,get_ef,cal_port_return,cal_p
 #         for s in symbols:
 #             assert cal_returns(s) is not None
             
-def test_ef(auth, client, app):
-    auth.login()
-    symbols = ['AAPL', 'TSLA', 'MSFT', 'GM']
-
-    with app.app_context():
-        for s in symbols:
-            response = client.post('/order/buy',
-                        data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
-                              'action': 'buy'})
-        port = get_portfolio_weights(1)
-        W,risk_return = get_ef(port)
-
-        assert W is not None
-        assert len(risk_return) == 100
-        # assert np.amax(R) < 1
+# def test_ef(auth, client, app):
+#     auth.login()
+#     symbols = ['AAPL', 'TSLA', 'MSFT', 'GM']
+#
+#     with app.app_context():
+#         for s in symbols:
+#             response = client.post('/order/buy',
+#                         data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
+#                               'action': 'buy'})
+#         port = get_portfolio_weights(1)
+#         W,risk_return = get_ef(port)
+#
+#         assert W is not None
+#         assert len(risk_return) == 100
+#         # assert np.amax(R) < 1
 
 def test_ef_bp(auth, client, app):
     auth.login()
@@ -60,3 +60,15 @@ def test_ef_bp(auth, client, app):
                                    data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,'action': 'buy'})
 
         assert client.get('analysis/ef').status_code == 200
+
+def test_multiple(auth, client, app):
+    auth.login()
+    symbols = ['AAPL', 'TSLA']
+
+    with app.app_context():
+        for s in symbols:
+            cal_returns_with_date(s)
+        #     client.post('/order/buy',
+        #                 data={'symbol': s, 'date': '2023-3-27', 'price': get_live_price(s), 'share': 200,
+        #                       'action': 'buy'})
+

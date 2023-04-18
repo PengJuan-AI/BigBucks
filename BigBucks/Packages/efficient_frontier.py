@@ -20,6 +20,22 @@ from scipy.optimize import minimize,LinearConstraint,Bounds
 from BigBucks.db import get_db
 from .get_weights import get_portfolio_weights
 
+
+def cal_returns_with_date(symbol):
+    db = get_db()
+    period = 5 * 250  # 5yrs
+    data = pd.DataFrame(db.execute("SELECT history_date, adj_close FROM assets_data WHERE symbol=? "
+                                   "ORDER BY history_date DESC LIMIT ?",
+                                   (symbol, period)).fetchall(), columns=['date', symbol])
+
+    data = data.iloc[::-1]
+    data.reset_index(drop=True, inplace=True)
+    data['returns'] = np.divide(data[symbol], data[symbol].shift())-1
+    data.drop(index=0,inplace=True)
+    # print(data)
+
+    return data
+
 # each stock's return and volatility
 def cal_returns(symbol):
     db = get_db()
