@@ -37,7 +37,7 @@
                         </tbody>
                     </table>
                     <div class="box-footer" style="justify-content:center;display:flex;">
-                        <a type="button" href="#" onclick="draw()" class="btn btn-warning">View Graph</a>
+                        <a type="button" href="#" onclick="draw({{ returns }})" class="btn btn-warning">View Graph</a>
                     </div>
                 </form>
             </div>
@@ -55,7 +55,7 @@
                 <h3 class="box-title"><strong>Aggregated Graph of Selected Assets' Return</strong></h3>
             </div>
             <div class="box-body">
-                <div id="rtnchartContainer" style="width: 600px; height: 400px;margin: 1rem auto;"></div>
+                <div id="rtnchartContainer" style="width: 600px; height: 600px;margin: 1rem auto;"></div>
             </div>
         </div>
     </div>
@@ -64,8 +64,6 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
 
 <script>
-    var piechart = echarts.init(document.getElementById("piechartContainer"));
-    var rtnchart = echarts.init(document.getElementById("rtnchartContainer"));
     var checkallbox = document.getElementById("select-all");
     var checkboxes = document.getElementsByName("select-one");
     window.onload = function () {
@@ -114,29 +112,28 @@
             checkallbox.checked = false;
         }
     });
-    function draw() {
+    function draw(returns) {
         var chart_data = [];
         var legend = [];
-        var first_sym = "";
+        var index = 1;
         var checkboxes = document.getElementsByName('select-one');
         for (var checkbox of checkboxes) {
             if (checkbox.checked == true) {
-                if (first_sym == ""){
-                    first_sym = checkbox.id;
-                }
                 var asset = new Object();
                 var symbol = checkbox.id;
                 asset.name = symbol;
                 asset.type = "line";
                 asset.stack = "Total";
-                asset.data = '{{ returns.get(symbol)[1] }}';
+                asset.data = returns[index];
+                console.log(asset.data);
                 chart_data.push(asset);
                 legend.push(checkbox.id);
             }
+            index += 1;
         }
         if (chart_data.length != 0) {
             console.log(chart_data);
-            var x_data = '{{ returns.get(first_sym)[0] }}';
+            var x_data = returns[0];
             draw_rtn(x_data, legend, chart_data);
         }
         else {
@@ -145,6 +142,7 @@
         }
     }
     function draw_pie(pie_data) {
+        var piechart = echarts.init(document.getElementById("piechartContainer"));
         var option;
 
         option = {
@@ -188,6 +186,7 @@
         piechart.setOption(option);
     }
     function draw_rtn(x_data, legend, chart_data) {
+        var rtnchart = echarts.init(document.getElementById("rtnchartContainer"));
         var option;
 
         option = {
@@ -198,9 +197,9 @@
                 data: legend
             },
             grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
+                left: '1%',
+                right: '1%',
+                bottom: '1%',
                 containLabel: true
             },
             toolbox: {
