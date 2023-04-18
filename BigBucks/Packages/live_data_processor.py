@@ -13,7 +13,8 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 # Get company's name by its symbol from Yahoo Finance
 def get_company_name(symbol):
-    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v1/finance/search?q={symbol}')
+    encoded_symbol = quote(symbol)
+    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v1/finance/search?q={encoded_symbol}')
     content = response.read()
     data = json.loads(content.decode('utf8')) 
     if 'shortname' in data['quotes'][0]:
