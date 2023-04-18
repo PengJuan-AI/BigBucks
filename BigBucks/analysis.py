@@ -4,7 +4,7 @@ from flask import (
 import pandas as pd
 from .auth import login_required
 from .db import get_db
-from .Packages.efficient_frontier import cal_returns, get_ef, get_port_info
+from .Packages.efficient_frontier import cal_returns, cal_returns_with_date,get_ef, get_port_info
 from .Packages.get_weights import get_portfolio_weights
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
@@ -67,14 +67,16 @@ def multi_asset():
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
 
-    returns = {}
+    date_returns = {}
     for asset in portfolio:
         symbol = asset[1]
-        returns[symbol] = list(cal_returns(symbol)[symbol])
-    
-    # print(returns)
+        # returns[symbol] = list(cal_returns(symbol)[symbol])
+        data = cal_returns_with_date(symbol)
+        date_returns[symbol] = data[['date', 'returns']]
 
-    return render_template('analysis/multi_asset.html',portfolio=portfolio, returns=returns)
+    print(date_returns)
+
+    return render_template('analysis/multi_asset.html',portfolio=portfolio, returns=date_returns)
 
 @bp.route('/portfolio/<string:symbol>', methods=('GET','POST'))
 def get_hist_data(symbol):
