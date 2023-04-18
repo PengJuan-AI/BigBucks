@@ -24,7 +24,7 @@ from .get_weights import get_portfolio_weights
 def cal_returns_with_date(symbol):
     db = get_db()
     period = 5 * 250  # 5yrs
-    data = pd.DataFrame(db.execute("SELECT history_date, adj_close FROM assets_data WHERE symbol=? "
+    data = pd.DataFrame(db.execute("SELECT strftime('%Y-%m-%d',history_date), adj_close FROM assets_data WHERE symbol=? "
                                    "ORDER BY history_date DESC LIMIT ?",
                                    (symbol, period)).fetchall(), columns=['date', symbol])
 
