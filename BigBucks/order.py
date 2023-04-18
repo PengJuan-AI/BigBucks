@@ -4,6 +4,7 @@ from flask import (
 from .auth import login_required
 from .db import get_db
 from .Packages.live_data_processor import *
+from datetime import datetime, timedelta
 bp = Blueprint('order', __name__, url_prefix='/order')
 
 
@@ -21,8 +22,8 @@ def buy():
         print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
-        # price = float(request.form['price'])
-        price = get_live_price_by_input(symbol)
+
+        price = get_live_price_by_input(symbol,date)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -56,17 +57,17 @@ def sell():
     info['balance'] = get_balance(info['userid'])
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
 
+    date = datetime.today().strftime('%Y-%m-%d')
     price = []
     for asset in portfolio:
-        current_price = get_live_price_by_input(asset['symbol'])
+        current_price = get_live_price_by_input(asset['symbol'], date)
         price.append(current_price)
 
     if request.method=='POST':
-        # print("In sell")
-        # print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
-        price = get_live_price_by_input(symbol)
+
+        price = get_live_price_by_input(symbol, date)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -207,5 +208,6 @@ def transaction():
 def get_stock_info():
     # 获取股票信息的逻辑代码
     symbol = request.form.get('stockname')
-    stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
+    date = request.form.get('date')
+    stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol,date), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)
