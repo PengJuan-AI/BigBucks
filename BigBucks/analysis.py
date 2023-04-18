@@ -78,7 +78,7 @@ def multi_asset():
         # date_returns[symbol] = data[['date', 'returns']]
         date_returns[symbol] = temp
 
-    print(date_returns)
+    # print(date_returns)
 
     return render_template('analysis/multi_asset.html',portfolio=portfolio, returns=date_returns)
 

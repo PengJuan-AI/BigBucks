@@ -65,6 +65,7 @@
 
 <script>
     var piechart = echarts.init(document.getElementById("piechartContainer"));
+    var rtnchart = echarts.init(document.getElementById("rtnchartContainer"));
     var checkallbox = document.getElementById("select-all");
     var checkboxes = document.getElementsByName("select-one");
     window.onload = function () {
@@ -114,31 +115,41 @@
         }
     });
     function draw() {
-        // var data = [];
-        // var checkboxes = document.getElementsByName('select-one');
-        // for (var checkbox of checkboxes) {
-        //     if (checkbox.checked == true) {
-        //         var asset = new Object();
-        //         asset.value = checkbox.value;
-        //         asset.name = checkbox.id;
-        //         data.push(asset);
-        //     }
-        // }
-        // if (data.length != 0) {
-        //     console.log(data);
-        //     draw_rtn(data);
-        // }
-        // else {
-        //     var err = "Please select at least one asset";
-        //     alert(err);
-        // }
+        var chart_data = [];
+        var legend = [];
+        var first_sym = "";
+        var checkboxes = document.getElementsByName('select-one');
+        for (var checkbox of checkboxes) {
+            if (checkbox.checked == true) {
+                if (first_sym == ""){
+                    first_sym = checkbox.id;
+                }
+                var asset = new Object();
+                var symbol = checkbox.id;
+                asset.name = symbol;
+                asset.type = "line";
+                asset.stack = "Total";
+                asset.data = '{{ returns.get(symbol)[1] }}';
+                chart_data.push(asset);
+                legend.push(checkbox.id);
+            }
+        }
+        if (chart_data.length != 0) {
+            console.log(chart_data);
+            var x_data = '{{ returns.get(first_sym)[0] }}';
+            draw_rtn(x_data, legend, chart_data);
+        }
+        else {
+            var err = "Please select at least one asset";
+            alert(err);
+        }
     }
     function draw_pie(pie_data) {
         var option;
 
         option = {
             tooltip: {
-                trigger: 'item'
+                trigger: 'axis'
             },
             legend: {
                 top: '5%',
@@ -176,8 +187,39 @@
 
         piechart.setOption(option);
     }
-    function draw_rtn(rtn_data) {
+    function draw_rtn(x_data, legend, chart_data) {
+        var option;
 
+        option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: legend
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: x_data
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: chart_data
+        };
+
+        rtnchart.setOption(option);
     }
 </script>
 {% endblock %}
