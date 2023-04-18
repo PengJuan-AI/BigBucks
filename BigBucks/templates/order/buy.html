@@ -84,8 +84,18 @@
 <!--<script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>-->
 <!--<script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>-->
 <script>
+    var increment = 100; // Default increment for stocks
+    function setIncrement() {
+        if (selectedStock === 'BTC-USD') {
+            increment = 1; // Increment for Bitcoin
+        } else {
+            increment = 100; // Increment for stocks
+        }
+    }
+
+    var selectedStock = null;
     $(document).ready(function () {
-        var selectedStock = null;
+        //var selectedStock = null;
         var account_balance = {{ info['balance'] }};
         var share_available;
         const dateInput = document.getElementById('date-input');
@@ -95,6 +105,21 @@
         const day = today.getDate().toString().padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
         dateInput.value = formattedDate;
+
+        function updateIncrementButtons() {
+            var $input = $('.spinner input');
+            var currentValue = parseInt($input.val(), 10);
+            if (currentValue >= increment && currentValue < share_available - increment) {
+                $('#input_error').hide();
+            } else {
+                $('#input_error').show().text('Max limit reached');
+            }
+            if (currentValue > increment && currentValue <= share_available) {
+                $('#input_error').hide();
+            } else {
+                $('#input_error').show().text('Min limit reached');
+            }
+        }
 
     $('#search').on('submit', function (event) {
         console.log($('#date-input').val());
@@ -111,7 +136,10 @@
                 $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
                 $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
                 selectedStock = response.stocksymbol;
-                $('#input_error').hide();
+                setIncrement();
+                $('.spinner input').val(increment);
+                updateIncrementButtons();
+                //$('#input_error').hide();
             },
             error: function () {
                 alert('Please enter correct symbol!');
@@ -122,9 +150,10 @@
     $('.spinner .btn:first-of-type').on('click', function () {
         var $input = $('.spinner input');
         var currentValue = parseInt($input.val(), 10);
-        if (currentValue >= 100 && currentValue < share_available - 100) {
-            $input.val(currentValue + 100);
-            $('#input_error').hide();
+        if (currentValue >= increment && currentValue <= share_available - increment) {
+            $input.val(currentValue + increment);
+            //$('#input_error').hide();
+            updateIncrementButtons();
         } else {
             $('#input_error').show().text('Max limit reached');
         }
@@ -133,11 +162,12 @@
     $('.spinner .btn:last-of-type').on('click', function () {
         var $input = $('.spinner input');
         var currentValue = parseInt($input.val(), 10);
-        if (currentValue > 100 && currentValue <= share_available) {
-            $input.val(currentValue - 100);
-            $('#input_error').hide();
+        if (currentValue > increment && currentValue <= share_available) {
+            $input.val(currentValue - increment);
+            //$('#input_error').hide();
+            updateIncrementButtons();
         } else {
-            console.log(currentValue);
+            //console.log(currentValue);
             $('#input_error').show().text('Min limit reached');
         }
     });
