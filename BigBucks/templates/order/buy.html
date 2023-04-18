@@ -86,8 +86,8 @@
 <script>
     var increment = 100; // Default increment for stocks
     function setIncrement() {
-        if (selectedStock === 'BTC-USD') {
-            increment = 1; // Increment for Bitcoin
+        if (selectedStock.slice(-4) === '-USD') {
+            increment = 1; // Increment for cryptocurrencies
         } else {
             increment = 100; // Increment for stocks
         }
