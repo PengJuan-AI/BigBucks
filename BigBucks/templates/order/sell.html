@@ -27,8 +27,17 @@
                     <tr>
                         <th>Symbol</th>
                         <th>Shares</th>
+<<<<<<< HEAD
+                        <!-- <th>Value</th> -->
+                        <th>Date</th>
+=======
                         <th>Value</th>
+<<<<<<< HEAD
+                        {# <th>Date</th> #}
+>>>>>>> 7f17d94a4b4d37fd751cf0ff608f89e8b1471bf7
+=======
                         <th>Latest Buy Date</th>
+>>>>>>> 8a840486018b13d23c9f6f63629ad842aedec37c
                     </tr>
                     </thead>
                     <tbody>
@@ -36,10 +45,20 @@
                         <tr>
                             <td>{{ asset[1] }}</td>
                             <td>{{ asset[2] }}</td>
+<<<<<<< HEAD
+                            <!-- <td>{{ asset[3] | round(2) }}</td> -->
+                            <td>{{ asset[4] }}</td>
+=======
                             <td>{{ asset[3] | round(2) }}</td>
+<<<<<<< HEAD
+                            {# <td>{{ asset[4] }}</td> #}
+>>>>>>> 7f17d94a4b4d37fd751cf0ff608f89e8b1471bf7
+=======
                             <td>{{ latest[asset[1]] }}</td>
+>>>>>>> 8a840486018b13d23c9f6f63629ad842aedec37c
                             <td>
-                                <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ price[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a>
+                                <!-- <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ price[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a> -->
+                                <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}')" class="btn btn-success btn-xs">Sell</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -132,7 +151,24 @@
         var one = document.getElementsByName("checkone");
         one.checked=true;
     }
-    function pass_shares(symbol, shares, price){
+    function pass_shares(symbol, shares){
+        var price;
+        $.ajax({
+                url: '/order/sell', //需要新的API
+                method: 'POST',
+                // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
+                data: {
+                        "symbol": symbol,
+                        "date": $('#date-input').val(),  // add the date value here
+                    },
+                success: function(response) {
+                    price = response.price;
+                },
+                error: function() {
+                    alert('Error occurred while getting price.');
+                    window.location.reload();
+                }
+            });
         var s = document.getElementById('shares');
         s.innerHTML = "<strong> Shares Available: " + shares + "</strong>";
         var p = document.getElementById('price');
