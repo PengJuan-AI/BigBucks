@@ -28,7 +28,7 @@
                         <th>Symbol</th>
                         <th>Shares</th>
                         <th>Value</th>
-<!--                        {# <th>Date</th> #}-->
+                        <th>Latest Buy Date</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,7 +37,7 @@
                             <td>{{ asset[1] }}</td>
                             <td>{{ asset[2] }}</td>
                             <td>{{ asset[3] | round(2) }}</td>
-<!--                            {# <td>{{ asset[4] }}</td> #}-->
+                            <td>{{ latest[asset[1]] }}</td>
                             <td>
                                 <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ price[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a>
                             </td>

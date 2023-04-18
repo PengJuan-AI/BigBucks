@@ -56,7 +56,12 @@ def sell():
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
-    # start_date = get_db().execute('SELECT symbol, MAX(order_date) FROM orders GROUP BY userid Having userid=?', (id,)).fetchall()
+    order_data = get_db().execute('SELECT symbol, MAX(order_date) FROM orders GROUP BY symbol, userid Having userid=?', (id,)).fetchall()
+
+    latest_date = {}
+    for data in order_data:
+        latest_date[data[0]] = data[1]
+    print(latest_date)
 
     date = datetime.today().strftime('%Y-%m-%d')
     price = []
@@ -84,9 +89,8 @@ def sell():
             update_orders(date, id, symbol, shares_traded, price, action)
 
         flash(error)
-        # return redirect(url_for('index'))
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio, price=price)
+    return render_template('order/sell.html', info=info, portfolio=portfolio, price=price, latest=latest_date)
 
 
 # Get balance
@@ -204,7 +208,6 @@ def transaction():
     # print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
 
-# test
 @bp.route('/get_stock_info', methods=['POST'])
 def get_stock_info():
     # 获取股票信息的逻辑代码
@@ -212,3 +215,12 @@ def get_stock_info():
     date = request.form.get('date')
     stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol,date), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)
+
+@bp.route('/get_stock_price', methods=['POST'])
+def get_stock_price():
+    # 获取股票信息的逻辑代码
+    symbol = request.form.get('symbol')
+    date = request.form.get('date')
+    price = get_live_price_by_input(symbol, date)
+    print(date, ' : ', price)
+    return price
