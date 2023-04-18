@@ -108,18 +108,16 @@
 
         function updateIncrementButtons() {
             var $input = $('.spinner input');
-            var currentValue = parseInt($input.val(), 10);
-            if (currentValue >= increment && currentValue < share_available - increment) {
-                $('#input_error').hide();
-            } else {
-                $('#input_error').show().text('Max limit reached');
-            }
-            if (currentValue > increment && currentValue <= share_available) {
-                $('#input_error').hide();
-            } else {
+            var currentValue = parseInt($input.val(), 10); 
+            if (currentValue < increment) {
                 $('#input_error').show().text('Min limit reached');
+            } else if (currentValue > share_available) {
+                $('#input_error').show().text('Max limit reached');
+            } else {
+                $('#input_error').hide();
             }
         }
+
 
     $('#search').on('submit', function (event) {
         console.log($('#date-input').val());
