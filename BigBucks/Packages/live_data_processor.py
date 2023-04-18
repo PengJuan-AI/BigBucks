@@ -24,14 +24,22 @@ def get_company_name(symbol):
 
 # Get company's outstanding shares by its symbol from Yahoo Finance
 def get_company_shares(symbol):
-    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
-    content = response.read()
-    data = json.loads(content.decode('utf8'))
-    if 'sharesOutstanding' in data['quoteSummary']['result'][0]['defaultKeyStatistics']:
-        shares_outstanding = data['quoteSummary']['result'][0]['defaultKeyStatistics']['sharesOutstanding']['raw']
-        return shares_outstanding
-    else:
-        return None
+    try:
+        response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
+        content = response.read()
+        data = json.loads(content.decode('utf8'))
+
+        if 'quoteSummary' in data and 'result' in data['quoteSummary'] and len(data['quoteSummary']['result']) > 0:
+            result = data['quoteSummary']['result'][0]
+            if 'defaultKeyStatistics' in result and 'sharesOutstanding' in result['defaultKeyStatistics']:
+                shares_outstanding = result['defaultKeyStatistics']['sharesOutstanding']['raw']
+                return shares_outstanding
+
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+
+    return None
 
 # Get live price of a stock by its symbol from Yahoo Finance
 def get_live_price(symbol):

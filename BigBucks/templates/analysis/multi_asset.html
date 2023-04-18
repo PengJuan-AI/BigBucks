@@ -42,7 +42,7 @@
                 </form>
             </div>
             <div class="container">
-            <h4 class="text-center" style="font-size:20px;">Value of Assets in Portfolio</h4>
+                <h4 class="text-center" style="font-size:20px;">Weights of All Assets' Value</h4>
             </div>
             <div class="container">
                 <div id="piechartContainer" style="width: 600px; height: 400px;margin: 1rem auto;"></div>
@@ -65,12 +65,19 @@
 
 <script>
     var piechart = echarts.init(document.getElementById("piechartContainer"));
-    window.onload = function(){
+    var checkallbox = document.getElementById("select-all");
+    var checkboxes = document.getElementsByName("select-one");
+    window.onload = function () {
         var data = [];
-        var checkboxes = document.getElementsByName('select-one');
+        var sumvalue = 0;
+        for (var checkbox of checkboxes) {
+            sumvalue += parseFloat(checkbox.value);
+        }
         for (var checkbox of checkboxes) {
             var asset = new Object();
-            asset.value = checkbox.value;
+            var weight = parseFloat(checkbox.value)/sumvalue;
+            asset.value = Math.round((weight + Number.EPSILON) * 100) / 100;
+            console.log(asset.value);
             asset.name = checkbox.id;
             data.push(asset);
         }
@@ -86,11 +93,26 @@
         one.checked = true;
     }
     function selectAll() {
-        var checkboxes = document.getElementsByName('select-one');
-        for (var checkbox of checkboxes) {
-            checkbox.checked = true;
+        if (checkallbox.checked == true) {
+            for (var checkbox of checkboxes) {
+                checkbox.checked = true;
+            }
+        }
+        else {
+            for (var checkbox of checkboxes) {
+                checkbox.checked = false;
+            }
         }
     }
+    $('input[name=select-one]').change(function () {
+        if ($(this).is(':checked')) {
+            console.log("checked " + this.id);
+        }
+        else {
+            console.log("unchecked " + this.id);
+            checkallbox.checked = false;
+        }
+    });
     function draw() {
         // var data = [];
         // var checkboxes = document.getElementsByName('select-one');
@@ -154,7 +176,7 @@
 
         piechart.setOption(option);
     }
-    function draw_rtn(rtn_data){
+    function draw_rtn(rtn_data) {
 
     }
 </script>
