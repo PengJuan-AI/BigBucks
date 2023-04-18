@@ -69,10 +69,14 @@ def multi_asset():
 
     date_returns = {}
     for asset in portfolio:
+        temp = []
         symbol = asset[1]
         # returns[symbol] = list(cal_returns(symbol)[symbol])
         data = cal_returns_with_date(symbol)
-        date_returns[symbol] = data[['date', 'returns']]
+        temp.append(list(data['date']))
+        temp.append(list(data['returns']))
+        # date_returns[symbol] = data[['date', 'returns']]
+        date_returns[symbol] = temp
 
     print(date_returns)
 
