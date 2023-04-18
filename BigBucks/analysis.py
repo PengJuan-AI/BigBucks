@@ -71,6 +71,8 @@ def multi_asset():
     for asset in portfolio:
         symbol = asset[1]
         returns[symbol] = list(cal_returns(symbol)[symbol])
+    
+    # print(returns)
 
     return render_template('analysis/multi_asset.html',portfolio=portfolio, returns=returns)
 
