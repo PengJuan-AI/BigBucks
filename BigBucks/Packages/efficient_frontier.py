@@ -20,7 +20,7 @@ from scipy.optimize import minimize,LinearConstraint,Bounds
 from BigBucks.db import get_db
 from .get_weights import get_portfolio_weights
 
-
+# calculate return relative to the first date
 def cal_returns_with_date(symbol):
     db = get_db()
     period = 5 * 250  # 5yrs
@@ -30,8 +30,8 @@ def cal_returns_with_date(symbol):
 
     data = data.iloc[::-1]
     data.reset_index(drop=True, inplace=True)
-    data['returns'] = np.divide(data[symbol], data[symbol].shift())-1
-    data.drop(index=0,inplace=True)
+    data['returns'] = np.divide(data[symbol], data[symbol][0])-1
+    # data.drop(index=0,inplace=True)
     # print(data)
 
     return data
