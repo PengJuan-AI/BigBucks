@@ -75,7 +75,7 @@ def sell():
 
         price = get_live_price_by_input(symbol, date)
         shares_traded = int(request.form['share'])
-        action = request.form['action']
+        action = "sell"
         error = None
         amount = price*shares_traded
         balance = get_balance(id)
@@ -222,5 +222,6 @@ def get_stock_price():
     symbol = request.form.get('symbol')
     date = request.form.get('date')
     price = get_live_price_by_input(symbol, date)
-    print(date, ' : ', price)
-    return price
+    price_info = {'price': price}
+    print(price)
+    return jsonify(price_info)

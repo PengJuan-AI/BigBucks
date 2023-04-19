@@ -13,11 +13,13 @@
             </div>
             <div class="row" style="justify-content:center;display:flex;">
                 <form class="navbar-form navbar-left">
-                <!-- <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search Stock" id="search-input">
-                </div>
-                <button type="button" class="btn btn-success" id="search-btn">Search</button>
-                <button type="button" class="btn btn-default" id="show-all-btn">Show All</button> -->
+                    <span>Select a date you want to sell:</span>
+                    <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
+                        <input type="text" class="form-control" placeholder="Select a date" id="date-input" value="{{ date }}" autocomplete="off">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
             </form>
             </div>
             <div class="box-body table-responsive no-padding" style="justify-content:center;display:flex;">
@@ -61,7 +63,6 @@
                         <h4 id="price" class="text-center" style="font-size:26px;color:darkorange"><strong>Current Price: <i class="fa fa-dollar"></i></strong></h4>
                         <div style="display:flex;justify-content:center;gap:60px;padding-left: 20px;">
                             <h4 class="text-center" style="font-size:22px;color:steelblue;"><strong>Shares</strong></h4>
-                            <h4 class="text-center" style="font-size:22px;color:steelblue;"><strong>Date</strong></h4>
                           </div>
                         <div class="form-group" style="justify-content:center;display:flex;">
                             <div class="input-group spinner">
@@ -70,11 +71,6 @@
                                 <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
                                 <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
                                 </div>
-                            </div>
-                            <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
-                                <input type="text" class="form-control" placeholder="Select a date" id="date-input" value="{{ date }}">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
                         </div>
@@ -96,6 +92,14 @@
     var share_available;
     var symbol;
     (function ($) {
+        const dateInput = document.getElementById('date-input');
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        dateInput.value = formattedDate;
+        
         $('.spinner .btn:first-of-type').on('click', function () {
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
@@ -134,9 +138,8 @@
         one.checked=true;
     }
     function pass_shares(symbol, shares){
-        var price;
         $.ajax({
-                url: '/order/sell', //需要新的API
+                url: '/order/get_stock_price', //需要新的API
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
                 data: {
@@ -144,7 +147,9 @@
                         "date": $('#date-input').val(),  // add the date value here
                     },
                 success: function(response) {
-                    price = response.price;
+                    var price = response.price.toFixed(2);
+                    console.log(price);
+                    $('#price').html('<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>');
                 },
                 error: function() {
                     alert('Error occurred while getting price.');
@@ -154,7 +159,8 @@
         var s = document.getElementById('shares');
         s.innerHTML = "<strong> Shares Available: " + shares + "</strong>";
         var p = document.getElementById('price');
-        p.innerHTML = '<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>';
+        // console.log(price1);
+        // p.innerHTML = '<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>';
         selectedStock = symbol;
         share_available = shares;
         $('#input_error').hide();
