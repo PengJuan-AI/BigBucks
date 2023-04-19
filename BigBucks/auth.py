@@ -1,5 +1,5 @@
 import functools
-
+import re
 from flask import Blueprint
 from flask import flash
 from flask import g
@@ -67,6 +67,12 @@ def register():
             error = "Password is required"
         if password != conf :
             error = "Passwords do not match!"
+        if len(password) < 8:
+            error = "Password should have at least 8 characters!"
+        elif re.search('[0-9]',password) is None:
+            error = "Password should have at least 1 number!"
+        elif re.search('[A-Z]',password) is None:
+            error = "Password should have at least 1 capital letter!"
 
         if not email:
             error = "Please enter your email"
@@ -75,7 +81,7 @@ def register():
                 error = "Wrong Email!"
 
         if error is None:
-            try:
+            try: # *** add date and email here ***
                 initial_balance = 1000000
                 db.execute(
                     "INSERT INTO user (username, password) VALUES (?, ?)",
@@ -100,9 +106,9 @@ def register():
 
     return render_template("auth/register.html")
 
+
 # verify the format of user's email
 def verify_email(email):
-    import re
     pattern = "\w+[@][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)"
 
     print(re.match(pattern, email))
