@@ -120,15 +120,13 @@
         for (var checkbox of checkboxes) {
             if (checkbox.checked == true) {
                 var asset = new Object();
-                var symbol = checkbox.id;
-                asset.name = symbol;
+                asset.name = checkbox.id;
                 asset.type = "line";
                 asset.stack = "Total";
-                var rounded_rtn = returns[index].map(function(each){
+                var rounded_rtn = returns[checkbox.id].map(function(each){
                     return Number(each.toFixed(2));
                 });
                 asset.data = rounded_rtn;
-                console.log(asset.data);
                 chart_data.push(asset);
                 legend.push(checkbox.id);
             }
@@ -136,7 +134,7 @@
         }
         if (chart_data.length != 0) {
             console.log(chart_data);
-            var x_data = returns[0];
+            var x_data = returns['date'];
             draw_rtn(x_data, legend, chart_data);
         }
         else {

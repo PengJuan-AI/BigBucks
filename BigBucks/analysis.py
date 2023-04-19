@@ -67,14 +67,14 @@ def multi_asset():
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
 
-    date_returns = []
+    date_returns = {}
     for asset in portfolio:
         symbol = asset[1]
         # returns[symbol] = list(cal_returns(symbol)[symbol])
         data = cal_returns_with_date(symbol)
         if len(date_returns)==0:
-            date_returns.append(list(data['date']))
-        date_returns.append(list(data['returns']))
+            date_returns['date'] = list(data['date'])
+        date_returns[symbol] = list(data['returns'])
 
     # print(date_returns)
 
