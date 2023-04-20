@@ -61,7 +61,7 @@ def sell():
     latest_date = {}
     for data in order_data:
         latest_date[data[0]] = data[1]
-    print(latest_date)
+    # print(latest_date)
 
     date = datetime.today().strftime('%Y-%m-%d')
     price = []
@@ -223,5 +223,5 @@ def get_stock_price():
     date = request.form.get('date')
     price = get_live_price_by_input(symbol, date)
     price_info = {'price': price}
-    print(price)
+    # print(price)
     return jsonify(price_info)
