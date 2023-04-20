@@ -2,6 +2,8 @@ default:
   image: python:3.7
 build-job:
   stage: build
+  tags:
+    - shell
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
