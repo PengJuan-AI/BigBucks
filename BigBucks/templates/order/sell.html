@@ -42,7 +42,7 @@
                             <td>{{ latest[asset[1]] }}</td>
                             <td>
                                 <!-- <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ price[loop.index0] }}')" class="btn btn-success btn-xs">Sell</a> -->
-                                <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}')" class="btn btn-success btn-xs">Sell</a>
+                                <a type="button" href="#" onclick="pass_shares('{{ asset[1] }}', '{{ asset[2] }}', '{{ latest[asset[1]] }}')" class="btn btn-success btn-xs">Sell</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -99,7 +99,7 @@
         const day = today.getDate().toString().padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
         dateInput.value = formattedDate;
-        
+
         $('.spinner .btn:first-of-type').on('click', function () {
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
@@ -137,8 +137,13 @@
         var one = document.getElementsByName("checkone");
         one.checked=true;
     }
-    function pass_shares(symbol, shares){
-        $.ajax({
+    function pass_shares(symbol, shares, latest_date){
+        var selectedDate = new Date($('#date-input').val());
+        var latestBuyingDate = new Date(latest_date);
+        var currentDate = new Date();
+        if(selectedDate < latestBuyingDate || selectedDate > currentDate) {
+            alert('Please select a vaild date');
+        } else {$.ajax({
                 url: '/order/get_stock_price', //需要新的API
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
@@ -163,7 +168,7 @@
         // p.innerHTML = '<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>';
         selectedStock = symbol;
         share_available = shares;
-        $('#input_error').hide();
+        $('#input_error').hide();}
     }
     $('#submit').on('submit', function(event) {
             event.preventDefault();
