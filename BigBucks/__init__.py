@@ -16,7 +16,7 @@ class SchedulerConfig(object):
                 # execute this scheduler at 6 in workday
                 'type': 'cron',
                 'day_of_week': "1-5",
-                'hour': '22',
+                'hour': '6',
                 # 'seconds':60
             }
         }
@@ -52,8 +52,9 @@ def create_app(test_config=None):
 
     # Scheduler
     # from . import scheduler
-    scheduler.init_app(app)
-    scheduler.start()
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+        scheduler.init_app(app)
+        scheduler.start()
 
     from . import db
     db.init_app(app)
