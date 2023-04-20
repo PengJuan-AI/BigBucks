@@ -21,8 +21,7 @@ CREATE TABLE admin (
   admin_name TEXT UNIQUE NOT NULL,
 --  firstname TEXT NOT NULL,
 --   lastname TEXT NOT NULL,
-  password TEXT NOT NULL,
-  email varchar(24)
+  password TEXT NOT NULL
 );
 
 CREATE TABLE Portfolio (
