@@ -20,6 +20,8 @@
                         <tr>
                             <th>User ID</th>
                             <th>Username</th>
+                            <th>User Email</th>
+                            <th>Registration Time</th>
                             <th>Balance</th>
                         </tr>
                         {% for user in users %}
@@ -27,6 +29,8 @@
                             <td>{{ user[0] }}</td>
                             <td>{{ user[1] }}</td>
                             <td>{{ user[2] }}</td>
+                            <td>{{ user[3].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ user[4] }}</td>
                         </tr>
                         {% endfor %}
                     </table>

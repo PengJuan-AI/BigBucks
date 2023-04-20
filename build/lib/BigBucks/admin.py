@@ -6,6 +6,7 @@ from .admin_auth import admin_login_required
 from .db import get_db
 from .Packages.get_weights import get_all_weights
 from .Packages.efficient_frontier import get_ef,get_port_info
+from .Packages.live_data_processor import get_company_name
 import datetime
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -18,6 +19,7 @@ def home():
     user_num = db.execute("SELECT COUNT(*) FROM user").fetchone()
     total_balance = db.execute("SELECT SUM(balance) FROM balance").fetchone()
     portfolio_data = db.execute("SELECT COUNT(DISTINCT symbol), SUM(shares) FROM portfolio").fetchone()
+    asset_data = db.execute("SELECT symbol, MAX(history_date) date FROM assets_data GROUP BY symbol").fetchall()
     # do not show none
     if not total_balance[0]:
         num_t_balance = 0
@@ -29,7 +31,14 @@ def home():
     else:
         p_data['shares'] = portfolio_data[1]
     p_data['asset'] = portfolio_data[0]
-    return render_template('admin/home.html',user_num=user_num[0],total_balance=num_t_balance,portfolio_data=p_data)
+    assets = []
+    for a in asset_data:
+        data = {}
+        data['symbol'] = a[0]
+        data['date'] = a[1]
+        assets.append(data)
+
+    return render_template('admin/home.html',assets=assets, user_num=user_num[0],total_balance=num_t_balance,portfolio_data=p_data)
 
 
 # add new admin
@@ -70,7 +79,7 @@ def add_admin():
 @admin_login_required
 def view_users():
     db = get_db()
-    users = db.execute("SELECT u.userid, u.username, b.balance \
+    users = db.execute("SELECT u.userid, u.username, u.email, u.date, b.balance \
     FROM user AS u \
     INNER JOIN balance AS b \
     ON b.userid = u.userid \
@@ -82,10 +91,18 @@ def view_users():
 @admin_login_required
 def view_stocks():
     db = get_db()
-    stocks = db.execute("SELECT symbol, SUM(shares) as ttl_shares\
-    FROM portfolio \
-    GROUP BY symbol \
-    ORDER BY ttl_shares")
+    # stocks = db.execute("SELECT symbol, SUM(shares) as ttl_shares FROM portfolio GROUP BY symbol ORDER BY ttl_shares")
+    stocks=[]
+    stock_info = db.execute("SELECT symbol, SUM(shares), SUM(value) FROM portfolio GROUP BY symbol ORDER BY symbol").fetchall()
+    for s in stock_info:
+        stock = {}
+        stock['symbol'] = s[0]
+        stock['name'] = get_company_name(s[0])
+        stock['shares_held'] = s[1]
+        stock['price_per_share'] = round(s[2]/s[1],2)
+        print(stock)
+        stocks.append(stock)
+
     return render_template("admin/view_stocks.html",stocks=stocks)
 
 # view admin data
@@ -102,20 +119,29 @@ def risk_return():
     portfolio = get_all_weights()
     error = None
     if not portfolio:
+        risk_re = 0
+        port_info = {
+            'rtn': 0,
+            'vol': 0,
+            'sharpe': 0
+        }
         error = "Not users buy any assets yet."
     else:
         weights, risk_re =  get_ef(portfolio)
         r, v, sharpe = get_port_info(portfolio)
+        port_info = {
+            'rtn': round(r,2),
+            'vol': round(v,2),
+            'sharpe': round(sharpe,2)
+        }
     
-    return render_template("admin/risk_return.html",ef=risk_re,rtn=r,vol=v,sharpe=sharpe,error=error)
+    return render_template("admin/risk_return.html",ef=risk_re,info=port_info,error=error)
 
 @bp.route('/today_orders')
 @admin_login_required
 def today_orders():
     db = get_db()
     today = datetime.date.today()
-    # print(today)
-    # info = {}
     info = []
     error = None
     result = db.execute("SELECT * FROM orders WHERE order_date=?",(today,)).fetchall()
@@ -125,13 +151,27 @@ def today_orders():
     else:
         # num = 0
         for order in result:
-            # num+=1
-            # info[num] = list(order)
-            info.append(list(order))
+            _info = {}
+            _info['Date'] = order[1]
+            _info['symbol'] = order[3]
+            _info['name'] = get_company_name(order[3])
+            _info['shares'] = order[4]
+            _info['price'] = order[5]
+            _info['action'] = order[6]
+            info.append(_info)
 
-        print(info)
+        print(_info)
 
     return render_template("admin/today_orders.html",info=info,error=error)
+
+# @bp.route('/scheduler', methods=('GET','POST'))
+# @admin_login_required
+# def scheduler_test():
+#     from scheduler import job2
+#     time = job2()
+#
+#     return render_template("admin/scheduler.html", time=time)
+
 
 @bp.route('/account_settings', methods=('GET','POST'))
 @admin_login_required

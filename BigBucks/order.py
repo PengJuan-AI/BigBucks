@@ -3,8 +3,8 @@ from flask import (
 )
 from .auth import login_required
 from .db import get_db
-from .Packages.live_data_processor import get_company_name,get_company_shares, get_live_price, get_historical_data
-
+from .Packages.live_data_processor import *
+from datetime import datetime, timedelta
 bp = Blueprint('order', __name__, url_prefix='/order')
 
 
@@ -22,8 +22,8 @@ def buy():
         print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
-        # price = float(request.form['price'])
-        price = get_live_price(symbol)
+
+        price = get_live_price_by_input(symbol,date)
         shares_traded = int(request.form['share'])
         action = request.form['action']
         error = None
@@ -56,20 +56,26 @@ def sell():
     info['userid'] = id
     info['balance'] = get_balance(info['userid'])
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
+    order_data = get_db().execute('SELECT symbol, MAX(order_date) FROM orders GROUP BY symbol, userid Having userid=?', (id,)).fetchall()
 
+    latest_date = {}
+    for data in order_data:
+        latest_date[data[0]] = data[1]
+    # print(latest_date)
+
+    date = datetime.today().strftime('%Y-%m-%d')
     price = []
     for asset in portfolio:
-        current_price = get_live_price(asset['symbol'])
+        current_price = get_live_price_by_input(asset['symbol'], date)
         price.append(current_price)
 
     if request.method=='POST':
-        print("In sell")
-        print(request.form)
         symbol = request.form['symbol']
         date = request.form['date']
-        price = get_live_price(symbol)
+
+        price = get_live_price_by_input(symbol, date)
         shares_traded = int(request.form['share'])
-        action = request.form['action']
+        action = "sell"
         error = None
         amount = price*shares_traded
         balance = get_balance(id)
@@ -83,9 +89,8 @@ def sell():
             update_orders(date, id, symbol, shares_traded, price, action)
 
         flash(error)
-        # return redirect(url_for('index'))
 
-    return render_template('order/sell.html', info=info, portfolio=portfolio, price=price)
+    return render_template('order/sell.html', info=info, portfolio=portfolio, price=price, latest=latest_date)
 
 
 # Get balance
@@ -105,11 +110,11 @@ def get_shares(userid, symbol):
     else:
         return shares[0]
 
-def get_outstanding(symbol):
-    return get_company_shares(symbol)
+def get_outstanding(input):
+    return get_company_shares_by_input(input)
 
-def get_asset_name(symbol):
-    return get_company_name(symbol)
+def get_asset_name(input):
+    return get_name_by_input(input)
 
 def get_asset_value(symbol,userid):
     return get_db().execute(
@@ -138,7 +143,7 @@ def buy_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     db.commit()
 
     # add historical data of this asset
-    update_asset_data(symbol)
+    update_hist_data(symbol)
         
 def sell_asset(userid,symbol,balance, amount, shares_traded, shares_owned):
     print('In sell asset')
@@ -164,9 +169,16 @@ def update_orders(date,id, symbol, shares, price, action ):
                (date, id, symbol,shares, price, action))
     db.commit()
 
-def update_asset_data(symbol):
-    print("In update asset data")
-    data = get_historical_data(symbol)
+def update_hist_data(symbol):
+    data = get_data_by_input(symbol)
+    update_asset_data(symbol, data)
+
+def update_new_data(symbol):
+    # print("In update new data")
+    data = get_recent_data(symbol)
+    update_asset_data(symbol, data)
+
+def update_asset_data(symbol,data):
     db = get_db()
     sql = "INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
@@ -183,21 +195,6 @@ def update_asset_data(symbol):
 
     db.commit()
 
-# def update_asset_info(assetid, shares_traded):
-#     '''
-#     after one asset is traded, the outstanding shares of it decrease
-#     '''
-#     db = get_db()
-#     outstanding = db.execute('SELECT shares FROM assets_info WHERE assetid=?', (assetid,)).fetchone()[0]
-#     db.execute('UPDATE assets_info set shares=? WHERE assetid=?',
-#                (outstanding-shares_traded, assetid)
-#     )
-#
-#
-# def update_orders(date,id, assetid, shares, price, action ):
-#     db = get_db()
-#     db.execute('INSERT INTO orders (order_date, userid, assetid, quantity, price, action) VALUES (?,?,?,?,?,?)',
-#                (date, id, assetid,shares, price, action))
 
 # query user's transaction records
 @bp.route('/transaction',methods=('GET','POST'))
@@ -211,10 +208,20 @@ def transaction():
     # print(type(txn_record))
     return render_template('order/transaction.html', info=info, txn_record=txn_record)
 
-# test
 @bp.route('/get_stock_info', methods=['POST'])
 def get_stock_info():
     # 获取股票信息的逻辑代码
     symbol = request.form.get('stockname')
-    stock_info = {'stockname': get_company_name(symbol), 'price': get_live_price(symbol), 'stocksymbol': symbol, 'outstanding': get_outstanding(symbol)}
+    date = request.form.get('date')
+    stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol,date), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
     return jsonify(stock_info)
+
+@bp.route('/get_stock_price', methods=['POST'])
+def get_stock_price():
+    # 获取股票信息的逻辑代码
+    symbol = request.form.get('symbol')
+    date = request.form.get('date')
+    price = get_live_price_by_input(symbol, date)
+    price_info = {'price': price}
+    # print(price)
+    return jsonify(price_info)

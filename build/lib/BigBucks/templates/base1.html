@@ -57,14 +57,16 @@
                 <!-- The user image in the menu -->
                 <li class="user-header">
                   <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
-                  <p style="font-size:30px">
+                  <p>
                     <strong>{{ session.user_name }}</strong>
+                    <small>Joined on {{ session.date.strftime('%Y-%m-%d') }}</small>
                   </p>
                 </li>
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                    <a href="{{ url_for('auth.account_settings') }}" class="btn btn-default btn-flat">Account Settings</a>
+                    <a href="{{ url_for('auth.account_settings') }}" class="btn btn-default btn-flat">Account
+                      Settings</a>
                   </div>
                   <div class="pull-right">
                     <a href="{{ url_for('auth.logout') }}" class="btn btn-default btn-flat">Log Out</a>
@@ -115,47 +117,23 @@
           <li id="home"><a href="{{ url_for('index') }}"><i class="fa fa-home"></i> <span>Home</span></a></li>
           <li id="order"><a href="{{ url_for('order.buy') }}"><i class="fa fa-sticky-note"></i> <span>Order</span></a>
           </li>
-          <li id="analysis" class="treeview">
+          <li id="analysis"><a href="{{ url_for('analysis.ef') }}"><i class="fa fa-line-chart"></i> <span>Efficient
+                Frontier</span></a></li>
+          <li id="portfolio" class="treeview">
             <a href="#">
-              <i class="fa fa-line-chart"></i> <span>Analysis</span>
+              <i class="fa fa-pie-chart"></i> <span>Portfolio</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
             </a>
             <ul class="treeview-menu" id="subsidebar">
-              <li id="analysis"><a href="{{ url_for('analysis.ef') }}"><i class="fa fa-circle-o"></i><span>Efficient
-                    Frontier</span></a></li>
-              <li id="analysis"><a href="{{ url_for('analysis.market') }}"><i
-                    class="fa fa-circle-o"></i><span>Market</span></a></li>
+              <li id="portfolio"><a href="{{ url_for('analysis.single_asset') }}"><i class="fa fa-circle-o"></i>
+                  <span>Single Asset</span></a></li>
+              <li id="portfolio"><a href="{{ url_for('analysis.multi_asset') }}"><i class="fa fa-circle-o"></i> <span>Multiple Assets</span></a></li>
             </ul>
           </li>
-          <li id="portfolio"><a href="{{ url_for('analysis.portfolio') }}"><i class="fa fa-pie-chart"></i>
-              <span>Portfolio</span></a></li>
         </ul>
         <script>
-          // window.onload = function () {
-          //     var tab_li = document.getElementById("mainsidebar").getElementsByTagName("li");
-          //     var flag = 0;
-          //     for(var i= 0;i<tab_li.length;i++){
-          //         tab_li[i].onclick = function () {
-          //             for(var j=0;j<tab_li.length;j++){
-          //               if ((j == 2) && tab_li[j].classList.contains("active")){
-          //                    // console.log(tab_li[j].getAttribute("id"));
-          //                    flag = 1;
-          //                 }
-          //                 tab_li[j].classList.remove("active");
-          //               }
-          //               if(this.getAttribute("id") != "analysis"){
-          //                   this.setAttribute("class","active");
-          //                   flag = 0;
-          //                 }
-          //               else{
-          //                   if(flag == 0){this.setAttribute("class","active");}
-          //                   else{flag = 0;}
-          //             }
-          //         }
-          //       }
-          //     }
           $(function () {
             $('.sidebar-menu li:not(.treeview) > a').on('click', function () {    // onclick events
               var $parent = $(this).parent().addClass('active');
@@ -181,6 +159,20 @@
         position: absolute;
         left: 50%;
         transform: translate(-50%, 0);
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+      }
+
+      .chart-div {
+        flex: 1;
+        margin: 10px;
+        border: 1px solid #ccc;
+        height: 400px;
+        min-width: 300px;
       }
     </style>
 

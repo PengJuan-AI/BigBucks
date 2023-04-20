@@ -1,4 +1,7 @@
 import sqlite3
+from datetime import datetime, timedelta
+import os
+import yfinance as yf
 
 import click
 from flask import current_app, g
@@ -30,6 +33,7 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
     insert_first_admin()
+    store_historical_data('SPY')
 
 
 @click.command('init-db')
@@ -51,4 +55,26 @@ def insert_first_admin():
         "INSERT INTO admin (admin_name, password) VALUES (?, ?)",
         (admin_name, generate_password_hash(password))
         )
+    db.commit()
+
+def store_historical_data(symbol):
+    end_date = datetime.today().strftime('%Y-%m-%d')
+    start_date = (datetime.today() - timedelta(days=5*365)).strftime('%Y-%m-%d')
+    stock_data = yf.download(symbol, start=start_date, end=end_date)
+
+    db = get_db()
+    
+    for index, row in stock_data.iterrows():
+        symbol = symbol
+        history_date = index.strftime('%Y-%m-%d')
+        open_price = row['Open']
+        high_price = row['High']
+        low_price = row['Low']
+        close_price = row['Close']
+        adj_close_price = row['Adj Close']
+        volume = row['Volume']
+
+        db.execute("INSERT OR REPLACE INTO Assets_data (symbol, history_date, open, high, low, close, adj_close, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                  (symbol, history_date, open_price, high_price, low_price, close_price, adj_close_price, volume))
+
     db.commit()

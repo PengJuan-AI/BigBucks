@@ -1,6 +1,4 @@
 import sqlite3
-
-import pytest
 from flaskr.db import get_db
 
 # Should return the same connection each time it's called.

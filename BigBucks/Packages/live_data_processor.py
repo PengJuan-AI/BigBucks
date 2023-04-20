@@ -13,7 +13,8 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 # Get company's name by its symbol from Yahoo Finance
 def get_company_name(symbol):
-    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v1/finance/search?q={symbol}')
+    encoded_symbol = quote(symbol)
+    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v1/finance/search?q={encoded_symbol}')
     content = response.read()
     data = json.loads(content.decode('utf8')) 
     if 'shortname' in data['quotes'][0]:
@@ -24,18 +25,26 @@ def get_company_name(symbol):
 
 # Get company's outstanding shares by its symbol from Yahoo Finance
 def get_company_shares(symbol):
-    response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
-    content = response.read()
-    data = json.loads(content.decode('utf8'))
-    if 'sharesOutstanding' in data['quoteSummary']['result'][0]['defaultKeyStatistics']:
-        shares_outstanding = data['quoteSummary']['result'][0]['defaultKeyStatistics']['sharesOutstanding']['raw']
-        return shares_outstanding
-    else:
-        return None
+    try:
+        response = urllib.request.urlopen(f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=assetProfile,defaultKeyStatistics,financialData')
+        content = response.read()
+        data = json.loads(content.decode('utf8'))
+
+        if 'quoteSummary' in data and 'result' in data['quoteSummary'] and len(data['quoteSummary']['result']) > 0:
+            result = data['quoteSummary']['result'][0]
+            if 'defaultKeyStatistics' in result and 'sharesOutstanding' in result['defaultKeyStatistics']:
+                shares_outstanding = result['defaultKeyStatistics']['sharesOutstanding']['raw']
+                return shares_outstanding
+
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+
+    return None
 
 # Get live price of a stock by its symbol from Yahoo Finance
 def get_live_price(symbol):
-    live_price = round(si.get_live_price(symbol),2)
+    live_price = float("{:.2f}".format(round(si.get_live_price(symbol),2)))
     return live_price
 
 # Get the sector of a company by its symbol from Yahoo Finance
@@ -77,6 +86,20 @@ def get_historical_data(symbol):
 
     return stock_data
 
+def get_data_with_date(symbol, date):
+    end_date = (date + timedelta(days=1)).strftime('%Y-%m-%d')
+    start_date = (date - timedelta(days=1)).strftime('%Y-%m-%d')
+    stock_data = yf.download(symbol, start=start_date, end=end_date)
+    return stock_data
+
+def get_recent_data(symbol):
+    today = datetime.today()
+    start_date = (today - timedelta(days=7)).strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
+    stock_data = yf.download(symbol, start=start_date, end=end_date)
+    return stock_data.tail(1)
+
+
 def get_symbol_by_name(company_name):
     # construct the URL to retrieve the stock symbol for the given company name
     encoded_company_name = quote(company_name)
@@ -92,6 +115,7 @@ def get_symbol_by_name(company_name):
     # extract the stock symbol from the data dictionary and return it
     return data['quotes'][0]['symbol']
 
+'''
 def get_live_price_by_input(input):
     if input.isalpha():
         symbol = get_symbol_by_name(input)
@@ -100,6 +124,27 @@ def get_live_price_by_input(input):
     else:
         live_price = get_live_price(input)
         return live_price
+'''
+
+def get_live_price_by_input(input, date):
+    today = datetime.today().date()
+    input_date = datetime.strptime(date, '%Y-%m-%d').date()
+    
+    # if input_date > today:
+    #     return "Error: Date cannot be in the future"
+    
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+    else:
+        symbol = input
+
+    if input_date == today:
+        live_price = get_live_price(symbol)
+    else:
+        stock_data = get_data_with_date(symbol, input_date)
+        live_price = stock_data['Adj Close'].iloc[-1]
+
+    return live_price
 
 def get_company_shares_by_input(input):
     if input.isalpha():
@@ -137,9 +182,18 @@ def get_industry_by_input(input):
         industry = get_company_industry(input)
         return industry
 
-'''
-a = get_live_price_by_input('msft')
-b = get_live_price_by_input('micros')
-print(a)
-print(b)
-'''
+def get_name_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        name = get_company_name(symbol)
+        return name
+    else:
+        name = get_company_name(input)
+        return name
+
+def get_symbol_by_input(input):
+    if input.isalpha():
+        symbol = get_symbol_by_name(input)
+        return symbol
+    else:
+        return input
