@@ -59,6 +59,7 @@
                   <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
                   <p style="font-size:30px">
                     <strong>{{ session.user_name }}</strong>
+                    <small>Joined on {{ session.date | date:"Y-m-d" }}</small>
                   </p>
                 </li>
                 <!-- Menu Footer-->
@@ -133,29 +134,6 @@
           </li>
         </ul>
         <script>
-          // window.onload = function () {
-          //     var tab_li = document.getElementById("mainsidebar").getElementsByTagName("li");
-          //     var flag = 0;
-          //     for(var i= 0;i<tab_li.length;i++){
-          //         tab_li[i].onclick = function () {
-          //             for(var j=0;j<tab_li.length;j++){
-          //               if ((j == 2) && tab_li[j].classList.contains("active")){
-          //                    // console.log(tab_li[j].getAttribute("id"));
-          //                    flag = 1;
-          //                 }
-          //                 tab_li[j].classList.remove("active");
-          //               }
-          //               if(this.getAttribute("id") != "analysis"){
-          //                   this.setAttribute("class","active");
-          //                   flag = 0;
-          //                 }
-          //               else{
-          //                   if(flag == 0){this.setAttribute("class","active");}
-          //                   else{flag = 0;}
-          //             }
-          //         }
-          //       }
-          //     }
           $(function () {
             $('.sidebar-menu li:not(.treeview) > a').on('click', function () {    // onclick events
               var $parent = $(this).parent().addClass('active');

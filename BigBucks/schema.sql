@@ -11,7 +11,9 @@ CREATE TABLE user (
   username TEXT UNIQUE NOT NULL,
 --  firstname TEXT NOT NULL,
 --   lastname TEXT NOT NULL,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  email TEXT NOT NULL,
+  date DATETIME NOT NULL
 );
 
 CREATE TABLE admin (

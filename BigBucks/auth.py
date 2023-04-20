@@ -84,8 +84,8 @@ def register():
             try: # *** add date and email here ***
                 initial_balance = 1000000
                 db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password))
+                    "INSERT INTO user (username, password, email) VALUES (?, ?, ?)",
+                    (username, generate_password_hash(password), email,)
                 )
                 db.execute(
                     "INSERT INTO balance (balance) VALUES (?)",
@@ -149,6 +149,7 @@ def login():
             session.clear()
             session["user_id"] = user["userid"]
             session["user_name"] = user["username"]
+            session["date"] = user["registerdate"]
             return redirect(url_for("index"))
 
         flash(error)
