@@ -7,8 +7,11 @@ build-job:
 
 test1:
   stage: test
+  tags:
+    - shell
   script:
-    - echo "Enter tests"
+    - echo "Testing"
+    - cd /Users/macbookp/Desktop/Duke/Semester2023spring/fintech512/GroupProject
     - pytest
     # - cd tests
     # - python3 -m unittest test_db.py
