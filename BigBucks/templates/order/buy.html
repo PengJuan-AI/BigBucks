@@ -186,8 +186,12 @@
                     alert('Error occurred while placing order.');
                 }
             });
-        } else {
-            alert("Please enter a valid input!")
+        } else if($('.spinner input').val() > share_available) {
+            alert("Your balance is not enought to buy "+ $('.spinner input').val() + " shares.");
+        }else if ($('.spinner input').val() < increment){
+            alert("You can only buy 100 shares per hand.");
+        }else{
+            alert("Please enter valid number!");
         }
     });
 
