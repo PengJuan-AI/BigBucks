@@ -213,8 +213,13 @@ def get_stock_info():
     # 获取股票信息的逻辑代码
     symbol = request.form.get('stockname')
     date = request.form.get('date')
-    stock_info = {'stockname': get_name_by_input(symbol), 'price': get_live_price_by_input(symbol,date), 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
-    return jsonify(stock_info)
+    live_price = get_live_price_by_input(symbol, date)
+    live_price = "{:.2f}".format(live_price)
+    if live_price is not None:
+        stock_info = {'stockname': get_name_by_input(symbol), 'price': live_price, 'stocksymbol': get_symbol_by_input(symbol), 'outstanding': get_outstanding(symbol)}
+        return jsonify(stock_info)
+    else:
+        return jsonify({"error": "No data found for this date range"})
 
 @bp.route('/get_stock_price', methods=['POST'])
 def get_stock_price():
@@ -222,6 +227,7 @@ def get_stock_price():
     symbol = request.form.get('symbol')
     date = request.form.get('date')
     price = get_live_price_by_input(symbol, date)
+    price = "{:.2f}".format(price)
     price_info = {'price': price}
     # print(price)
     return jsonify(price_info)
