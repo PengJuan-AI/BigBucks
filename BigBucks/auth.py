@@ -10,6 +10,7 @@ from flask import session
 from flask import url_for
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 from .db import get_db
 
@@ -84,8 +85,8 @@ def register():
             try: # *** add date and email here ***
                 initial_balance = 1000000
                 db.execute(
-                    "INSERT INTO user (username, password, email) VALUES (?, ?, ?)",
-                    (username, generate_password_hash(password), email,)
+                    "INSERT INTO user (username, password, email, date) VALUES (?, ?, ?, ?)",
+                    (username, generate_password_hash(password), email, datetime.now())
                 )
                 db.execute(
                     "INSERT INTO balance (balance) VALUES (?)",
@@ -95,6 +96,8 @@ def register():
             except db.IntegrityError:
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
+                print("error: ",db.IntegrityError)
+                print(Exception)
                 error = f"User {username} is already registered!"
             else:
                 # Success, go to the login page.
@@ -149,7 +152,7 @@ def login():
             session.clear()
             session["user_id"] = user["userid"]
             session["user_name"] = user["username"]
-            session["date"] = user["registerdate"]
+            session["date"] = user["date"]
             return redirect(url_for("index"))
 
         flash(error)

@@ -57,9 +57,9 @@
                 <!-- The user image in the menu -->
                 <li class="user-header">
                   <img src="{{ url_for('static', filename='img/user.jpg') }}" class="img-circle" alt="User Image">
-                  <p style="font-size:30px">
+                  <p>
                     <strong>{{ session.user_name }}</strong>
-                    <small>Joined on {{ session.date | date:"Y-m-d" }}</small>
+                    <small>Joined on {{ session.date.strftime('%Y-%m-%d') }}</small>
                   </p>
                 </li>
                 <!-- Menu Footer-->

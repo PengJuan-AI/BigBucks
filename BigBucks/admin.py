@@ -79,7 +79,7 @@ def add_admin():
 @admin_login_required
 def view_users():
     db = get_db()
-    users = db.execute("SELECT u.userid, u.username, b.balance \
+    users = db.execute("SELECT u.userid, u.username, u.email, u.date, b.balance \
     FROM user AS u \
     INNER JOIN balance AS b \
     ON b.userid = u.userid \
