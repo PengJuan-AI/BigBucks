@@ -2,13 +2,18 @@ default:
   image: python:3.7
 build-job:
   stage: build
+  tags:
+    - shell
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
 test1:
   stage: test
+  tags:
+    - shell
   script:
-    - echo "Enter tests"
+    - echo "Testing"
+    - cd /Users/macbookp/Desktop/Duke/Semester2023spring/fintech512/GroupProject
     - pytest
     # - cd tests
     # - python3 -m unittest test_db.py
