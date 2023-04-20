@@ -44,7 +44,7 @@ def get_company_shares(symbol):
 
 # Get live price of a stock by its symbol from Yahoo Finance
 def get_live_price(symbol):
-    live_price = float("{:.2f}".format(round(si.get_live_price(symbol),2)))
+    live_price = round(si.get_live_price(symbol),2)
     return live_price
 
 # Get the sector of a company by its symbol from Yahoo Finance
@@ -142,8 +142,12 @@ def get_live_price_by_input(input, date):
         live_price = get_live_price(symbol)
     else:
         stock_data = get_data_with_date(symbol, input_date)
-        live_price = stock_data['Adj Close'].iloc[-1]
-
+        #live_price = stock_data['Adj Close'].iloc[-1]
+        if not stock_data.empty:
+            live_price = stock_data['Adj Close'].tail(1).values[0]
+            live_price = round(live_price, 2)
+        else:
+            live_price = None
     return live_price
 
 def get_company_shares_by_input(input):
