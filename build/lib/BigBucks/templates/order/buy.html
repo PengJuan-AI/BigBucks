@@ -1,26 +1,38 @@
-{%  extends 'base2.html' %}
+{% extends 'base2.html' %}
 
 {% block title %}Buy{% endblock %}
 
 {% block main_body %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="box box-warning">
-            <div class="box-header with-border">
-            <h3 class="box-title">Search Stock</h3>
+            <div class="box-header with-border text-center">
+                <h3 class="box-title">Search Stock</h3>
             </div>
-            <div class="row">
-            <!-- <form class="navbar-form navbar-left" role="search" action="#" method="POST"> -->
+            <div class="row" style="justify-content:center;display:flex;">
+                <!-- <form class="navbar-form navbar-left" role="search" action="#" method="POST"> -->
                 <form class="navbar-form navbar-left" id="search">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search Stock" name="search_name">
                     </div>
-                    <button type="submit" class="btn btn-default">Search</button>
+                    <div class="input-group date" data-provide="datepicker" style="margin-left: 10px;">
+                                <input type="text" class="form-control" placeholder="Select a date" id="date-input" value="{{ date }}" autocomplete="off">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Search</button>
+                </form>
+            </div>
+            <div class="box-body table-responsive no-padding" style="justify-content:center;display:flex;">
+                <form id="search_result">
                     <table class="table table-hover">
                         <tr>
                             <th>Stock Name</th>
                             <th>Stock Symbol</th>
-                            <th>Current Price</th>
+                            <th>Price</th>
                         </tr>
                         <tr>
                             <td>{{ stockname }}</td>
@@ -32,108 +44,164 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-6">
         <div class="box box-info">
-            <div class="box-header with-border">
-            <h3 class="box-title">Transaction</h3>
+            <div class="box-header with-border text-center">
+                <h3 class="box-title">Transaction</h3>
             </div>
-            <div class="row">
-            <div class="container">
+
             <!-- <form action="#" method="POST"> -->
-            <form id="submit">
-                <h4 style="margin-left:20px">Shares</h4>
-                    <div class="input-group spinner">
-                        <input type="text" class="form-control" value="100" id="shares-input">
-                        <div class="input-group-btn-vertical">
-                            <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                            <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            <form class="form-horizontal" id="submit">
+                <div class="box-body">
+                    <h4 class="text-center" style="font-size:25px;color:deepskyblue"><strong>Shares</strong></h4>
+                    <div class="form-group" style="justify-content:center;display:flex;">
+                        <div class="input-group spinner">
+                            <input type="text" class="form-control" value="100" id="shares-input">
+                            <div class="input-group-btn-vertical">
+                                <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                                <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                            </div>
                         </div>
                     </div>
-                <small class="text-success" style="color: red;" id="input_error">Please select a stock</small>
-                <div class="container" style="font-size:20px;color:forestgreen"><p id="share-available"><strong>Shares Available: {{ shares }}</strong></p></div>
-                <div class="container"><button type="submit" class="btn btn-success" id="submit-btn">Confirm Transation</button></div>
-<!--                {% for message in get_flashed_messages() %}-->
-<!--                    <div class="flash">{{ message }}</div>-->
-<!--                {% endfor %}-->
+                    <p class="text-center"><small style="color: orangered;" id="input_error"><i
+                                class="fa fa-hand-o-left"></i> Please select a stock</small></p>
+                    <div class="form-group"
+                        style="font-size:18px;color:deepskyblue;justify-content:center;display:flex;">
+                        <p id="share-available"><strong>Shares Available: {{ shares }}</strong></p>
+                    </div>
+                    <div class="box-footer" style="justify-content:center;display:flex;">
+                        <button type="submit" class="btn btn-info" id="submit-btn">Confirm Transaction</button>
+                    </div>
+                    <!--                {% for message in get_flashed_messages() %}-->
+                    <!--                    <div class="flash">{{ message }}</div>-->
+                    <!--                {% endfor %}-->
+                </div>
             </form>
-  </div>
-</div>
-            </div>
         </div>
     </div>
+</div>
 </div>
 <!--<script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>-->
 <!--<script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>-->
 <script>
-    $(document).ready(function() {
-        var selectedStock = null;
-        var account_balance = {{ info['balance']}};
-        var share_available;
+    var increment = 100; // Default increment for stocks
+    function setIncrement() {
+        if (selectedStock.slice(-4) === '-USD') {
+            increment = 1; // Increment for cryptocurrencies
+        } else {
+            increment = 100; // Increment for stocks
+        }
+    }
 
-        $('#search').on('submit', function(event) {
+    var selectedStock = null;
+    $(document).ready(function () {
+        //var selectedStock = null;
+        var account_balance = {{ info['balance'] }};
+        var share_available;
+        const dateInput = document.getElementById('date-input');
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        dateInput.value = formattedDate;
+
+        function updateIncrementButtons() {
+            var $input = $('.spinner input');
+            var currentValue = parseInt($input.val(), 10); 
+            if (currentValue < increment) {
+                $('#input_error').show().text('Min limit reached');
+            } else if (currentValue > share_available) {
+                $('#input_error').show().text('Max limit reached');
+            } else {
+                $('#input_error').hide();
+            }
+        }
+
+    $('#search').on('submit', function (event) {
+        console.log($('#date-input').val());
+        event.preventDefault();
+        stockname = $('input[name="search_name"]').val().toUpperCase();
+        $.ajax({
+            url: '/order/get_stock_info',
+            method: 'POST',
+            data: { "stockname": stockname, "date": $('#date-input').val()},
+            success: function (response) {
+                share_available = parseInt(account_balance / response.price, 10);
+                $('#search_result').find("tr").eq(1).find('td').eq(0).text(response.stockname);
+                $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
+                $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
+                $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
+                selectedStock = response.stocksymbol;
+                setIncrement();
+                $('.spinner input').val(increment);
+                updateIncrementButtons();
+                //$('#input_error').hide();
+            },
+            error: function () {
+                alert('Please enter correct symbol!');
+            }
+        });
+    });
+
+    $('.spinner .btn:first-of-type').on('click', function () {
+        var $input = $('.spinner input');
+        var currentValue = parseInt($input.val(), 10);
+        if (currentValue >= increment && currentValue <= share_available - increment) {
+            $input.val(currentValue + increment);
+            //$('#input_error').hide();
+            updateIncrementButtons();
+        } else {
+            $('#input_error').show().text('Max limit reached');
+        }
+    });
+
+    $('.spinner .btn:last-of-type').on('click', function () {
+        var $input = $('.spinner input');
+        var currentValue = parseInt($input.val(), 10);
+        if (currentValue > increment && currentValue <= share_available) {
+            $input.val(currentValue - increment);
+            //$('#input_error').hide();
+            updateIncrementButtons();
+        } else {
+            //console.log(currentValue);
+            $('#input_error').show().text('Min limit reached');
+        }
+    });
+
+    $('#submit').on('submit', function (event) {
+        // console.log($('#date-input').val());
+        if ($('.spinner input').val() >= increment && $('.spinner input').val() <= share_available) {
             event.preventDefault();
-            stockname = $('input[name="search_name"]').val();
             $.ajax({
-                url: '/order/get_stock_info',
+                url: '/order/buy',
                 method: 'POST',
-                data: { "stockname": stockname },
-                success: function(response) {
-                    share_available = parseInt( account_balance / response.price, 10);
-                    $('#search').find("tr").eq(1).find('td').eq(0).text(response.stockname);
-                    $('#search').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
-                    $('#search').find("tr").eq(1).find('td').eq(2).text(response.price);
-                    $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
-                    selectedStock = response.stocksymbol;
-                    $('#input_error').hide();
+                // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
+                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy" },
+                success: function (event) {
+                    alert("Your order has been successfully placed!");
+                    window.location.reload();
                 },
-                error: function() {
-                    alert('Please enter correct symbol!');
+                error: function () {
+                    alert('Error occurred while placing order.');
                 }
             });
-        });
+        } else if($('.spinner input').val() > share_available) {
+            alert("Your balance is not enought to buy "+ $('.spinner input').val() + " shares.");
+        }else if ($('.spinner input').val() < increment){
+            alert("You can only buy 100 shares per hand.");
+        }else{
+            alert("Please enter valid number!");
+        }
+    });
 
-        $('.spinner .btn:first-of-type').on('click', function () {
-            var $input = $('.spinner input');
-            var currentValue = parseInt($input.val(), 10);
-            if (currentValue >= 100 && currentValue < share_available - 100) {
-                $input.val(currentValue + 100);
-                $('#input_error').hide();
-            }else {
-                $('#input_error').show().text('Max limit reached');
-            }
-        });
-        
-        $('.spinner .btn:last-of-type').on('click', function () {
-            var $input = $('.spinner input');
-            var currentValue = parseInt($input.val(), 10);
-            if (currentValue > 100 && currentValue <= share_available) {
-            $input.val(currentValue - 100);
-            $('#input_error').hide();
-            } else {
-                console.log(currentValue);
-                $('#input_error').show().text('Min limit reached');
-            }
-        });
-    
-        $('#submit').on('submit', function(event) {
-            if($('.spinner input').val() >= 100 && $('.spinner input').val() <= share_available){
-                event.preventDefault();
-                $.ajax({
-                    url: '/order/buy',
-                    method: 'POST',
-                    // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                    data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy"},
-                    success: function(event) {
-                        alert("Your order has been successfully placed!");
-                        window.location.reload();
-                    },
-                    error: function() {
-                        alert('Error occurred while placing order.');
-                    }
-                });
-            } else {
-                alert("Please enter a valid input!")
-            }
+    $('#date-input').datepicker({
+            dateFormat: 'yy-mm-dd',
+            defaultDate: new Date(),
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-100:+0",
+            endDate: new Date()
         });
 });
 </script>
