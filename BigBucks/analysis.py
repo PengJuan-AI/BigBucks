@@ -13,9 +13,11 @@ bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 @bp.route('/ef', methods=('GET','POST'))
 @login_required
 def ef():
+    print("in ef")
     id = g.user['userid']
     port = get_portfolio_weights(id)
     error = None
+    print('port in ef: \n',port)
     if not port:
         efficient_frontier = None
         port_info = {
@@ -38,14 +40,8 @@ def ef():
             'port_vol': round(v,2),
             'sharpe': round(sharpe,2)
         }
-
+    print(port_info)
     return render_template('analysis/ef.html', ef=efficient_frontier, info=port_info, error=error)
-
-# market
-# @bp.route('/market', methods=('GET','POST'))
-# @login_required
-# def market():
-#     return render_template('analysis/market.html')
 
 # portfolio
 # single asset
@@ -55,7 +51,7 @@ def single_asset():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
-
+    print("in single: ", portfolio)
     return render_template('analysis/single_asset.html',portfolio=portfolio)
 
 # portfolio
@@ -66,7 +62,7 @@ def multi_asset():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
-
+    print("in multi: ", portfolio)
     date_returns = {}
     for asset in portfolio:
         symbol = asset[1]

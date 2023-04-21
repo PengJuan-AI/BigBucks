@@ -88,7 +88,7 @@ def draw(R,V):
     plt.show()
 
 def get_port_info(portfolio):
-    # portfolio = get_portfolio_weights(id)
+    print("in get port info")
     weights = []
     r = []
     for symbol in portfolio.keys():
@@ -107,16 +107,14 @@ def get_port_info(portfolio):
     return port_r,port_v,sharpe
 
 def get_ef(portfolio):
-    # db = get_db()
+    print("in get_ef")
     r = {}
     avg_r = []
-    # portfolio = get_portfolio_weights(id)
     for symbol in portfolio.keys():
         r[symbol] = list(cal_returns(symbol)[symbol])
         avg_r.append(cal_avg_return(cal_returns(symbol)))
         
     df = pd.DataFrame(data=r)
-    # W,R,V, risk_return = efficient_frontier(df,100, avg_r)
     W,risk_return = efficient_frontier(df, 100, avg_r)
     # draw(risk_return[0], risk_return[1])
 
@@ -149,11 +147,15 @@ def efficient_frontier(df, num, r):
     for i in range(num):
         bounds = Bounds(0, 1)  # all weights between (0,1)
         re = cal_port_return(w0, r) + i * gap
-        double_constraint = LinearConstraint([np.ones(df.shape[1]), r], [1, re], [1, re])
+        # double_constraint = LinearConstraint([np.ones(df.shape[1]), r], [1, re], [1, re])
+        cons = [
+            {'type':'eq', 'fun':lambda x: np.sum(x)-1},
+            {'type':'eq', 'fun':lambda x: cal_port_return(x, r)-re}
+        ]
         x0 = w0  # x0 is the initial guess
         # Define fun to calculate volatility
         fun1 = lambda w: np.sqrt(np.dot(w, np.dot(w, covar)))
-        result = minimize(fun1, x0, method='SLSQP', constraints=double_constraint, bounds=bounds)
+        result = minimize(fun1, x0, method='SLSQP', constraints=cons, bounds=bounds)
 
         weights[i,:] = result.x
         # port_return[i] = re
