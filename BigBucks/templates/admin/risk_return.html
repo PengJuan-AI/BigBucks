@@ -46,5 +46,59 @@
         </div>
     </div>
 
+    <div class="box">
+    <section class="efficient-frontier">
+        <h2 class="text-center">
+            Efficient Frontier of All Users
+        </h2>
+        <div id="ef" style="width: 600px; height: 400px;margin: 0 auto;"></div>
+    </section>
+    </div>
+
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+
+<script>
+    // function draw_ef(){
+        var chart = echarts.init(document.getElementById("ef"));
+        var data = {{ ef }};
+        // console.log(data);
+        var port_data = [[{{ info['vol'] }}, {{ info['rtn'] }}] ];
+        // console.log(port_data)
+        var option = {
+            legend: {
+                bottom: 5
+            },
+            xAxis: {
+                type: 'value',
+                name: 'Risk',
+                min: Math.min(data[0][0], port_data[0][0] )
+            },
+            yAxis: {
+                type: 'value',
+                name: 'Return',
+                min: Math.min(data[0][1], port_data[0][1] )
+            },
+            series: [
+                {
+                    name: "Efficient Frontier",
+                    data: data,
+                    symbol: 'none',
+                    type: 'line'
+                },
+                {
+                    name: "Portfolio",
+                    type: 'scatter',
+                    data: port_data,
+                    symbolSize: 10,
+                    itemStyle: {
+                        color: 'red'
+                    }
+                }
+            ]
+        };
+        option&&chart.setOption(option);
+    // }
+</script>
 {% endblock %}
