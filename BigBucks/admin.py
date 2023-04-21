@@ -118,6 +118,7 @@ def view_admins():
 def risk_return():
     portfolio = get_all_weights()
     error = None
+
     if not portfolio:
         risk_re = 0
         port_info = {
