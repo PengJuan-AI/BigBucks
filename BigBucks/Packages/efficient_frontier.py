@@ -88,7 +88,7 @@ def draw(R,V):
     plt.show()
 
 def get_port_info(portfolio):
-    # portfolio = get_portfolio_weights(id)
+    print("in get port info")
     weights = []
     r = []
     for symbol in portfolio.keys():
@@ -107,16 +107,14 @@ def get_port_info(portfolio):
     return port_r,port_v,sharpe
 
 def get_ef(portfolio):
-    # db = get_db()
+    print("in get_ef")
     r = {}
     avg_r = []
-    # portfolio = get_portfolio_weights(id)
     for symbol in portfolio.keys():
         r[symbol] = list(cal_returns(symbol)[symbol])
         avg_r.append(cal_avg_return(cal_returns(symbol)))
         
     df = pd.DataFrame(data=r)
-    # W,R,V, risk_return = efficient_frontier(df,100, avg_r)
     W,risk_return = efficient_frontier(df, 100, avg_r)
     # draw(risk_return[0], risk_return[1])
 
