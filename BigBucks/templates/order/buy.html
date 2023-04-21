@@ -118,30 +118,44 @@
             }
         }
 
-    $('#search').on('submit', function (event) {
-        console.log($('#date-input').val());
-        event.preventDefault();
-        stockname = $('input[name="search_name"]').val().toUpperCase();
+    let updateInterval;
+
+    function updateStockPrice() {
+        let stockname = $('input[name="search_name"]').val().toUpperCase();
         $.ajax({
             url: '/order/get_stock_info',
             method: 'POST',
-            data: { "stockname": stockname, "date": $('#date-input').val()},
+            data: { "stockname": stockname, "date": $('#date-input').val() },
             success: function (response) {
-                share_available = parseInt(account_balance / response.price, 10);
-                $('#search_result').find("tr").eq(1).find('td').eq(0).text(response.stockname);
-                $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
-                $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
-                $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
-                selectedStock = response.stocksymbol;
-                setIncrement();
-                $('.spinner input').val(increment);
-                updateIncrementButtons();
-                //$('#input_error').hide();
-            },
+            share_available = parseInt(account_balance / response.price, 10);
+            $('#search_result').find("tr").eq(1).find('td').eq(0).text(response.stockname);
+            $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
+            $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
+            $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
+            selectedStock = response.stocksymbol;
+            setIncrement();
+            $('.spinner input').val(increment);
+            updateIncrementButtons();
+        },
             error: function () {
                 alert('Please enter correct symbol!');
             }
         });
+    }
+
+    $('#search').on('submit', function (event) {
+    console.log($('#date-input').val());
+    event.preventDefault();
+
+    // Clear the previous interval if any
+    if (updateInterval) {
+        clearInterval(updateInterval);
+    }
+
+    updateStockPrice();
+
+    // Update the stock price every 2 seconds
+    updateInterval = setInterval(updateStockPrice, 2000);
     });
 
     $('.spinner .btn:first-of-type').on('click', function () {
