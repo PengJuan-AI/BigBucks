@@ -1,5 +1,8 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: BigBucks
+<<<<<<< HEAD
+Version: 2.0.1
+=======
 Version: 2.0.3
 Summary: UNKNOWN
 Home-page: UNKNOWN
@@ -8,3 +11,4 @@ Author-email: UNKNOWN
 License: UNKNOWN
 Description: UNKNOWN
 Platform: UNKNOWN
+>>>>>>> 6b9a403a51741cc67dab2ca88cf95ffc28807eb1
