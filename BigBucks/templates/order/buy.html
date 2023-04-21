@@ -177,7 +177,8 @@
                 url: '/order/buy',
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy" },
+                // data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy" },
+                data: { "symbol": selectedStock, "date": $('#date-input').val(), "share": $('.spinner input').val(), "action": "buy" },
                 success: function (event) {
                     alert("Your order has been successfully placed!");
                     window.location.reload();
