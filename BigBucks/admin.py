@@ -134,7 +134,6 @@ def risk_return():
             'vol': round(v,2),
             'sharpe': round(sharpe,2)
         }
-    
     return render_template("admin/risk_return.html",ef=risk_re,info=port_info,error=error)
 
 @bp.route('/today_orders')
