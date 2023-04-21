@@ -32,6 +32,6 @@ def get_portfolio_weights(id):
 
         for p in pf:
             weights[p[0]] = round(p[1] / total_value, 2)
-    # print(weights)
+    print("symbol and weights: ",weights)
     
     return weights
