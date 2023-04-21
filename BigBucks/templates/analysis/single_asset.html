@@ -73,19 +73,19 @@
     let currentSymbol = null;
     var chart = echarts.init(document.getElementById("chartContainer"));
 
-    chart.setOption({
-        dataZoom: [
-            {
-            type: 'inside',
-            start: 0,
-            end: 10
-            },
-            {
-            start: 0,
-            end: 10
-            }
-        ]
-    })
+    // chart.setOption({
+    //     dataZoom: [
+    //         {
+    //         type: 'inside',
+    //         start: 0,
+    //         end: 10
+    //         },
+    //         {
+    //         start: 0,
+    //         end: 10
+    //         }
+    //     ]
+    // })
 
     function pass_shares(symbol, shares){
         var sy = document.getElementById('symbol');
@@ -170,7 +170,7 @@
                 type: "line",
                 symbol: 'none'
                 }]
-            });
+            },true);
     }
 
     function draw_daily_price_movement(data, symbol) {
@@ -223,7 +223,7 @@
             type: "line",
             symbol: 'none'
         }]
-    });
+    },true);
 }  
 
 function draw_daily_price_change(data, symbol) {
@@ -260,7 +260,8 @@ function draw_daily_price_change(data, symbol) {
             boundaryGap: false,
         },
         yAxis: {
-            type: "value"
+            type: "value",
+            min: Math.min(Math.min(dailyPriceChange), Math.min(dailyPriceChange))
         },
         dataZoom: {
             show: true
@@ -277,7 +278,7 @@ function draw_daily_price_change(data, symbol) {
             type: "line",
             symbol: 'none'
         }]
-    });
+    },true);
 }
 
 function draw_scatter_graph(data, symbol) {
@@ -304,8 +305,8 @@ function draw_scatter_graph(data, symbol) {
             },
         },
         dataZoom: {
-            show: false
-            //disabled: true
+            show: false,
+            disabled: true
         },
         xAxis: {
             type: "value",
@@ -334,7 +335,7 @@ function draw_scatter_graph(data, symbol) {
                 },
             },
         ],
-    });
+    }, true);
 }
 
 function linearRegression(x, y) {
@@ -386,7 +387,7 @@ function draw_return_with_date_graph(data, symbol) {
                 type: "line",
                 symbol: 'none'
                 }]
-            });
+            }, true);
 }
 
 function draw_return_scatter_plot(data, symbol) {
@@ -419,7 +420,7 @@ function draw_return_scatter_plot(data, symbol) {
                 data: scatterData,
                 symbolSize: 1,
                 }]
-            });
+            },true);
 }
 
 function prepare_histogram_data(data, numBins) {
@@ -468,7 +469,7 @@ function draw_bar_diagram_of_return(data, symbol) {
             data: histogramData.bins,
             type: "bar"
         }]
-    });
+    }, true);
 }
 </script>
 {% endblock %}
