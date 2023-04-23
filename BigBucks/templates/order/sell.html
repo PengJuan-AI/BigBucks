@@ -91,6 +91,16 @@
     var selectedStock;
     var share_available;
     var symbol;
+    var increment = 100; // Default increment for stocks
+
+    function setIncrement() {
+        if (selectedStock.slice(-4) === '-USD') {
+            increment = 1; // Increment for cryptocurrencies
+        } else {
+            increment = 100; // Increment for stocks
+        }
+    }
+
     (function ($) {
         const dateInput = document.getElementById('date-input');
         const today = new Date();
@@ -103,8 +113,8 @@
         $('.spinner .btn:first-of-type').on('click', function () {
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
-            if (currentValue >= 100 && currentValue <= share_available - 100) {
-                $input.val(currentValue + 100);
+            if (currentValue >= increment && currentValue <= share_available - increment) {
+                $input.val(currentValue + increment);
                 $('#input_error').hide();
             }else {
                 $('#input_error').show().text('Max limit reached');
@@ -114,8 +124,8 @@
         $('.spinner .btn:last-of-type').on('click', function () {
             var $input = $('.spinner input');
             var currentValue = parseInt($input.val(), 10);
-            if (currentValue > 100 && currentValue <= share_available) {
-                $input.val(currentValue - 100);
+            if (currentValue > increment && currentValue <= increment) {
+                $input.val(currentValue - increment);
                 $('#input_error').hide();
             } else {
                 console.log(currentValue);
@@ -167,6 +177,8 @@
         // console.log(price1);
         // p.innerHTML = '<strong>Current Price: <i class="fa fa-dollar"></i>' + price + '</strong>';
         selectedStock = symbol;
+        setIncrement();
+        $('.spinner input').val(increment); // Set the initial amount based on the increment
         share_available = shares;
         $('#input_error').hide();}
     }
