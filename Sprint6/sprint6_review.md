@@ -1,6 +1,5 @@
-Success:
-1. Implemented the function of analyzing multiple assets and generated a comprehensive return graph for these assets
-2. 
-Challenges:
-1. Make the image change dynamically as the checkbox status changes
-2. 
+## User Interface
+1. Improved the graph display function
+2. Updated the real-time display of stock prices on the front-end page
+3. Setup scheduler to update stock data in database everyday in weekday.
+4. Updated the User schema: added user registration date
