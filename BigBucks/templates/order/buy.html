@@ -167,6 +167,7 @@
         },
             error: function () {
                 alert('Please enter correct symbol or name!');
+                clearInterval(updateInterval); // clear the interval if search error
             }
         });
     }
