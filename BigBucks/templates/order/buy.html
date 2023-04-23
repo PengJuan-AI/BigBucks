@@ -120,7 +120,6 @@
 
     let updateInterval;
     var lastAvailableShares = null;
-    var lastSelectedStock = null;
     var searchedStock = null;
     var isFirstSearch = true;
 
@@ -151,16 +150,10 @@
             $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
             $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
 
-            selectedStock = response.stocksymbol;
-            setIncrement();
-
-            if (selectedStock !== lastSelectedStock) {
-                if (isFirstSearch) {
-                    isFirstSearch = false;
-                } else {
-                    $('.spinner input').val(increment);
-                }
-                lastSelectedStock = selectedStock;
+            if (selectedStock !== response.stocksymbol) {
+                selectedStock = response.stocksymbol;
+                setIncrement();
+                $('.spinner input').val(increment);
             }
             
             updateIncrementButtons();
