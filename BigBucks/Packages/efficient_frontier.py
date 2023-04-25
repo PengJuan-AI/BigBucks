@@ -98,7 +98,6 @@ def get_port_info(portfolio):
     r = np.array(r)
     # print(portfolio)
     df = pd.DataFrame(data=portfolio, index=range(len(portfolio)))
-    # df = pd.DataFrame(data=portfolio)
 
     port_r = cal_port_return(weights,r)
     port_v = cal_port_volatility(weights, cal_cov(df))
@@ -137,8 +136,6 @@ def efficient_frontier(df, num, r):
     
     w0 = get_best_w(df)
     gap = (np.amax(r) - cal_port_return(w0,r))/num
-    # port_return = np.zeros(num)
-    # port_vol = np.zeros(num)
     port_risk_return = []
     weights = np.zeros((num, len(df.columns)))
 
@@ -147,7 +144,6 @@ def efficient_frontier(df, num, r):
     for i in range(num):
         bounds = Bounds(0, 1)  # all weights between (0,1)
         re = cal_port_return(w0, r) + i * gap
-        # double_constraint = LinearConstraint([np.ones(df.shape[1]), r], [1, re], [1, re])
         cons = [
             {'type':'eq', 'fun':lambda x: np.sum(x)-1},
             {'type':'eq', 'fun':lambda x: cal_port_return(x, r)-re}
@@ -158,10 +154,7 @@ def efficient_frontier(df, num, r):
         result = minimize(fun1, x0, method='SLSQP', constraints=cons, bounds=bounds)
 
         weights[i,:] = result.x
-        # port_return[i] = re
-        # port_vol[i] = cal_port_volatility(result.x, covar)
         port_risk_return.append([cal_port_volatility(result.x, covar), re])
 
-    # return weights,port_return,port_vol, port_risk_return
     return weights, port_risk_return
 
