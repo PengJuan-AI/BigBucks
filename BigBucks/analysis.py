@@ -27,7 +27,6 @@ def ef():
         }
         error = "Please add asset into your portfolio."
     else:
-        # weights, returns, vols, risk_return = get_ef(port)
         weights, risk_return = get_ef(port)
 
         r, v, sharpe = get_port_info(port)
@@ -51,7 +50,6 @@ def single_asset():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
-    print("in single: ", portfolio)
     return render_template('analysis/single_asset.html',portfolio=portfolio)
 
 # portfolio
@@ -62,17 +60,13 @@ def multi_asset():
     id = g.user['userid']
     portfolio = get_db().execute('SELECT * FROM portfolio WHERE userid=?', (id,)).fetchall()
     # index and asset return
-    print("in multi: ", portfolio)
     date_returns = {}
     for asset in portfolio:
         symbol = asset[1]
-        # returns[symbol] = list(cal_returns(symbol)[symbol])
         data = cal_returns_with_date(symbol)
         if len(date_returns)==0:
             date_returns['date'] = list(data['date'])
         date_returns[symbol] = list(data['returns'])
-
-    # print(date_returns)
 
     return render_template('analysis/multi_asset.html',portfolio=portfolio, returns=date_returns)
 
@@ -97,8 +91,5 @@ def get_hist_data(symbol):
             'return': list(cal_returns(symbol)[symbol]),
             'return_SPY': list(cal_returns('SPY')['SPY'])
         }
-        # index_return = cal_returns('SPY')
-        # print(data)
 
         return jsonify(data)
-        # return hist

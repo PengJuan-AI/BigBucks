@@ -41,7 +41,7 @@ class AuthActions(object):
     def __init__(self, client):
         self._client = client
 
-    def login(self, username='test', password='test'):
+    def login(self, username='test', password='Test1234'):
         return self._client.post(
             '/auth/login',
             data={'username': username, 'password': password}
@@ -50,7 +50,7 @@ class AuthActions(object):
     def logout(self):
         return self._client.get('/auth/logout')
 
-    def login_admin(self,username='admin', password='test'):
+    def login_admin(self,username='admin1', password='0000'):
         return self._client.post(
             '/adminauth/adminlogin',
             data={'admin_name': username, 'password': password}

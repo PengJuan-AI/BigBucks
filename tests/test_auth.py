@@ -6,7 +6,7 @@ from BigBucks.db import get_db
 def test_register(client, app):
     assert client.get('/auth/register').status_code == 200
     response = client.post(
-        '/auth/register', data={'username': 'user2', 'password': 'a'}
+        '/auth/register', data={'username': 'user2', 'password': 'User1234', 'conf':'User1234', 'email':'user@duke.com'}
     )
     with app.app_context():
         assert get_db().execute(
@@ -17,7 +17,7 @@ def test_register(client, app):
             "SELECT userid FROM user WHERE username = 'user2'",
         ).fetchone()[0]
         assert get_db().execute(
-            "SELECT balance FROM Balance WHERE userid = ?", (id,)
+            "SELECT balance FROM Balance b, user u WHERE b.userid=u.userid AND username = 'user2'"
         ).fetchone()[0] == 1000000
 
 def test_login(client, auth):

@@ -1,3 +1,4 @@
+import pytest
 import sqlite3
 from flaskr.db import get_db
 
