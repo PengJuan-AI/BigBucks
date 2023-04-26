@@ -118,30 +118,77 @@
             }
         }
 
-    $('#search').on('submit', function (event) {
-        console.log($('#date-input').val());
-        event.preventDefault();
-        stockname = $('input[name="search_name"]').val().toUpperCase();
+    let updateInterval;
+    var lastAvailableShares = null;
+    var searchedStock = null;
+    var isFirstSearch = true;
+
+    function updateStockPrice() {
+        if (!searchedStock) {
+            return;
+        }
+        let stockname = searchedStock;
+        // Check if stock name is empty or just whitespace
+        if (!stockname.trim()) {
+            return;
+        }
         $.ajax({
             url: '/order/get_stock_info',
             method: 'POST',
-            data: { "stockname": stockname, "date": $('#date-input').val()},
+            data: { "stockname": stockname, "date": $('#date-input').val() },
             success: function (response) {
-                share_available = parseInt(account_balance / response.price, 10);
-                $('#search_result').find("tr").eq(1).find('td').eq(0).text(response.stockname);
-                $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
-                $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
-                $("#share-available").html('<strong>Shares Available: ' + share_available + '</strong>');
+                // Calculate new available shares count
+                let newAvailableShares = parseInt(account_balance / response.price, 10);
+                share_available = newAvailableShares;
+                // Only update the Shares Available text if the new value is different from the last value
+                if (lastAvailableShares !== newAvailableShares) {
+                    $("#share-available").html('<strong>Shares Available: ' + newAvailableShares + '</strong>');
+                    lastAvailableShares = newAvailableShares;
+                }
+            
+            $('#search_result').find("tr").eq(1).find('td').eq(0).text(response.stockname);
+            $('#search_result').find("tr").eq(1).find('td').eq(1).text(response.stocksymbol);
+            $('#search_result').find("tr").eq(1).find('td').eq(2).text(response.price);
+
+            if (selectedStock !== response.stocksymbol) {
                 selectedStock = response.stocksymbol;
                 setIncrement();
                 $('.spinner input').val(increment);
-                updateIncrementButtons();
-                //$('#input_error').hide();
-            },
+            }
+            
+            updateIncrementButtons();
+        },
             error: function () {
-                alert('Please enter correct symbol!');
+                alert('Please enter correct symbol or name!');
+                clearInterval(updateInterval); // clear the interval if search error
             }
         });
+    }
+
+    $('#search').on('submit', function (event) {
+    console.log($('#date-input').val());
+    event.preventDefault();
+
+    // Clear the previous interval if any
+    if (updateInterval) {
+        clearInterval(updateInterval);
+    }
+
+    // Store the stock name from the input field
+    searchedStock = $('input[name="search_name"]').val().toUpperCase();
+    updateStockPrice();
+
+    // Get the current date
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const currentDay = currentDate.getDate().toString().padStart(2, '0');
+    const currentDateString = `${currentYear}-${currentMonth}-${currentDay}`;
+
+    // Update the stock price every 3 seconds only if the selected date is the current date
+    if ($('#date-input').val() === currentDateString) {
+        updateInterval = setInterval(updateStockPrice, 3000);
+    }
     });
 
     $('.spinner .btn:first-of-type').on('click', function () {
@@ -177,7 +224,8 @@
                 url: '/order/buy',
                 method: 'POST',
                 // data: { "symbol": selectedStock.stocksymbol, "date": new Date().getTime(), "share": $('.spinner input'), "action": "buy"},
-                data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy" },
+                // data: { "symbol": selectedStock, "date": new Date().toISOString().slice(0, 10), "share": $('.spinner input').val(), "action": "buy" },
+                data: { "symbol": selectedStock, "date": $('#date-input').val(), "share": $('.spinner input').val(), "action": "buy" },
                 success: function (event) {
                     alert("Your order has been successfully placed!");
                     window.location.reload();

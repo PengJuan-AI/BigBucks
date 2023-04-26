@@ -13,7 +13,7 @@ CREATE TABLE user (
 --   lastname TEXT NOT NULL,
   password TEXT NOT NULL,
   email TEXT NOT NULL,
-  date TIMESTAMP NOT NULL
+  date DATE NOT NULL
 );
 
 CREATE TABLE admin (

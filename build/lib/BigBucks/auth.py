@@ -86,7 +86,7 @@ def register():
                 initial_balance = 1000000
                 db.execute(
                     "INSERT INTO user (username, password, email, date) VALUES (?, ?, ?, ?)",
-                    (username, generate_password_hash(password), email, datetime.now())
+                    (username, generate_password_hash(password), email, datetime.now().strftime('%Y-%m-%d'))
                 )
                 db.execute(
                     "INSERT INTO balance (balance) VALUES (?)",
